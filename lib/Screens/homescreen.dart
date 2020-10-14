@@ -70,7 +70,7 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                   child: ListTile(
                     leading: CircleAvatar(
                       radius: 50.0,
-                      backgroundImage: AssetImage('images/avatar.jpg'),
+                      backgroundImage: AssetImage('assets/images/avatar.jpg'),
                     ),
                   ),
                 ),
