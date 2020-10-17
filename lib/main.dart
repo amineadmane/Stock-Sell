@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:stocknsell/Screens/Historydetail.dart';
+import 'package:stocknsell/Screens/homescreen.dart';
+import 'package:stocknsell/Screens/AuthentificationScreen.dart';
+import 'package:stocknsell/Screens/historyscreen.dart';
 import 'package:stocknsell/Screens/Client.dart';
 import 'package:stocknsell/Screens/homescreen.dart';
 import 'package:stocknsell/Screens/AuthentificationScreen.dart';
@@ -12,7 +16,11 @@ class StocknSell extends StatelessWidget {
     return MaterialApp(
       initialRoute: '/',
       routes: {
-        '/': (context) => Client(),
+        '/': (context) => LoginScreen(),
+        '/home': (context) => MenuDashboardPage(),
+        '/history': (context) => HistoriquePage(),
+        '/historydetail': (context) => HistoriquedetailPage(),
+        '/client': (context) => Client(),
       },
     );
   }
