@@ -65,23 +65,44 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Container(
-                  height: 150,
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      radius: 50.0,
+                Row(
+                  children: <Widget>[
+                    CircleAvatar(
+                      radius: 30.0,
                       backgroundImage: AssetImage('assets/images/avatar.jpg'),
                     ),
-                  ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.05,
+                    ),
+                    Container(
+                        child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.4,
+                      child: Text("Dynamique textttttt",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20.0,
+                              fontFamily: 'Fredoka One')),
+                    )),
+                  ],
                 ),
-                ListTile(
-                  title: Text("Acceuil",
-                      style: TextStyle(color: Colors.white, fontSize: 22)),
-                  leading: Icon(
-                    Icons.home_rounded,
-                    color: Colors.white,
-                  ),
+                SizedBox(
+                  height: 30.0,
                 ),
+                TextButton(
+                    child: ListTile(
+                      title: Text("Acceuil",
+                          style: TextStyle(color: Colors.white, fontSize: 22)),
+                      leading: Icon(
+                        Icons.home_rounded,
+                        color: Colors.white,
+                      ),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _controller.reverse();
+                        isCollapsed = !isCollapsed;
+                      });
+                    }),
                 SizedBox(
                   height: 10,
                   width: MediaQuery.of(context).size.width * 0.55,
@@ -134,13 +155,18 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                     color: Colors.white,
                   ),
                 ),
-                ListTile(
-                  title: Text("Historique",
-                      style: TextStyle(color: Colors.white, fontSize: 22)),
-                  leading: Icon(
-                    Icons.history_rounded,
-                    color: Colors.white,
+                TextButton(
+                  child: ListTile(
+                    title: Text("Historique",
+                        style: TextStyle(color: Colors.white, fontSize: 22)),
+                    leading: Icon(
+                      Icons.history_rounded,
+                      color: Colors.white,
+                    ),
                   ),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/history');
+                  },
                 ),
                 SizedBox(
                   height: 10,
@@ -212,7 +238,7 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                           });
                         },
                       ),
-                      Text("My Cards",
+                      Text("Acceuil",
                           style: TextStyle(fontSize: 24, color: Colors.white)),
                       Icon(Icons.settings, color: Colors.white),
                     ],

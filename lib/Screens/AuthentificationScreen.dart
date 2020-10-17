@@ -82,6 +82,7 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
       ),
     );
   }
+
   Widget _buildIntroText() {
     return Column(
       children: <Widget>[
@@ -112,7 +113,7 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
 
   String _userNameValidation(String value) {
     if (value.isEmpty) {
-      return "Veillez entrer un username valide";
+      return "Veuillez entrer un mot de passe valide";
     } else {
       return null;
     }
@@ -129,16 +130,16 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
           FocusScope.of(context).requestFocus(_passwordFocusNode);
         },
         validator: (value) => _emailValidation(value),
-        decoration: CommonStyles.textFormFieldStyle("Email", ""),
+        decoration: CommonStyles.textFormFieldStyle("Adresse mail", ""),
       ),
     );
   }
 
   String _emailValidation(String value) {
     bool emailValid =
-    RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value);
+        RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value);
     if (!emailValid) {
-      return "Entrez une adresse Mail Valide";
+      return "Veuillez entrez une adresse mail valide";
     } else {
       return null;
     }
@@ -193,9 +194,9 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
         child: FlatButton(
             onPressed: () {},
             child: Text(
-              'Mot de passe oublie ?',
+              'Mot de passe oublié ?',
               style:
-              TextStyle(color: Colors.black54, fontWeight: FontWeight.w500),
+                  TextStyle(color: Colors.black54, fontWeight: FontWeight.w500),
             )),
       ),
     );
@@ -225,7 +226,7 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
     var validate = _formKey.currentState.validate();
 
     if (validate) {
-      //Do login stuff
+      Navigator.pushNamed(context, '/home');
     } else {
       setState(() {
         _autoValidate = true;
