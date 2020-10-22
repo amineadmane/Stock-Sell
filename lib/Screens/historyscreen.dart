@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:chips_choice/chips_choice.dart';
+import 'package:stocknsell/Components/DownSelect.dart';
+import 'package:stocknsell/Components/DownSelect2.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 final Color backgroundColor = Color(0xFF4A4A58);
 
@@ -36,6 +42,15 @@ class _HistoriquePageState extends State<HistoriquePage>
 
   @override
   Widget build(BuildContext context) {
+    MaterialApp(
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: [
+        const Locale('fr', 'FR'), // English
+      ],
+    );
     Size size = MediaQuery.of(context).size;
     screenHeight = size.height;
     screenWidth = size.width;
@@ -49,6 +64,162 @@ class _HistoriquePageState extends State<HistoriquePage>
         ],
       ),
     );
+  }
+
+  int tag = 0;
+  List<String> options = [
+    'Date',
+    'Client',
+    'Montant',
+  ];
+  final elements1 = [
+    "Alger",
+    "Harach",
+    "Beo",
+    "Said Hamdine",
+    "Ain Naadja",
+    "Kouba",
+    "Garidi",
+  ];
+
+  _openPopup(context) {
+    DateTime mindate, maxdate;
+    Alert(
+        context: context,
+        title: "Filtres",
+        style: AlertStyle(
+            backgroundColor: Colors.grey[200],
+            titleStyle: TextStyle(
+                fontFamily: 'Mom cake',
+                fontWeight: FontWeight.bold,
+                fontSize: 34)),
+        content: SizedBox(
+          width: screenWidth,
+          height: screenHeight * 0.6,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text("Trier par :",
+                    style: TextStyle(
+                        fontFamily: 'Mom cake',
+                        fontWeight: FontWeight.bold,
+                        fontSize: 34)),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ChipsChoice<int>.single(
+                        value: tag,
+                        onChanged: (val) => setState(() => tag = val),
+                        choiceItems: C2Choice.listFrom<int, String>(
+                          source: options,
+                          value: (i, v) => i,
+                          label: (i, v) => v,
+                        ),
+                        choiceStyle: C2ChoiceStyle(
+                          color: Colors.black,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Text("Secteur :"),
+                MyStatefulWidget(),
+                Text("Client : "),
+                MyStatefulWidget2(),
+                Text("Montant de vente"),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 110.0,
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          labelText: 'MIN',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 8,
+                      child: Divider(
+                        thickness: 2.0,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 110.0,
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          labelText: 'MAX',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Text("Date de vente"),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                        width: 150.0,
+                        height: 70,
+                        child: ListTile(
+                          title: Text('$mindate.toString()'),
+                          trailing: IconButton(
+                            icon: Icon(
+                              Icons.date_range_rounded,
+                            ),
+                            onPressed: () {
+                              DatePicker.showDatePicker(context,
+                                  showTitleActions: true,
+                                  minTime: DateTime(2000, 1, 1),
+                                  maxTime: DateTime(2100, 1, 1),
+                                  onChanged: (date) {
+                                mindate = date;
+                              }, onConfirm: (date) {
+                                mindate = date;
+                              },
+                                  currentTime: DateTime.now(),
+                                  locale: LocaleType.fr);
+                              setState(() {});
+                            },
+                          ),
+                        )),
+                    SizedBox(
+                      width: 8,
+                      child: Divider(
+                        thickness: 2.0,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 110.0,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+        buttons: [
+          DialogButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              "Filtrer",
+              style: TextStyle(color: Colors.white, fontSize: 17),
+            ),
+          ),
+          DialogButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              "Réinitialiser",
+              style: TextStyle(color: Colors.white, fontSize: 17),
+            ),
+          )
+        ]).show();
   }
 
   Widget menu(context) {
@@ -108,13 +279,18 @@ class _HistoriquePageState extends State<HistoriquePage>
                     color: Colors.white,
                   ),
                 ),
-                ListTile(
-                  title: Text("Stock",
-                      style: TextStyle(color: Colors.white, fontSize: 20)),
-                  leading: Icon(
-                    Icons.store_mall_directory_rounded,
-                    color: Colors.white,
+                TextButton(
+                  child: ListTile(
+                    title: Text("Stock",
+                        style: TextStyle(color: Colors.white, fontSize: 20)),
+                    leading: Icon(
+                      Icons.store_mall_directory_rounded,
+                      color: Colors.white,
+                    ),
                   ),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/stock');
+                  },
                 ),
                 SizedBox(
                   height: 10,
@@ -234,137 +410,145 @@ class _HistoriquePageState extends State<HistoriquePage>
             physics: ClampingScrollPhysics(),
             child: Container(
               padding: const EdgeInsets.only(left: 16, right: 16, top: 37),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      InkWell(
-                        child: Icon(Icons.menu, color: Colors.white),
-                        onTap: () {
-                          setState(() {
-                            if (isCollapsed) {
-                              _controller.forward();
-                            } else
-                              _controller.reverse();
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        InkWell(
+                          child: Icon(Icons.menu, color: Colors.white),
+                          onTap: () {
+                            setState(() {
+                              if (isCollapsed) {
+                                _controller.forward();
+                              } else
+                                _controller.reverse();
 
-                            isCollapsed = !isCollapsed;
-                          });
-                        },
-                      ),
-                      Text("Historique",
-                          style: TextStyle(fontSize: 24, color: Colors.white)),
-                      IconButton(
-                        icon: CircleAvatar(
-                          radius: 15.0,
-                          backgroundImage:
-                              AssetImage('assets/images/search.png'),
-                        ),
-                        onPressed: () {},
-                      )
-                    ],
-                  ),
-                  ListView.separated(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.all(8),
-                    itemCount: entries.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Card(
-                        color: Colors.blueGrey[400],
-                        child: TextButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/historydetail');
+                              isCollapsed = !isCollapsed;
+                            });
                           },
-                          child: SizedBox(
-                              // height: 150.0,
-                              child: Padding(
-                            padding: EdgeInsets.all(16.0),
-                            child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Expanded(
-                                      flex: 1,
-                                      child: Image(
-                                          image: AssetImage(
-                                              'assets/images/avatar.jpg'))),
-                                  Expanded(
-                                      flex: 2,
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.stretch,
-                                        children: [
-                                          SizedBox(
-                                            child: Column(
-                                              children: [
-                                                Text(
-                                                  "Yessad Samy",
-                                                  style: TextStyle(
-                                                      fontFamily: 'Mom cake',
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.white,
-                                                      fontSize: 28.0),
-                                                ),
-                                                SizedBox(
-                                                  width: screenWidth * 0.4,
-                                                  child: Divider(
-                                                    thickness: 2.0,
-                                                    color: Colors.white,
+                        ),
+                        Text("Historique",
+                            style:
+                                TextStyle(fontSize: 24, color: Colors.white)),
+                        IconButton(
+                            icon: CircleAvatar(
+                              radius: 15.0,
+                              backgroundImage:
+                                  AssetImage('assets/images/search.png'),
+                            ),
+                            onPressed: () {
+                              _openPopup(context);
+                              setState(() {});
+                            })
+                      ],
+                    ),
+                    ListView.separated(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.all(8),
+                      itemCount: entries.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Card(
+                          color: Colors.blueGrey[400],
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/historydetail');
+                            },
+                            child: SizedBox(
+                                // height: 150.0,
+                                child: Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Expanded(
+                                        flex: 1,
+                                        child: Image(
+                                            image: AssetImage(
+                                                'assets/images/avatar.jpg'))),
+                                    Expanded(
+                                        flex: 2,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.stretch,
+                                          children: [
+                                            SizedBox(
+                                              child: Column(
+                                                children: [
+                                                  Text(
+                                                    "Yessad Samy",
+                                                    style: TextStyle(
+                                                        fontFamily: 'Mom cake',
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.white,
+                                                        fontSize: 28.0),
                                                   ),
-                                                ),
-                                              ],
+                                                  SizedBox(
+                                                    width: screenWidth * 0.4,
+                                                    child: Divider(
+                                                      thickness: 2.0,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                          Align(
-                                            alignment: Alignment.center,
-                                            child: Text(
-                                              "X Articles vendues",
-                                              style: TextStyle(
-                                                  fontFamily: 'Mom cake',
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.white,
-                                                  fontSize: 15.0),
-                                            ),
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceAround,
-                                            children: [
-                                              Text(
-                                                "10000 DA",
+                                            Align(
+                                              alignment: Alignment.center,
+                                              child: Text(
+                                                "X Articles vendues",
                                                 style: TextStyle(
                                                     fontFamily: 'Mom cake',
                                                     fontWeight: FontWeight.bold,
                                                     color: Colors.white,
                                                     fontSize: 15.0),
                                               ),
-                                              Text(
-                                                "24/10/2019",
-                                                style: TextStyle(
-                                                    fontFamily: 'Mom cake',
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.white,
-                                                    fontSize: 15.0),
-                                              )
-                                            ],
-                                          )
-                                        ],
-                                      ))
-                                ]),
-                          )),
-                        ),
-                      );
-                    },
-                    separatorBuilder: (BuildContext context, int index) =>
-                        const Divider(),
-                  ),
-                ],
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceAround,
+                                              children: [
+                                                Text(
+                                                  "10000 DA",
+                                                  style: TextStyle(
+                                                      fontFamily: 'Mom cake',
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.white,
+                                                      fontSize: 15.0),
+                                                ),
+                                                Text(
+                                                  "24/10/2019",
+                                                  style: TextStyle(
+                                                      fontFamily: 'Mom cake',
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.white,
+                                                      fontSize: 15.0),
+                                                )
+                                              ],
+                                            )
+                                          ],
+                                        ))
+                                  ]),
+                            )),
+                          ),
+                        );
+                      },
+                      separatorBuilder: (BuildContext context, int index) =>
+                          const Divider(),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

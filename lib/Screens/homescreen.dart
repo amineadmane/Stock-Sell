@@ -110,13 +110,18 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                     color: Colors.white,
                   ),
                 ),
-                ListTile(
-                  title: Text("Stock",
-                      style: TextStyle(color: Colors.white, fontSize: 22)),
-                  leading: Icon(
-                    Icons.store_mall_directory_rounded,
-                    color: Colors.white,
+                TextButton(
+                  child: ListTile(
+                    title: Text("Stock",
+                        style: TextStyle(color: Colors.white, fontSize: 22)),
+                    leading: Icon(
+                      Icons.store_mall_directory_rounded,
+                      color: Colors.white,
+                    ),
                   ),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/stock');
+                  },
                 ),
                 SizedBox(
                   height: 10,
