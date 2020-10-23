@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:stocknsell/Screens/color_utils.dart';
-import 'package:stocknsell/Screens/common_styles.dart';
 
 class Client extends StatefulWidget {
   @override
@@ -8,6 +7,51 @@ class Client extends StatefulWidget {
 }
 
 class _ClientState extends State<Client> {
+
+  createalertedialog(BuildContext context)
+  {
+    return showDialog(context: context,builder: (context){
+      return AlertDialog(
+        title: Text("Suppression"),
+        content: Column(
+            mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text("Voulez-vous vraiment supprimer ce client?"),
+              ButtonBar(
+                  children: <Widget>[
+                  RaisedButton(
+                      textColor: Colors.white,
+                      color: Colors.red,
+                      elevation: 4,
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child:
+                      Text("Supprimer")
+                  ),
+                    RaisedButton(
+                        textColor: Colors.white,
+                        color: Colors.green,
+                        elevation: 4,
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child:
+                        Text("Retour")
+                    ),
+              ],
+      ),
+
+            ]
+
+        )
+
+      );
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,7 +97,7 @@ class _ClientState extends State<Client> {
                                   leading: const Icon(Icons.person,color: Colors.blue),
                                   title: new TextField(
                                     decoration: new InputDecoration(
-                                    hintText: "Name",
+                                    labelText: "Name",
                                     ),
                                   ),
                                 ),
@@ -61,7 +105,7 @@ class _ClientState extends State<Client> {
                                   leading: const Icon(Icons.phone,color: Colors.blue),
                                   title: new TextField(
                                   decoration: new InputDecoration(
-                                  hintText: "Phone",
+                                  labelText: "Phone",
                                       ),
                                     ),
                                   ),
@@ -69,23 +113,24 @@ class _ClientState extends State<Client> {
                                 leading: const Icon(Icons.location_on,color: Colors.blue),
                                 title: new TextField(
                                   decoration: new InputDecoration(
-                                  hintText: "Secteur",
+                                  labelText: "Secteur",
                                   ),
                                 ),
                               ),
-                          new ListTile(
-                            leading: const Icon(Icons.shopping_cart,color: Colors.blue),
-                            title: new TextField(
-                              decoration: new InputDecoration(
-                              hintText: "Nombre articles achetes",
-                            ),
-                          ),
-                          ),
                       new ListTile(
-                        leading: const Icon(Icons.article,color: Colors.blue),
+                        leading: const Icon(Icons.map,color: Colors.blue),
                         title: new TextField(
                           decoration: new InputDecoration(
-                            hintText: "Article le plus achete",
+                            labelText: 'Url "Google maps"',
+                          ),
+                        ),
+                      ),
+                      new ListTile(
+                        leading: const Icon(Icons.shopping_cart,color: Colors.blue),
+                        title: new TextField(
+                          enabled: false,
+                          decoration: new InputDecoration(
+                            labelText: "Article le plus achete",
                           ),
                         ),
                       ),
@@ -96,7 +141,7 @@ class _ClientState extends State<Client> {
                             color: Colors.red,
                             elevation: 4,
                             onPressed: () {
-                              // Perform some action
+                              createalertedialog(context);
                             },
                             child:
                                 Text("Supprimer")
@@ -143,3 +188,4 @@ class _ClientState extends State<Client> {
     );
   }
 }
+
