@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:stocknsell/Screens/ClientItem.dart';
 
 final Color backgroundColor = Color(0xFF4A4A58);
 
@@ -46,6 +48,33 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
         children: <Widget>[
           menu(context),
           dashboard(context),
+          Container(
+            margin: EdgeInsets.only(top: 90),
+            child: StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance.collection("clients").snapshots(),
+              builder: (context, snapshot) {
+                return !snapshot.hasData
+                    ? Center(child: CircularProgressIndicator())
+                    : ListView.builder(
+                  itemCount: snapshot.data.docs.length,
+                  itemBuilder: (context, index) {
+                    DocumentSnapshot data = snapshot.data.docs[index];
+                    print(data['nom']);
+                    print(data.id);
+                    return ClientItem(
+                      nom: data['nom'],
+                      documentSnapshot: data,
+                      id: data.id,
+                      url: data['URL'],
+                      phone: data['phone'],
+                      email: data['email'],
+                      secteur: data['Secteur'],
+                    );
+                  },
+                );
+              },
+            ),
+          )
         ],
       ),
     );
@@ -65,22 +94,63 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Container(
-                  height: 150,
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      radius: 50.0,
+                Row(
+                  children: <Widget>[
+                    CircleAvatar(
+                      radius: 30.0,
                       backgroundImage: AssetImage('assets/images/avatar.jpg'),
                     ),
-                  ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.05,
+                    ),
+                    Container(
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.4,
+                          child: Text("Dynamique textttttt",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20.0,
+                                  fontFamily: 'Fredoka One')),
+                        )),
+                  ],
                 ),
-                ListTile(
-                  title: Text("Acceuil",
-                      style: TextStyle(color: Colors.white, fontSize: 22)),
-                  leading: Icon(
-                    Icons.home_rounded,
+                SizedBox(
+                  height: 30.0,
+                ),
+                TextButton(
+                    child: ListTile(
+                      title: Text("Acceuil",
+                          style: TextStyle(color: Colors.white, fontSize: 22)),
+                      leading: Icon(
+                        Icons.home_rounded,
+                        color: Colors.white,
+                      ),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _controller.reverse();
+                        isCollapsed = !isCollapsed;
+                      });
+                    }),
+                SizedBox(
+                  height: 10,
+                  width: MediaQuery.of(context).size.width * 0.55,
+                  child: Divider(
                     color: Colors.white,
                   ),
+                ),
+                TextButton(
+                  child: ListTile(
+                    title: Text("Stock",
+                        style: TextStyle(color: Colors.white, fontSize: 22)),
+                    leading: Icon(
+                      Icons.store_mall_directory_rounded,
+                      color: Colors.white,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/stock');
+                  },
                 ),
                 SizedBox(
                   height: 10,
@@ -89,13 +159,18 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                     color: Colors.white,
                   ),
                 ),
-                ListTile(
-                  title: Text("Stock",
-                      style: TextStyle(color: Colors.white, fontSize: 22)),
-                  leading: Icon(
-                    Icons.store_mall_directory_rounded,
-                    color: Colors.white,
+                TextButton(
+                  child: ListTile(
+                    title: Text("Clients",
+                        style: TextStyle(color: Colors.white, fontSize: 22)),
+                    leading: Icon(
+                      Icons.perm_contact_cal_rounded,
+                      color: Colors.white,
+                    ),
                   ),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/Clients');
+                  },
                 ),
                 SizedBox(
                   height: 10,
@@ -104,13 +179,18 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                     color: Colors.white,
                   ),
                 ),
-                ListTile(
-                  title: Text("Clients",
-                      style: TextStyle(color: Colors.white, fontSize: 22)),
-                  leading: Icon(
-                    Icons.perm_contact_cal_rounded,
-                    color: Colors.white,
+                TextButton(
+                  child: ListTile(
+                    title: Text("Planification",
+                        style: TextStyle(color: Colors.white, fontSize: 22)),
+                    leading: Icon(
+                      Icons.calendar_today_rounded,
+                      color: Colors.white,
+                    ),
                   ),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/planning');
+                  },
                 ),
                 SizedBox(
                   height: 10,
@@ -119,28 +199,18 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                     color: Colors.white,
                   ),
                 ),
-                ListTile(
-                  title: Text("Planification",
-                      style: TextStyle(color: Colors.white, fontSize: 22)),
-                  leading: Icon(
-                    Icons.calendar_today_rounded,
-                    color: Colors.white,
+                TextButton(
+                  child: ListTile(
+                    title: Text("Historique",
+                        style: TextStyle(color: Colors.white, fontSize: 22)),
+                    leading: Icon(
+                      Icons.history_rounded,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-                SizedBox(
-                  height: 10,
-                  width: MediaQuery.of(context).size.width * 0.55,
-                  child: Divider(
-                    color: Colors.white,
-                  ),
-                ),
-                ListTile(
-                  title: Text("Historique",
-                      style: TextStyle(color: Colors.white, fontSize: 22)),
-                  leading: Icon(
-                    Icons.history_rounded,
-                    color: Colors.white,
-                  ),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/history');
+                  },
                 ),
                 SizedBox(
                   height: 10,
@@ -204,7 +274,6 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                           setState(() {
                             if (isCollapsed) {
                               _controller.forward();
-                              print("collapsd");
                             } else
                               _controller.reverse();
 
@@ -212,11 +281,12 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                           });
                         },
                       ),
-                      Text("My Cards",
+                      Text("Acceuil",
                           style: TextStyle(fontSize: 24, color: Colors.white)),
                       Icon(Icons.settings, color: Colors.white),
                     ],
                   ),
+
                 ],
               ),
             ),

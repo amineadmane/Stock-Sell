@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:stocknsell/Services/database.dart';
 
 class Clients extends StatefulWidget {
   @override
@@ -7,6 +8,13 @@ class Clients extends StatefulWidget {
 }
 
 class _ClientsState extends State<Clients> {
+
+  final _formKey = GlobalKey<FormState>();
+  String nom;
+  int phone;
+  String email;
+  String Secteur;
+  String URL;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +27,6 @@ class _ClientsState extends State<Clients> {
         transitionDuration: Duration(milliseconds: 500),
         context: context,
         pageBuilder: (_, __, ___) {
-          String dropdownValue = 'Alger Centre';
           return Scaffold(
             appBar: AppBar(
               title: Text("Ajouter un nouveau client"),
@@ -28,66 +35,100 @@ class _ClientsState extends State<Clients> {
                     margin: EdgeInsets.only(left: 10, right: 10,top: 10,bottom: 10),
                     alignment: Alignment.center,
                     child : Card(
-                      child : Column(
-                        children: [
+                      child : Form(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            new ListTile(
+                              leading: const Icon(Icons.person,color: Colors.blue),
+                              title: new TextFormField(
+                                onChanged: (value){
+                                  nom = value;
+                                },
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return 'Please enter some text';
+                                  }
+                                  return null;
+                                },
+                            decoration: new InputDecoration(
+                              labelText: "Name",
+                            ),
+                          ),
+                        ),
                           new ListTile(
-                            leading: const Icon(Icons.person,color: Colors.blue),
-                            title: new TextField(
-                          decoration: new InputDecoration(
-                            labelText: "Name",
+                           leading: const Icon(Icons.phone,color: Colors.blue),
+                            title: new TextFormField(
+                              onChanged: (value){
+                                phone = int.parse(value);
+                              },
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  return 'Please enter some text';
+                                }
+                                return null;
+                              },
+                            decoration: new InputDecoration(
+                              labelText: "Phone",
+                            ),
                           ),
                         ),
-                      ),
                         new ListTile(
-                         leading: const Icon(Icons.phone,color: Colors.blue),
-                          title: new TextField(
-                          decoration: new InputDecoration(
-                            labelText: "Phone",
+                          leading: const Icon(Icons.location_on,color: Colors.blue),
+                          title: DropdownButtonFormField<String>(
+                            value: Secteur,
+                            style: TextStyle(color: Colors.blue),
+                            onChanged: (String newValue) {
+                              setState(() {
+                                Secteur = newValue;
+                              });
+                            },
+                            items: <String>['Alger Centre', 'Bab el oued', 'Bab ezzouar', 'Ain naadja','Dar El Beida','El Herrach']
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
                           ),
                         ),
-                      ),
-                      new ListTile(
-                        leading: const Icon(Icons.location_on,color: Colors.blue),
-                        title: DropdownButton<String>(
-                          value: dropdownValue,
-                          style: TextStyle(color: Colors.blue),
-                          underline: Container(
-                            height: 2,
-                            color: Colors.blue,
+                        new ListTile(
+                          leading: const Icon(Icons.map,color: Colors.blue),
+                          title: new TextFormField(
+                            onChanged: (value){
+                              URL = value;
+                            },
+                            decoration: new InputDecoration(
+                              labelText: 'Url "Google maps"',
+                            ),
                           ),
-                          onChanged: (String newValue) {
-                            setState(() {
-                              dropdownValue = newValue;
-                            });
+                        ),
+                            new ListTile(
+                              leading: const Icon(Icons.email,color: Colors.blue),
+                              title: new TextFormField(
+                                onChanged: (value){
+                                  email = value;
+                                },
+                                decoration: new InputDecoration(
+                                  labelText: 'E-Mail',
+                                ),
+                              ),
+                            ),
+                        const SizedBox(height: 20),
+                        RaisedButton(
+                          textColor: Colors.white,
+                          color: Colors.green,
+                          onPressed: () {
+                            if (_formKey.currentState.validate()) {
+                              DatabaseService().createRecord(nom, email, phone, URL, Secteur);
+                              Navigator.of(context).pop();
+                            }
                           },
-                          items: <String>['Alger Centre', 'Bab el oued', 'Bab ezzouar', 'Ain naadja','Dar El Beida','El Herrach']
-                              .map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),
+                          child: const Text('Creer Client'),
                         ),
-                      ),
-                      new ListTile(
-                        leading: const Icon(Icons.map,color: Colors.blue),
-                        title: new TextField(
-                          decoration: new InputDecoration(
-                            labelText: 'Url "Google maps"',
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      RaisedButton(
-                        textColor: Colors.white,
-                        color: Colors.green,
-                        onPressed: () {
-                          // Perform some action
-                        },
-                        child: const Text('Creer Client'),
-                      ),
                     ],
                   ),
+                      ),
                   elevation: 5.0,
                   color: Colors.white70,
                 ),

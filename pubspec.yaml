@@ -23,6 +23,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  cloud_firestore: ^0.14.1+3
   rflutter_alert: ^1.1.0
   chips_choice: ^2.0.1
   direct_select: "^1.0.3"
@@ -56,9 +57,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/images/avatar.jpg
-    - assets/images/facebook.png
-    - assets/images/baraka.jpg
+    - assets/images/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
@@ -85,3 +84,14 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+fonts:
+  - family: Mom cake
+    fonts:
+      - asset: assets\fonts\MomcakeBold-Bold.otf
+      - asset: assets\fonts\MomcakeThin-Regular.otf
+  - family: Fredoka One
+    fonts:
+      - asset: assets\fonts\FredokaOne-Regular.ttf
+  - family: Staatliches
+    fonts:
+      - asset: assets\fonts\Staatliches-Regular.ttf

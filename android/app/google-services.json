@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "873143749853",
+    "firebase_url": "https://stockandsales-731fc.firebaseio.com",
+    "project_id": "stockandsales-731fc",
+    "storage_bucket": "stockandsales-731fc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:873143749853:android:5a7a96c31aa78b6f9f9f34",
+        "android_client_info": {
+          "package_name": "com.example.stocknsell"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "873143749853-h9smqv65t7i8lsl9gvevs8u9r0s710c7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtEF-npqzwJSTP0waznn9m7-tERAVJDt8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "873143749853-h9smqv65t7i8lsl9gvevs8u9r0s710c7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
