@@ -27,7 +27,7 @@ class StocknSell extends StatelessWidget {
     return MaterialApp(
       initialRoute: '/',
       routes: {
-        '/': (context) => Clients(),
+        '/': (context) => MenuDashboardPage(),
         '/home': (context) => MenuDashboardPage(),
         '/history': (context) => HistoriquePage(),
         '/historydetail': (context) => HistoriquedetailPage(),

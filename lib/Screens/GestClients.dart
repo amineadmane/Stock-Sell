@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:stocknsell/Services/database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:stocknsell/Screens/ClientItem.dart';
 
 class Clients extends StatefulWidget {
   @override
@@ -120,7 +122,7 @@ class _ClientsState extends State<Clients> {
                           color: Colors.green,
                           onPressed: () {
                             if (_formKey.currentState.validate()) {
-                              DatabaseService().createRecord(nom, email, phone, URL, Secteur);
+                              DatabaseService().ajouterclient(nom, email, phone, URL, Secteur);
                               Navigator.of(context).pop();
                             }
                           },
@@ -134,7 +136,6 @@ class _ClientsState extends State<Clients> {
                 ),
                 ),
           );
-
         },
         transitionBuilder: (_, anim, __, child) {
           return SlideTransition(
@@ -147,7 +148,15 @@ class _ClientsState extends State<Clients> {
 
     return Scaffold(
       appBar: AppBar(title: Text('Drawer Demo')),
-        body : _myListView(context),
+        body : SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            children: [
+              _myListView(context),
+              _mystreambuilder(context),
+            ],
+          ),
+        ),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
               showDialog();
@@ -162,15 +171,15 @@ class _ClientsState extends State<Clients> {
 }
 
 Widget _myListView(BuildContext context) {
-  return ListView(
-    children: <Widget>[
+
+  return Column(
+    children: [
       Container(
         margin: EdgeInsets.only(left: 10),
-
         child :Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              const ListTile(
+               ListTile(
                 title: TextField(
                     decoration: InputDecoration(
                         fillColor: Colors.blueGrey,
@@ -215,361 +224,39 @@ Widget _myListView(BuildContext context) {
         ),
       ),
 
-      Container(
-        margin: EdgeInsets.only(left: 10),
-
-        child : Card(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              const ListTile(
-                leading: CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/avatar.jpg'),
-                ),
-                title: Text('Adman Mohamed Amine'),
-                subtitle: Text('Ain naadja'),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  RaisedButton(
-                    textColor: Colors.white,
-                    color: Colors.orange,
-                    onPressed: () {
-                      _launchUrl("https://www.google.com");
-                    },
-                    child: const Text('Map'),
-                  ),
-                  const SizedBox(width: 8),
-                  RaisedButton(
-                    textColor: Colors.white,
-                    color: Colors.lightGreen,
-                    onPressed: () {
-                      // Perform some action
-                    },
-                    child: const Text('Details'),
-                  ),
-                  const SizedBox(width: 8),
-                ],
-              ),
-
-            ],
-          ),
-          elevation: 3,
-          color: Colors.white70,
-        ),
-      ),
-      Container(
-        margin: EdgeInsets.only(left: 10),
-        child : Card(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              const ListTile(
-                leading: CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/baraka.jpg'),
-                ),
-                title: Text('Boutouili Djillali'),
-                subtitle: Text('Rouiba'),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  RaisedButton(
-                    textColor: Colors.white,
-                    color: Colors.orange,
-                    onPressed: () {
-                      _launchUrl("https://www.google.com");
-                    },
-                    child: const Text('Map'),
-                  ),
-                  const SizedBox(width: 8),
-                  RaisedButton(
-                    textColor: Colors.white,
-                    color: Colors.lightGreen,
-                    onPressed: () {
-                      // Perform some action
-                    },
-                    child: const Text('Details'),
-                  ),
-                  const SizedBox(width: 8),
-                ],
-              ),
-
-            ],
-          ),
-          elevation: 3,
-          color: Colors.white70,
-        ),
-      ),
-      Container(
-        margin: EdgeInsets.only(left: 10),
-        child : Card(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              const ListTile(
-                leading: CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/avatar.jpg'),
-                ),
-                title: Text('Benyoucef Bourse'),
-                subtitle: Text('Reghaia'),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  RaisedButton(
-                    textColor: Colors.white,
-                    color: Colors.orange,
-                    onPressed: () {
-                      _launchUrl("https://www.google.com");
-                    },
-                    child: const Text('Map'),
-                  ),
-                  const SizedBox(width: 8),
-                  RaisedButton(
-                    textColor: Colors.white,
-                    color: Colors.lightGreen,
-                    onPressed: () {
-                      // Perform some action
-                    },
-                    child: const Text('Details'),
-                  ),
-                  const SizedBox(width: 8),
-                ],
-              ),
-
-            ],
-          ),
-          elevation: 3,
-          color: Colors.white70,
-        ),
-      ),
-      Container(
-        margin: EdgeInsets.only(left: 10),
-        child : Card(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              const ListTile(
-                leading: CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/baraka.jpg'),
-                ),
-                title: Text('Matex'),
-                subtitle: Text('Ain naadja'),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  RaisedButton(
-                    textColor: Colors.white,
-                    color: Colors.orange,
-                    onPressed: () {
-                      _launchUrl("https://www.google.com");
-                    },
-                    child: const Text('Map'),
-                  ),
-                  const SizedBox(width: 8),
-                  RaisedButton(
-                    textColor: Colors.white,
-                    color: Colors.lightGreen,
-                    onPressed: () {
-                      // Perform some action
-                    },
-                    child: const Text('Details'),
-                  ),
-                  const SizedBox(width: 8),
-                ],
-              ),
-
-            ],
-          ),
-          elevation: 3,
-          color: Colors.white70,
-        ),
-      ),
-      Container(
-        margin: EdgeInsets.only(left: 10),
-        child : Card(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              const ListTile(
-                leading: CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/facebook.png'),
-                ),
-                title: Text('Matex'),
-                subtitle: Text('Ain naadja'),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  RaisedButton(
-                    textColor: Colors.white,
-                    color: Colors.orange,
-                    onPressed: () {
-                      _launchUrl("https://www.google.com");
-                    },
-                    child: const Text('Map'),
-                  ),
-                  const SizedBox(width: 8),
-                  RaisedButton(
-                    textColor: Colors.white,
-                    color: Colors.lightGreen,
-                    onPressed: () {
-                      // Perform some action
-                    },
-                    child: const Text('Details'),
-                  ),
-                  const SizedBox(width: 8),
-                ],
-              ),
-
-            ],
-          ),
-          elevation: 3,
-          color: Colors.white70,
-        ),
-      ),
-      Container(
-        margin: EdgeInsets.only(left: 10),
-        child : Card(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              const ListTile(
-                leading: CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/facebook.png'),
-                ),
-                title: Text('Matex'),
-                subtitle: Text('Ain naadja'),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  RaisedButton(
-                    textColor: Colors.white,
-                    color: Colors.orange,
-                    onPressed: () {
-                      _launchUrl("https://www.google.com");
-                    },
-                    child: const Text('Map'),
-                  ),
-                  const SizedBox(width: 8),
-                  RaisedButton(
-                    textColor: Colors.white,
-                    color: Colors.lightGreen,
-                    onPressed: () {
-                      // Perform some action
-                    },
-                    child: const Text('Details'),
-                  ),
-                  const SizedBox(width: 8),
-                ],
-              ),
-
-            ],
-          ),
-          elevation: 3,
-          color: Colors.white70,
-        ),
-      ),
-      Container(
-        margin: EdgeInsets.only(left: 10),
-        child : Card(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              const ListTile(
-              leading: CircleAvatar(
-              backgroundImage: AssetImage('assets/images/facebook.png'),
-              ),
-                title: Text('Mouzaoui Mohammed'),
-                subtitle: Text('Benaknoun'),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  RaisedButton(
-                    textColor: Colors.white,
-                    color: Colors.orange,
-                    onPressed: () {
-                      _launchUrl("https://www.google.com");
-                    },
-                    child: const Text('Map'),
-                  ),
-                  const SizedBox(width: 8),
-                  RaisedButton(
-                    textColor: Colors.white,
-                    color: Colors.lightGreen,
-                    onPressed: () {
-                      // Perform some action
-                    },
-                    child: const Text('Details'),
-                  ),
-                  const SizedBox(width: 8),
-                ],
-              ),
-
-            ],
-          ),
-          elevation: 3,
-          color: Colors.white70,
-        ),
-      ),
-      Container(
-        margin: EdgeInsets.only(left: 10),
-        child : Card(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              const ListTile(
-                leading: CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/facebook.png'),
-                ),
-                title: Text('Matex'),
-                subtitle: Text('Ain naadja'),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  RaisedButton(
-                    textColor: Colors.white,
-                    color: Colors.orange,
-                    onPressed: () {
-                      _launchUrl("https://www.google.com");
-                    },
-                    child: const Text('Map'),
-                  ),
-                  const SizedBox(width: 8),
-                  RaisedButton(
-                    textColor: Colors.white,
-                    color: Colors.lightGreen,
-                    onPressed: () {
-                      // Perform some action
-                    },
-                    child: const Text('Details'),
-                  ),
-                  const SizedBox(width: 8),
-                ],
-              ),
-
-            ],
-          ),
-          elevation: 3,
-          color: Colors.white70,
-        ),
-      ),
     ],
   );
 }
 
-void _launchUrl(String Url ) async{
-  if(await canLaunch(Url)){
-    await launch(Url);
-  }
-  else{
-    throw 'Could not open Url';
-  }
+Widget _mystreambuilder(BuildContext context)
+{
+ return  Container(
+   child: StreamBuilder<QuerySnapshot>(
+     stream: FirebaseFirestore.instance.collection("clients").snapshots(),
+     builder: (context, snapshot) {
+       return !snapshot.hasData
+           ? Center(child: CircularProgressIndicator())
+           : ListView.builder(
+         scrollDirection: Axis.vertical,
+         shrinkWrap: true,
+         itemCount: snapshot.data.docs.length,
+         itemBuilder: (context, index) {
+           DocumentSnapshot data = snapshot.data.docs[index];
+           return ClientItem(
+             nom: data['nom'],
+             documentSnapshot: data,
+             id: data.id,
+             url: data['URL'],
+             phone: data['phone'],
+             email: data['email'],
+             secteur: data['Secteur'],
+           );
+         },
+       );
+     },
+   ),
+ );
 }
+
+
 
