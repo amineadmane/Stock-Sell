@@ -29,7 +29,6 @@ class StocknSell extends StatelessWidget {
         '/home': (context) => MenuDashboardPage(),
         '/history': (context) => HistoriquePage(),
         '/historydetail': (context) => HistoriquedetailPage(),
-        '/client': (context) => Client(),
         '/stock': (context) => StockPage(),
         '/productdetail': (context) => ProductDetailPage(),
         '/productadd': (context) => ProductaddPage(),

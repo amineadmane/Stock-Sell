@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:stocknsell/Screens/Client.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ClientItem extends StatefulWidget {
   final String nom;
@@ -54,14 +56,40 @@ class _ClientItemState extends State<ClientItem> {
                   onPressed: () {},
                   child: const Text('Map'),
                 ),
-                const SizedBox(width: 8),
-                RaisedButton(
-                  textColor: Colors.white,
-                  color: Colors.lightGreen,
-                  onPressed: () {
-                    // Perform some action
-                  },
-                  child: const Text('Details'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    RaisedButton(
+                      textColor: Colors.white,
+                      color: Colors.orange,
+                      onPressed: () {
+                        _launchUrl(widget.url);
+                      },
+                      child: const Text('Map'),
+                    ),
+                    const SizedBox(width: 8),
+                    RaisedButton(
+                      textColor: Colors.white,
+                      color: Colors.lightGreen,
+                      onPressed: () {
+                        //Navigator.pushNamed(context, '/client',arguments:
+                        //Client(nom: widget.nom, URL: widget.url, phone: widget.phone, id: widget.id , email: widget.email, Secteur: widget.secteur));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Client(
+                                  nom: widget.nom,
+                                  URL: widget.url,
+                                  phone: widget.phone,
+                                  id: widget.id,
+                                  email: widget.email,
+                                  Secteur: widget.secteur),
+                            ));
+                      },
+                      child: const Text('Details'),
+                    ),
+                    const SizedBox(width: 8),
+                  ],
                 ),
                 const SizedBox(width: 8),
               ],
@@ -72,5 +100,13 @@ class _ClientItemState extends State<ClientItem> {
         color: Colors.white70,
       ),
     );
+  }
+}
+
+void _launchUrl(String Url) async {
+  if (await canLaunch(Url)) {
+    await launch(Url);
+  } else {
+    throw 'Could not open Url';
   }
 }
