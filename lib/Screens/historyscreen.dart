@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:chips_choice/chips_choice.dart';
 import 'package:stocknsell/Components/DownSelect.dart';
 import 'package:stocknsell/Components/DownSelect2.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:date_range_picker/date_range_picker.dart' as DateRagePicker;
 
 final Color backgroundColor = Color(0xFF4A4A58);
 
@@ -42,15 +41,6 @@ class _HistoriquePageState extends State<HistoriquePage>
 
   @override
   Widget build(BuildContext context) {
-    MaterialApp(
-      localizationsDelegates: [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
-      supportedLocales: [
-        const Locale('fr', 'FR'), // English
-      ],
-    );
     Size size = MediaQuery.of(context).size;
     screenHeight = size.height;
     screenWidth = size.width;
@@ -165,38 +155,27 @@ class _HistoriquePageState extends State<HistoriquePage>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     SizedBox(
-                        width: 150.0,
-                        height: 70,
-                        child: ListTile(
-                          title: Text('$mindate.toString()'),
-                          trailing: IconButton(
-                            icon: Icon(
-                              Icons.date_range_rounded,
-                            ),
-                            onPressed: () {
-                              DatePicker.showDatePicker(context,
-                                  showTitleActions: true,
-                                  minTime: DateTime(2000, 1, 1),
-                                  maxTime: DateTime(2100, 1, 1),
-                                  onChanged: (date) {
-                                mindate = date;
-                              }, onConfirm: (date) {
-                                mindate = date;
-                              },
-                                  currentTime: DateTime.now(),
-                                  locale: LocaleType.fr);
-                              setState(() {});
-                            },
-                          ),
-                        )),
-                    SizedBox(
-                      width: 8,
-                      child: Divider(
-                        thickness: 2.0,
+                      width: 150.0,
+                      height: 70,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.date_range_rounded,
+                        ),
+                        onPressed: () async {
+                          final List<DateTime> picked =
+                              await DateRagePicker.showDatePicker(
+                                  context: context,
+                                  initialFirstDate: new DateTime.now(),
+                                  initialLastDate: new DateTime.now()
+                                      .add(new Duration(days: 7)),
+                                  firstDate: new DateTime(2015),
+                                  lastDate: new DateTime(2030));
+                          if (picked != null && picked.length == 2) {
+                            mindate = picked[1];
+                            maxdate = picked[2];
+                          }
+                        },
                       ),
-                    ),
-                    SizedBox(
-                      width: 110.0,
                     ),
                   ],
                 ),
