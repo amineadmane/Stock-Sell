@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:stocknsell/Screens/DayItem.dart';
 import 'package:stocknsell/Screens/FIlteringChips.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:stocknsell/Services/database.dart';
@@ -11,6 +12,8 @@ class Planning extends StatefulWidget {
 
 class _PlanningState extends State<Planning> {
 
+  List<String> Dimanche = List<String>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,7 +24,7 @@ class _PlanningState extends State<Planning> {
 }
 
 Widget _dayspage(BuildContext context) {
-  List<String> Dimanche = DatabaseService().getdimanchesect();
+
   void showDialogup(context,String jour) {
     showGeneralDialog(
       barrierLabel: "Barrier",
@@ -37,7 +40,6 @@ Widget _dayspage(BuildContext context) {
           body :
                FilteringChips(jour: jour),
           );
-
       },
       transitionBuilder: (_, anim, __, child) {
         return SlideTransition(
@@ -54,7 +56,6 @@ Widget _dayspage(BuildContext context) {
       children: <Widget>[
         Container(
           margin: EdgeInsets.only(left: 10),
-
           child : Card(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -70,21 +71,22 @@ Widget _dayspage(BuildContext context) {
                       style: TextStyle(fontSize: 25,fontWeight: FontWeight.w600),),
                   ),
                 ),
-                Wrap(
-                  spacing: 6.0,
-                  children: <Widget>[
-                    ListView.builder
-                    (
-                        shrinkWrap: true,
-                      itemCount: Dimanche.length,
-                      itemBuilder: (BuildContext ctxt, int index) {
-                      return Chip(
-                        label: Text(Dimanche[index],style: TextStyle(color: Colors.white),),
-                        backgroundColor: Colors.lightGreen,
-                      );
-                     }
-                    ),
-                  ],
+                StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance.collection("planification").snapshots(),
+                  builder: (context, snapshot) {
+                    return !snapshot.hasData
+                        ? Center(child: CircularProgressIndicator())
+                        : ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: snapshot.data.docs.length,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot data = snapshot.data.docs[index];
+                        return DayItem(
+                          Secteurs: [data['dimanche']],
+                        );
+                      },
+                    );
+                  },
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -126,33 +128,22 @@ Widget _dayspage(BuildContext context) {
                       style: TextStyle(fontSize: 25,fontWeight: FontWeight.w600),),
                   ),
                 ),
-                Wrap(
-                  spacing: 6.0,
-                  children: <Widget>[
-                    Chip(
-                      label: Text('Benaknoun',style: TextStyle(color: Colors.white),),
-                      backgroundColor: Colors.lightGreen,
-                    ),
-                    Chip(
-                        backgroundColor: Colors.lightGreen,
-                        label: Text('EL Biar',style: TextStyle(color: Colors.white),)
-
-                    ),
-                    Chip(
-                      label: Text('Benaknoun',style: TextStyle(color: Colors.white),),
-                      backgroundColor: Colors.lightGreen,
-                    ),
-                    Chip(
-                        backgroundColor: Colors.lightGreen,
-                        label: Text('EL Biar',style: TextStyle(color: Colors.white),)
-
-                    ),
-                    Chip(
-                        backgroundColor: Colors.lightGreen,
-                        label: Text('Dely Brahim',style: TextStyle(color: Colors.white),)
-
-                    ),
-                  ],
+                StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance.collection("planification").snapshots(),
+                  builder: (context, snapshot) {
+                    return !snapshot.hasData
+                        ? Center(child: CircularProgressIndicator())
+                        : ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: snapshot.data.docs.length,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot data = snapshot.data.docs[index];
+                        return DayItem(
+                          Secteurs: [data['Lundi']]
+                       );
+                      },
+                    );
+                  },
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -194,20 +185,22 @@ Widget _dayspage(BuildContext context) {
                       style: TextStyle(fontSize: 25,fontWeight: FontWeight.w600),),
                   ),
                 ),
-                Wrap(
-                  spacing: 6.0,
-                  children: <Widget>[
-                    Chip(
-                      label: Text('Rouiba',style: TextStyle(color: Colors.white),),
-                      backgroundColor: Colors.lightGreen,
-                    ),
-                    const SizedBox(width: 14,),
-                    Chip(
-                        backgroundColor: Colors.lightGreen,
-                        label: Text('Reghaya',style: TextStyle(color: Colors.white),)
-
-                    ),
-                  ],
+                StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance.collection("planification").snapshots(),
+                  builder: (context, snapshot) {
+                    return !snapshot.hasData
+                        ? Center(child: CircularProgressIndicator())
+                        : ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: snapshot.data.docs.length,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot data = snapshot.data.docs[index];
+                        return DayItem(
+                          Secteurs: [data['Mardi']]
+                        );
+                      },
+                    );
+                  },
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -249,20 +242,22 @@ Widget _dayspage(BuildContext context) {
                       style: TextStyle(fontSize: 25,fontWeight: FontWeight.w600),),
                   ),
                 ),
-                Wrap(
-                  spacing: 6.0,
-                  children: <Widget>[
-                    Chip(
-                      label: Text('Bab EL oued',style: TextStyle(color: Colors.white),),
-                      backgroundColor: Colors.lightGreen,
-                    ),
-                    const SizedBox(width: 14,),
-                    Chip(
-                        backgroundColor: Colors.lightGreen,
-                        label: Text('Ain Benian',style: TextStyle(color: Colors.white),)
-
-                    ),
-                  ],
+                StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance.collection("planification").snapshots(),
+                  builder: (context, snapshot) {
+                    return !snapshot.hasData
+                        ? Center(child: CircularProgressIndicator())
+                        : ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: snapshot.data.docs.length,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot data = snapshot.data.docs[index];
+                        return DayItem(
+                            Secteurs: [data['Mercredi']]
+                        );
+                      },
+                    );
+                  },
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -304,15 +299,22 @@ Widget _dayspage(BuildContext context) {
                       style: TextStyle(fontSize: 25,fontWeight: FontWeight.w600),),
                   ),
                 ),
-                Wrap(
-                  spacing: 6.0,
-                  children: <Widget>[
-                    Chip(
-                      label: Text('Alger Centre',style: TextStyle(color: Colors.white),),
-                      backgroundColor: Colors.lightGreen,
-                    ),
-                    const SizedBox(width: 14,),
-                  ],
+                StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance.collection("planification").snapshots(),
+                  builder: (context, snapshot) {
+                    return !snapshot.hasData
+                        ? Center(child: CircularProgressIndicator())
+                        : ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: snapshot.data.docs.length,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot data = snapshot.data.docs[index];
+                        return DayItem(
+                            Secteurs: [data['Jeudi']]
+                        );
+                      },
+                    );
+                  },
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -354,20 +356,22 @@ Widget _dayspage(BuildContext context) {
                       style: TextStyle(fontSize: 25,fontWeight: FontWeight.w600),),
                   ),
                 ),
-                Wrap(
-                  spacing: 6.0,
-                  children: <Widget>[
-                    Chip(
-                      label: Text('Alger Plage',style: TextStyle(color: Colors.white),),
-                      backgroundColor: Colors.lightGreen,
-                    ),
-                    const SizedBox(width: 14,),
-                    Chip(
-                        backgroundColor: Colors.lightGreen,
-                        label: Text('Cafe Chergui',style: TextStyle(color: Colors.white),)
-
-                    ),
-                  ],
+                StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance.collection("planification").snapshots(),
+                  builder: (context, snapshot) {
+                    return !snapshot.hasData
+                        ? Center(child: CircularProgressIndicator())
+                        : ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: snapshot.data.docs.length,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot data = snapshot.data.docs[index];
+                        return DayItem(
+                            Secteurs: [data['Vendredi']]
+                        );
+                      },
+                    );
+                  },
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -409,15 +413,22 @@ Widget _dayspage(BuildContext context) {
                       style: TextStyle(fontSize: 25,fontWeight: FontWeight.w600),),
                   ),
                 ),
-                Wrap(
-                  spacing: 6.0,
-                  children: <Widget>[
-                    Chip(
-                      label: Text('Staouali',style: TextStyle(color: Colors.white),),
-                      backgroundColor: Colors.lightGreen,
-                    ),
-                    const SizedBox(width: 14,),
-                  ],
+                StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance.collection("planification").snapshots(),
+                  builder: (context, snapshot) {
+                    return !snapshot.hasData
+                        ? Center(child: CircularProgressIndicator())
+                        : ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: snapshot.data.docs.length,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot data = snapshot.data.docs[index];
+                        return DayItem(
+                            Secteurs: [data['Samedi']]
+                        );
+                      },
+                    );
+                  },
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

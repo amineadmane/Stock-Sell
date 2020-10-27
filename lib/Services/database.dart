@@ -56,14 +56,11 @@ class DatabaseService{
     }
   }
 
-  List<String> getdimanchesect()
+  Future<void> getdimanchesect (List<String> result) async
   {
-    List<String> Secteurs = new List<String>();
-      PlanningCollection.doc("5PAy3CuNNPPn4yJ4RG3r").get().then((value) {
-        return value.data()["dimanche"];
+        PlanningCollection.doc("5PAy3CuNNPPn4yJ4RG3r").get().then((value) async {
+        result = await value.data()["dimanche"];
         });
-
-
   }
 
 }
