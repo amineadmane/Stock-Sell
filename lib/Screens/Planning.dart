@@ -1,7 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:stocknsell/Screens/FIlteringChips.dart';
-import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:stocknsell/Services/database.dart';
 
 class Planning extends StatefulWidget {
   @override
@@ -20,20 +21,21 @@ class _PlanningState extends State<Planning> {
 }
 
 Widget _dayspage(BuildContext context) {
-  void showDialogup(context) {
+  List<String> Dimanche = DatabaseService().getdimanchesect();
+  void showDialogup(context,String jour) {
     showGeneralDialog(
       barrierLabel: "Barrier",
       barrierDismissible: true,
       barrierColor: Colors.black.withOpacity(0.5),
       transitionDuration: Duration(milliseconds: 800),
       context: context,
-      pageBuilder: (_, __, ___) {
+      pageBuilder: (_, __, ___,) {
         return Scaffold(
           appBar: AppBar(
             title: Text("Secteur a Visiter"),
           ),
           body :
-               FilteringChips(),
+               FilteringChips(jour: jour),
           );
 
       },
@@ -50,10 +52,10 @@ Widget _dayspage(BuildContext context) {
 
   return ListView(
       children: <Widget>[
-      Container(
-        margin: EdgeInsets.only(left: 10),
+        Container(
+          margin: EdgeInsets.only(left: 10),
 
-            child : Card(
+          child : Card(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -65,46 +67,47 @@ Widget _dayspage(BuildContext context) {
                       child: Text("DI"),
                     ),
                     title: Text('Dimanche',
-                    style: TextStyle(fontSize: 25,fontWeight: FontWeight.w600),),
+                      style: TextStyle(fontSize: 25,fontWeight: FontWeight.w600),),
                   ),
                 ),
-              Wrap(
-                spacing: 6.0,
-                children: <Widget>[
-                  Chip(
-                    label: Text('Ain naadja',style: TextStyle(color: Colors.white),),
-                    backgroundColor: Colors.lightGreen,
-                  ),
-                  const SizedBox(width: 14,),
-                  Chip(
-                      backgroundColor: Colors.lightGreen,
-                      label: Text('el herrach',style: TextStyle(color: Colors.white),)
-
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(right : 15),
-                    child : RaisedButton(
-                      textColor: Colors.white,
-                      color: Colors.orangeAccent,
-                      onPressed: (){
-                        showDialogup(context);
-                      },
-                      child: const Text('Programme',style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600),),
+                Wrap(
+                  spacing: 6.0,
+                  children: <Widget>[
+                    ListView.builder
+                    (
+                        shrinkWrap: true,
+                      itemCount: Dimanche.length,
+                      itemBuilder: (BuildContext ctxt, int index) {
+                      return Chip(
+                        label: Text(Dimanche[index],style: TextStyle(color: Colors.white),),
+                        backgroundColor: Colors.lightGreen,
+                      );
+                     }
                     ),
-                  )
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(right : 15),
+                      child : RaisedButton(
+                        textColor: Colors.white,
+                        color: Colors.orangeAccent,
+                        onPressed: (){
+                          showDialogup(context,"dimanche");
+                        },
+                        child: const Text('Programme',style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600),),
+                      ),
+                    )
+                  ],
+                ),
               ],
-          ),
-        ],
             ),
-          elevation: 3,
-          color: Colors.white70,
+            elevation: 3,
+            color: Colors.white70,
+          ),
         ),
-      ),
         Container(
           margin: EdgeInsets.only(left: 10),
 
@@ -160,7 +163,7 @@ Widget _dayspage(BuildContext context) {
                         textColor: Colors.white,
                         color: Colors.orangeAccent,
                         onPressed: () {
-                          showDialogup(context);
+                          showDialogup(context,"Lundi");
                         },
                         child: const Text('Programme',style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600),),
                       ),
@@ -215,7 +218,7 @@ Widget _dayspage(BuildContext context) {
                         textColor: Colors.white,
                         color: Colors.orangeAccent,
                         onPressed: () {
-                          showDialogup(context);
+                          showDialogup(context,"Mardi");
                         },
                         child: const Text('Programme',style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600),),
                       ),
@@ -270,7 +273,7 @@ Widget _dayspage(BuildContext context) {
                         textColor: Colors.white,
                         color: Colors.orangeAccent,
                         onPressed: () {
-                          showDialogup(context);
+                          showDialogup(context,"Mercredi");
                         },
                         child: const Text('Programme',style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600),),
                       ),
@@ -320,7 +323,7 @@ Widget _dayspage(BuildContext context) {
                         textColor: Colors.white,
                         color: Colors.orangeAccent,
                         onPressed: () {
-                          showDialogup(context);
+                          showDialogup(context,"Jeudi");
                         },
                         child: const Text('Programme',style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600),),
                       ),
@@ -375,7 +378,7 @@ Widget _dayspage(BuildContext context) {
                         textColor: Colors.white,
                         color: Colors.orangeAccent,
                         onPressed: () {
-                          showDialogup(context);
+                          showDialogup(context,"Vendredi");
                         },
                         child: const Text('Programme',style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600),),
                       ),
@@ -425,7 +428,7 @@ Widget _dayspage(BuildContext context) {
                         textColor: Colors.white,
                         color: Colors.orangeAccent,
                         onPressed: () {
-                          showDialogup(context);
+                          showDialogup(context,"Samedi");
                         },
                         child: const Text('Programme',style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600),),
                       ),
@@ -438,8 +441,8 @@ Widget _dayspage(BuildContext context) {
             color: Colors.white70,
           ),
         ),
-    ],
-  );
+      ],
+    );
 }
 
 
