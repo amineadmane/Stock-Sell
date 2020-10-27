@@ -12,9 +12,7 @@ import 'package:stocknsell/Screens/productdetailScreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-
 void main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(StocknSell());
@@ -27,11 +25,10 @@ class StocknSell extends StatelessWidget {
     return MaterialApp(
       initialRoute: '/',
       routes: {
-        '/': (context) => MenuDashboardPage(),
+        '/': (context) => LoginScreen(),
         '/home': (context) => MenuDashboardPage(),
         '/history': (context) => HistoriquePage(),
         '/historydetail': (context) => HistoriquedetailPage(),
-        '/client': (context) => Client(),
         '/stock': (context) => StockPage(),
         '/productdetail': (context) => ProductDetailPage(),
         '/productadd': (context) => ProductaddPage(),

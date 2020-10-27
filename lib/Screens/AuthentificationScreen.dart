@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:stocknsell/Screens/color_utils.dart';
 import 'package:stocknsell/Screens/common_styles.dart';
 import 'package:stocknsell/Screens/raised_gradient_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -10,30 +12,36 @@ class LoginScreen extends StatefulWidget {
   }
 }
 
+bool showSpinner = false;
+
 class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          child: Stack(
-            children: <Widget>[
-              Container(
-                height: MediaQuery.of(context).size.height * 0.40,
-                width: double.infinity,
-                decoration: BoxDecoration(gradient: ColorUtils.appBarGradient),
-              ),
-              Align(
-                alignment: Alignment.topCenter,
-              ),
-              Positioned(
-                top: 150,
-                left: 10,
-                right: 10,
-                child: LoginFormWidget(),
-              )
-            ],
+      body: ModalProgressHUD(
+        inAsyncCall: showSpinner,
+        child: SingleChildScrollView(
+          child: Container(
+            height: MediaQuery.of(context).size.height,
+            child: Stack(
+              children: <Widget>[
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.40,
+                  width: double.infinity,
+                  decoration:
+                      BoxDecoration(gradient: ColorUtils.appBarGradient),
+                ),
+                Align(
+                  alignment: Alignment.topCenter,
+                ),
+                Positioned(
+                  top: 150,
+                  left: 10,
+                  right: 10,
+                  child: LoginFormWidget(),
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -49,6 +57,9 @@ class LoginFormWidget extends StatefulWidget {
 }
 
 class _LoginFormWidgetState extends State<LoginFormWidget> {
+  final _auth = FirebaseAuth.instance;
+  String email;
+  String password;
   final _formKey = GlobalKey<FormState>();
   var _userEmailController = TextEditingController(text: "");
   var _userPasswordController = TextEditingController(text: "");
@@ -56,7 +67,6 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
   var _passwordFocusNode = FocusNode();
   bool _isPasswordVisible = true;
   bool _autoValidate = false;
-
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -73,11 +83,10 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
                 _buildEmailField(context),
                 _buildPasswordField(context),
                 _buildForgotPasswordWidget(context),
-                _buildSignUpButton(context),
+                _buildSignUpButton(context, showSpinner),
               ],
             ),
           ),
-          _buildSignUp(),
         ],
       ),
     );
@@ -126,6 +135,9 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
         controller: _userEmailController,
         keyboardType: TextInputType.emailAddress,
         textInputAction: TextInputAction.next,
+        onChanged: (value) {
+          email = value;
+        },
         onFieldSubmitted: (_) {
           FocusScope.of(context).requestFocus(_passwordFocusNode);
         },
@@ -155,11 +167,14 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
         onFieldSubmitted: (_) {
           FocusScope.of(context).requestFocus(_emailFocusNode);
         },
+        onChanged: (value) {
+          password = value;
+        },
         validator: (value) => _userNameValidation(value),
         obscureText: _isPasswordVisible,
         decoration: InputDecoration(
           labelText: "Mot de passe",
-          hintText: "",
+          hintText: "Entrer le mot de passe!",
           labelStyle: TextStyle(color: Colors.black),
           alignLabelWithHint: true,
           contentPadding: EdgeInsets.symmetric(vertical: 5),
@@ -202,7 +217,7 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
     );
   }
 
-  Widget _buildSignUpButton(BuildContext context) {
+  Widget _buildSignUpButton(BuildContext context, bool showSpinner) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 15.0),
       child: Container(
@@ -214,24 +229,33 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
             style: TextStyle(
                 color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600),
           ),
-          onPressed: () {
-            _signUpProcess(context);
+          onPressed: () async {
+            setState(() {
+              showSpinner = true;
+            });
+            var validate = _formKey.currentState.validate();
+            try {
+              final user = await _auth.signInWithEmailAndPassword(
+                  email: email, password: password);
+              if ((validate) && (user != null)) {
+                Navigator.pushNamed(context, '/home');
+                print("auth reussi");
+              } else {
+                setState(() {
+                  _autoValidate = true;
+                  _clearAllFields();
+                });
+                setState(() {
+                  showSpinner = false;
+                });
+              }
+            } catch (e) {
+              print(e);
+            }
           },
         ),
       ),
     );
-  }
-
-  void _signUpProcess(BuildContext context) {
-    var validate = _formKey.currentState.validate();
-
-    if (validate) {
-      Navigator.pushNamed(context, '/home');
-    } else {
-      setState(() {
-        _autoValidate = true;
-      });
-    }
   }
 
   void _clearAllFields() {
@@ -239,29 +263,5 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
       _userEmailController = TextEditingController(text: "");
       _userPasswordController = TextEditingController(text: "");
     });
-  }
-
-  Widget _buildSignUp() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 15),
-      child: RichText(
-        text: TextSpan(
-          style: DefaultTextStyle.of(context).style,
-          children: <TextSpan>[
-            TextSpan(
-              text: "pas encore inscrit ? ",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-            ),
-            TextSpan(
-              text: 'Inscription',
-              style: TextStyle(
-                  fontWeight: FontWeight.w800,
-                  color: Colors.orange,
-                  fontSize: 14),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

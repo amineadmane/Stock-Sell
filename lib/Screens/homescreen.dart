@@ -78,13 +78,13 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                     ),
                     Container(
                         child: SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.4,
-                          child: Text("Dynamique textttttt",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20.0,
-                                  fontFamily: 'Fredoka One')),
-                        )),
+                      width: MediaQuery.of(context).size.width * 0.4,
+                      child: Text("Dynamique textttttt",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20.0,
+                              fontFamily: 'Fredoka One')),
+                    )),
                   ],
                 ),
                 SizedBox(
@@ -263,39 +263,54 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                     margin: EdgeInsets.only(top: 15),
                     child: Column(
                       children: [
-                            Center(
-                            child : Text("Secteur a visiter Aujourd'hui",style: TextStyle(fontSize: 26,color: Colors.white),),
+                        Center(
+                          child: Text(
+                            "Secteur a visiter Aujourd'hui",
+                            style: TextStyle(fontSize: 26, color: Colors.white),
+                          ),
                         ),
                         Wrap(
                           spacing: 6.0,
                           children: <Widget>[
                             Chip(
-                              label: Text('Ain naadja',style: TextStyle(color: Colors.white),),
+                              label: Text(
+                                'Ain naadja',
+                                style: TextStyle(color: Colors.white),
+                              ),
                               backgroundColor: Colors.lightGreen,
                             ),
                             Chip(
                                 backgroundColor: Colors.lightGreen,
-                                label: Text('el herrach',style: TextStyle(color: Colors.white),)
-
-                            ),
+                                label: Text(
+                                  'el herrach',
+                                  style: TextStyle(color: Colors.white),
+                                )),
                             Chip(
-                              label: Text('Ain naadja',style: TextStyle(color: Colors.white),),
+                              label: Text(
+                                'Ain naadja',
+                                style: TextStyle(color: Colors.white),
+                              ),
                               backgroundColor: Colors.lightGreen,
                             ),
                             Chip(
                                 backgroundColor: Colors.lightGreen,
-                                label: Text('el herrach',style: TextStyle(color: Colors.white),)
-
-                            ),
+                                label: Text(
+                                  'el herrach',
+                                  style: TextStyle(color: Colors.white),
+                                )),
                             Chip(
-                              label: Text('Ain naadja',style: TextStyle(color: Colors.white),),
+                              label: Text(
+                                'Ain naadja',
+                                style: TextStyle(color: Colors.white),
+                              ),
                               backgroundColor: Colors.lightGreen,
                             ),
                             Chip(
                                 backgroundColor: Colors.lightGreen,
-                                label: Text('el herrach',style: TextStyle(color: Colors.white),)
-
-                            ),
+                                label: Text(
+                                  'el herrach',
+                                  style: TextStyle(color: Colors.white),
+                                )),
                           ],
                         ),
                         const Divider(
@@ -304,97 +319,39 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                           thickness: 2,
                         ),
                         Center(
-                          child : Text("Client restant a visiter",style: TextStyle(fontSize: 26,color: Colors.white),),
+                          child: Text(
+                            "Client restant a visiter",
+                            style: TextStyle(fontSize: 26, color: Colors.white),
+                          ),
                         ),
                         Container(
-                         child: StreamBuilder<QuerySnapshot>(
-                         stream: FirebaseFirestore.instance.collection("clients").snapshots(),
-                         builder: (context, snapshot) {
-                           return !snapshot.hasData
-                               ? Center(child: CircularProgressIndicator())
-                               : ListView.builder(
-                             scrollDirection: Axis.vertical,
-                             shrinkWrap: true,
-                             itemCount: snapshot.data.docs.length,
-                             itemBuilder: (context, index) {
-                               DocumentSnapshot data = snapshot.data.docs[index];
-                               return ClientItem(
-                                 nom: data['nom'],
-                                 documentSnapshot: data,
-                                 id: data.id,
-                                 url: data['URL'],
-                                 phone: data['phone'],
-                                 email: data['email'],
-                                 secteur: data['Secteur'],
-                               );
-                             },
-                           );
-                         },
-                       ),
-                     ),
-                        const Divider(
-                          color: Colors.black45,
-                          height: 20,
-                          thickness: 2,
-                        ),
-                        Center(
-                            child: Card(
-                              margin: EdgeInsets.only(bottom: 30),
-                              elevation: 5,
-                              color: Colors.white70,
-                              child:Row(
-                                children: [
-                                  Icon(
-                                    Icons.directions_bus_rounded,color: Colors.green,size: 200,
-                                  ),
-                                  Container(margin: EdgeInsets.only(right: 10.0),color: Colors.black45, height: 200, width: 2,),//Divider
-                                  Container(
-                                      child:Padding(
-                                        padding: EdgeInsets.all(1.0),
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Text("Clients Visites : ",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold)),
-                                                Text(" 31",style: TextStyle(fontSize: 16),),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 8),
-                                            Row(
-                                              children: [
-                                                Text("Clients Restants : ",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold)),
-                                                Text(" 12",style: TextStyle(fontSize: 16),),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 8),
-                                            Row(
-                                              children: [
-                                                Text("Produits restants : ",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
-                                                Text(" 5",style: TextStyle(fontSize: 16),),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 14),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                RaisedButton(
-                                                  textColor: Colors.white,
-                                                  color: Colors.orange,
-                                                  onPressed: () {
-                                                  },
-                                                  child: const Text('Details',style: TextStyle(fontSize: 22),),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                  )
-                                ],
-                              ),
-                            )
-
+                          child: StreamBuilder<QuerySnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection("clients")
+                                .snapshots(),
+                            builder: (context, snapshot) {
+                              return !snapshot.hasData
+                                  ? Center(child: CircularProgressIndicator())
+                                  : ListView.builder(
+                                      scrollDirection: Axis.vertical,
+                                      shrinkWrap: true,
+                                      itemCount: snapshot.data.docs.length,
+                                      itemBuilder: (context, index) {
+                                        DocumentSnapshot data =
+                                            snapshot.data.docs[index];
+                                        return ClientItem(
+                                          nom: data['nom'],
+                                          documentSnapshot: data,
+                                          id: data.id,
+                                          url: data['URL'],
+                                          phone: data['phone'],
+                                          email: data['email'],
+                                          secteur: data['Secteur'],
+                                        );
+                                      },
+                                    );
+                            },
+                          ),
                         ),
                         const Divider(
                           color: Colors.black45,
@@ -403,66 +360,185 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                         ),
                         Center(
                             child: Card(
-                              margin: EdgeInsets.only(bottom: 30),
-                              elevation: 5,
-                              color: Colors.white70,
-                              child:Row(
-                                children: [
-                                  Icon(
-                                    Icons.monetization_on,color: Colors.green,size: 200,
-                                  ),
-                                  Container(margin: EdgeInsets.only(right: 10.0),color: Colors.black45, height: 200, width: 2,),//Divider
-                                  Container(
-                                      child:Padding(
-                                        padding: EdgeInsets.all(1.0),
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                Text("Articles Vendus : ",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold)),
-                                                Text(" 521",style: TextStyle(fontSize: 16),),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 8),
-                                            Row(
-                                              children: [
-                                                Text("Benefices : ",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold)),
-                                                Text(" 12000 DA",style: TextStyle(fontSize: 16),),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 8),
-                                            Row(
-                                              children: [
-                                                Text("CA :",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
-                                                Text(" 120000",style: TextStyle(fontSize: 16),),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 14),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                RaisedButton(
-                                                  textColor: Colors.white,
-                                                  color: Colors.orange,
-                                                  onPressed: () {
-                                                  },
-                                                  child: const Text('Details',style: TextStyle(fontSize: 22),),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                  )
-                                ],
+                          margin: EdgeInsets.only(bottom: 30),
+                          elevation: 5,
+                          color: Colors.white70,
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.directions_bus_rounded,
+                                color: Colors.green,
+                                size: 200,
                               ),
-                            )
-
+                              Container(
+                                margin: EdgeInsets.only(right: 10.0),
+                                color: Colors.black45,
+                                height: 200,
+                                width: 2,
+                              ), //Divider
+                              Container(
+                                  child: Padding(
+                                padding: EdgeInsets.all(1.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text("Clients Visites : ",
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold)),
+                                        Text(
+                                          " 31",
+                                          style: TextStyle(fontSize: 16),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Row(
+                                      children: [
+                                        Text("Clients Restants : ",
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold)),
+                                        Text(
+                                          " 12",
+                                          style: TextStyle(fontSize: 16),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "Produits restants : ",
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          " 5",
+                                          style: TextStyle(fontSize: 16),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 14),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        RaisedButton(
+                                          textColor: Colors.white,
+                                          color: Colors.orange,
+                                          onPressed: () {},
+                                          child: const Text(
+                                            'Details',
+                                            style: TextStyle(fontSize: 22),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ))
+                            ],
+                          ),
+                        )),
+                        const Divider(
+                          color: Colors.black45,
+                          height: 20,
+                          thickness: 2,
                         ),
-                        ],
-                      ),
+                        Center(
+                            child: Card(
+                          margin: EdgeInsets.only(bottom: 30),
+                          elevation: 5,
+                          color: Colors.white70,
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.monetization_on,
+                                color: Colors.green,
+                                size: 200,
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(right: 10.0),
+                                color: Colors.black45,
+                                height: 200,
+                                width: 2,
+                              ), //Divider
+                              Container(
+                                  child: Padding(
+                                padding: EdgeInsets.all(1.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text("Articles Vendus : ",
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold)),
+                                        Text(
+                                          " 521",
+                                          style: TextStyle(fontSize: 16),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Row(
+                                      children: [
+                                        Text("Benefices : ",
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold)),
+                                        Text(
+                                          " 12000 DA",
+                                          style: TextStyle(fontSize: 16),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "CA :",
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          " 120000",
+                                          style: TextStyle(fontSize: 16),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 14),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        RaisedButton(
+                                          textColor: Colors.white,
+                                          color: Colors.orange,
+                                          onPressed: () {},
+                                          child: const Text(
+                                            'Details',
+                                            style: TextStyle(fontSize: 22),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ))
+                            ],
+                          ),
+                        )),
+                      ],
+                    ),
                   ),
                 ],
               ),
