@@ -50,12 +50,6 @@ class _ClientItemState extends State<ClientItem> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                RaisedButton(
-                  textColor: Colors.white,
-                  color: Colors.orange,
-                  onPressed: () {},
-                  child: const Text('Map'),
-                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[

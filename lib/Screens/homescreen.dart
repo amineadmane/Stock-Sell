@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:stocknsell/Screens/ClientItem.dart';
+import 'package:intl/intl.dart';
+import 'package:stocknsell/Services/database.dart';
+
+import 'DayItem.dart';
 
 final Color backgroundColor = Color(0xFF4A4A58);
 
@@ -216,6 +220,22 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
   }
 
   Widget dashboard(context) {
+
+    String covertinttoday(int day)
+    {
+      String jour = "";
+      if(day == 1) jour = "Lundi";
+      if(day == 2) jour = "Mardi";
+      if(day == 3) jour = "Mercredi";
+      if(day == 4) jour = "Jeudi";
+      if(day == 5) jour = "Vendredi";
+      if(day == 6) jour = "Samedi";
+      if(day == 7) jour = "dimanche";
+      return jour;
+    }
+
+    final today = DateTime.now().weekday;
+    List<dynamic> secteurs = new List<String>();
     return AnimatedPositioned(
       duration: duration,
       top: 0,
@@ -269,49 +289,23 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                             style: TextStyle(fontSize: 26, color: Colors.white),
                           ),
                         ),
-                        Wrap(
-                          spacing: 6.0,
-                          children: <Widget>[
-                            Chip(
-                              label: Text(
-                                'Ain naadja',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              backgroundColor: Colors.lightGreen,
-                            ),
-                            Chip(
-                                backgroundColor: Colors.lightGreen,
-                                label: Text(
-                                  'el herrach',
-                                  style: TextStyle(color: Colors.white),
-                                )),
-                            Chip(
-                              label: Text(
-                                'Ain naadja',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              backgroundColor: Colors.lightGreen,
-                            ),
-                            Chip(
-                                backgroundColor: Colors.lightGreen,
-                                label: Text(
-                                  'el herrach',
-                                  style: TextStyle(color: Colors.white),
-                                )),
-                            Chip(
-                              label: Text(
-                                'Ain naadja',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              backgroundColor: Colors.lightGreen,
-                            ),
-                            Chip(
-                                backgroundColor: Colors.lightGreen,
-                                label: Text(
-                                  'el herrach',
-                                  style: TextStyle(color: Colors.white),
-                                )),
-                          ],
+                        StreamBuilder<QuerySnapshot>(
+                          stream: FirebaseFirestore.instance.collection("planification").snapshots(),
+                          builder: (context, snapshot) {
+                            return !snapshot.hasData
+                                ? Center(child: CircularProgressIndicator())
+                                : ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: snapshot.data.docs.length,
+                              itemBuilder: (context, index) {
+                                DocumentSnapshot data = snapshot.data.docs[index];
+                                secteurs = data[covertinttoday(today)];
+                                return DayItem(
+                                    Secteurs: [secteurs]
+                                );
+                              },
+                            );
+                          },
                         ),
                         const Divider(
                           color: Colors.white70,
@@ -339,16 +333,21 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                       itemBuilder: (context, index) {
                                         DocumentSnapshot data =
                                             snapshot.data.docs[index];
-                                        return ClientItem(
-                                          nom: data['nom'],
-                                          documentSnapshot: data,
-                                          id: data.id,
-                                          url: data['URL'],
-                                          phone: data['phone'],
-                                          email: data['email'],
-                                          secteur: data['Secteur'],
+                                        if(secteurs.contains(data['Secteur']))
+                                          {
+                                            return ClientItem(
+                                              nom: data['nom'],
+                                              documentSnapshot: data,
+                                              id: data.id,
+                                              url: data['URL'],
+                                              phone: data['phone'],
+                                              email: data['email'],
+                                              secteur: data['Secteur'],
+                                            );
+                                          }
+                                        return Container(
                                         );
-                                      },
+                                      }
                                     );
                             },
                           ),
@@ -368,7 +367,7 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                               Icon(
                                 Icons.directions_bus_rounded,
                                 color: Colors.green,
-                                size: 200,
+                                size: 100,
                               ),
                               Container(
                                 margin: EdgeInsets.only(right: 10.0),
@@ -459,7 +458,7 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                               Icon(
                                 Icons.monetization_on,
                                 color: Colors.green,
-                                size: 200,
+                                size: 100,
                               ),
                               Container(
                                 margin: EdgeInsets.only(right: 10.0),

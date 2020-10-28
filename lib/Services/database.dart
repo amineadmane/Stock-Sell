@@ -56,11 +56,15 @@ class DatabaseService{
     }
   }
 
-  Future<void> getdimanchesect (List<String> result) async
-  {
-        PlanningCollection.doc("5PAy3CuNNPPn4yJ4RG3r").get().then((value) async {
-        result = await value.data()["dimanche"];
-        });
+  void gettodaysSectors(List<String> result,int day) {
+    try {
+      ClientCollection.doc("5PAy3CuNNPPn4yJ4RG3r").get().then((value) {
+        result = value.data()['dimanche'];
+        print("this is it ");
+        print(value.data()['dimanche']);
+      });
+    } catch (e) {
+      print(e.toString());
+    }
   }
-
 }
