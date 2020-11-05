@@ -8,6 +8,7 @@ import 'package:stocknsell/Screens/productdetailScreen.dart';
 final Color backgroundColor = Color(0xFF4A4A58);
 
 class StockPage extends StatefulWidget {
+
   @override
   _StockPageState createState() => _StockPageState();
 }

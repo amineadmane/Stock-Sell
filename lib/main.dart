@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:stocknsell/Screens/ClientSearch.dart';
 import 'package:stocknsell/Screens/GestClients.dart';
 import 'package:stocknsell/Screens/Historydetail.dart';
 import 'package:stocknsell/Screens/Planning.dart';
 import 'package:stocknsell/Screens/Stockscreen.dart';
+import 'package:stocknsell/Screens/Vente.dart';
 import 'package:stocknsell/Screens/homescreen.dart';
 import 'package:stocknsell/Screens/AuthentificationScreen.dart';
 import 'package:stocknsell/Screens/historyscreen.dart';
@@ -34,6 +36,8 @@ class StocknSell extends StatelessWidget {
         '/productadd': (context) => ProductaddPage(),
         '/planning': (context) => Planning(),
         '/Clients': (context) => Clients(),
+        '/vente' : (context) => VenteScreen(),
+        '/search' : (context) => ClientSearch(),
       },
     );
   }

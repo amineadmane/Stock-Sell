@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:stocknsell/Screens/DayItem.dart';
 import 'package:stocknsell/Screens/FIlteringChips.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:stocknsell/Services/database.dart';
 
 class Planning extends StatefulWidget {
   @override
@@ -11,8 +10,6 @@ class Planning extends StatefulWidget {
 }
 
 class _PlanningState extends State<Planning> {
-
-  List<String> Dimanche = List<String>();
 
   @override
   Widget build(BuildContext context) {
@@ -81,9 +78,9 @@ Widget _dayspage(BuildContext context) {
                       itemCount: snapshot.data.docs.length,
                       itemBuilder: (context, index) {
                         DocumentSnapshot data = snapshot.data.docs[index];
-                        return DayItem(
-                          Secteurs: [data['dimanche']],
-                        );
+                         return DayItem(
+                           Secteurs: [data['dimanche']],
+                          );
                       },
                     );
                   },

@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 
 class DatabaseService{
@@ -7,6 +9,9 @@ class DatabaseService{
   // ignore: deprecated_member_use
   final CollectionReference ClientCollection = FirebaseFirestore.instance.collection('clients');
   final CollectionReference PlanningCollection = FirebaseFirestore.instance.collection('planification');
+  final CollectionReference VenteCollection = FirebaseFirestore.instance.collection('vente');
+  final CollectionReference ProductCollection = FirebaseFirestore.instance.collection('produit');
+
 
   void ajouterclient(String nom , String  email,int phone , String URL , String Secteur) async {
     DocumentReference ref = await ClientCollection
@@ -56,15 +61,62 @@ class DatabaseService{
     }
   }
 
-  void gettodaysSectors(List<String> result,int day) {
+  void savevente(String clientId,String client_name,String date,String productId,String marque,int unitprice
+      ,int prixpromotionel,double _couttotale,int nbProducts,String proddocid,int restant) async {
     try {
-      ClientCollection.doc("5PAy3CuNNPPn4yJ4RG3r").get().then((value) {
-        result = value.data()['dimanche'];
-        print("this is it ");
-        print(value.data()['dimanche']);
+      ProductCollection.doc(proddocid)
+          .update({'nbunitfourgon':restant ,});
+
+      DocumentReference ref = await VenteCollection
+          .add({
+        'client_id': clientId,
+        'client_name':client_name,
+        'date': date,
+        'product_id': productId,
+        'nb_product' : nbProducts,
+        'marque' : marque,
+        'baseprice' : unitprice,
+        'prixpromo' : prixpromotionel,
+        'couttotale' : _couttotale,
       });
     } catch (e) {
       print(e.toString());
     }
+  }
+  todaystransaction(String client_id)
+  {
+    String currentdate = DateFormat('dd-MM-yyy')
+        .format(DateTime.now())
+        .toString();
+    return FirebaseFirestore.instance
+        .collection('vente')
+        .where("client_id",isEqualTo: client_id)
+        .where("date",isEqualTo: currentdate)
+        .get();
+  }
+
+  getProduct(String product_id) {
+    return FirebaseFirestore.instance
+        .collection('produit').doc(product_id).get();
+  }
+
+   getTotaltoday() {
+    String currentdate = DateFormat('dd-MM-yyy')
+        .format(DateTime.now())
+        .toString();
+      return FirebaseFirestore.instance
+        .collection('vente')
+        .where("date",isEqualTo: currentdate).get();
+  }
+  getnbproduitrestantfourgon() {
+    return FirebaseFirestore.instance
+        .collection('produit')
+        .where("nbunitfourgon",isGreaterThan: 0).get();
+  }
+
+  getnbarticlesachetesclient(String Clientid) {
+    return FirebaseFirestore.instance
+        .collection('vente')
+        .where("client_id",isEqualTo: Clientid).get();
   }
 }

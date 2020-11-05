@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:stocknsell/Screens/Client.dart';
+import 'package:stocknsell/Services/database.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ClientItem extends StatefulWidget {
@@ -36,17 +37,11 @@ class _ClientItemState extends State<ClientItem> {
           children: <Widget>[
             ListTile(
               leading: CircleAvatar(
-                backgroundImage: AssetImage('assets/images/baraka.jpg'),
+                backgroundImage: AssetImage('assets/images/avatar.jpg'),
               ),
-              title: Text(widget.nom),
-              subtitle: Text(widget.secteur),
-              trailing: IconButton(
-                icon: Icon(
-                  Icons.highlight_remove,
-                  size: 40,
-                ),
+              title: Text(widget.nom,style: TextStyle(fontSize: 22,fontFamily: 'Mom cake'),),
+              subtitle: Text(widget.secteur,style: TextStyle(fontSize: 18,fontFamily: 'Mom cake')),
               ),
-            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
@@ -65,7 +60,17 @@ class _ClientItemState extends State<ClientItem> {
                     RaisedButton(
                       textColor: Colors.white,
                       color: Colors.lightGreen,
-                      onPressed: () {
+                      onPressed: () async {
+                        int somnb_product = 0;
+                        double Chiffredaffaire = 0;
+                        await DatabaseService().getnbarticlesachetesclient(widget.id).then((QuerySnapshot querySnapshot) => {
+                          querySnapshot.docs.forEach((doc) {
+                            somnb_product = somnb_product+ doc['nb_product'];
+                            Chiffredaffaire = Chiffredaffaire + doc['couttotale'];
+                          })
+                        });;
+                          print(somnb_product);
+                          print(Chiffredaffaire);
                         //Navigator.pushNamed(context, '/client',arguments:
                         //Client(nom: widget.nom, URL: widget.url, phone: widget.phone, id: widget.id , email: widget.email, Secteur: widget.secteur));
                         Navigator.push(
@@ -77,7 +82,9 @@ class _ClientItemState extends State<ClientItem> {
                                   phone: widget.phone,
                                   id: widget.id,
                                   email: widget.email,
-                                  Secteur: widget.secteur),
+                                  Secteur: widget.secteur,
+                              somnb_product: somnb_product,
+                              Chiffredaffaire: Chiffredaffaire,),
                             ));
                       },
                       child: const Text('Details'),
