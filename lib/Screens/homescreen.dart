@@ -42,6 +42,11 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
   int _articlevendu = 0;
   int _nbclientavisiter = 0;
   int _Prodrestfourgon = 0;
+  String _productname1 = "Produit1";
+  String _nbvente1 = "Nombre de vente 1";
+  String _productname2 = "Produit2";
+  String _nbvente2 = "Nombre de vente 2";
+
   raffraichirCA(double value) {
     setState(() => _ChiffreAffaire=value);
   }
@@ -50,6 +55,18 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
   }
   raffraichirfourgon(int value){
     setState(() => _Prodrestfourgon=value);
+  }
+  raffraichirprod1(String value) {
+    setState(() => _productname1=value);
+  }
+  raffraichirnb1(String value){
+    setState(() => _nbvente1=value);
+  }
+  raffraichirprod2(String value) {
+    setState(() => _productname2=value);
+  }
+  raffraichirnb2(String value){
+    setState(() => _nbvente2=value);
   }
   @override
   Widget build(BuildContext context) {
@@ -567,6 +584,114 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                             ],
                           ),
                         )),
+                        const Divider(
+                          color: Colors.white70,
+                          height: 20,
+                          thickness: 2,
+                        ),
+                        Center(
+                          child: Text(
+                            "Produits les plus achetes",
+                            style: TextStyle(fontSize: 26, color: Colors.white),
+                          ),
+                        ),
+                        Center(
+                            child: Card(
+                              margin: EdgeInsets.only(bottom: 30,top: 10),
+                              elevation: 5,
+                              color: Colors.white70,
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.article,
+                                    color: Colors.green,
+                                    size: 100,
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(right: 10.0),
+                                    color: Colors.black45,
+                                    height: 200,
+                                    width: 2,
+                                  ), //Divider
+                                  Container(
+                                      child: Padding(
+                                        padding: EdgeInsets.all(1.0),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Text("$_productname1 :",
+                                                    style: TextStyle(
+                                                        fontSize: 20,
+                                                        fontWeight: FontWeight.bold)),
+                                                Text(
+                                                  "$_nbvente1 ",
+                                                  style: TextStyle(fontSize: 20),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  "$_productname2 :",
+                                                  style: TextStyle(
+                                                      fontSize: 20,
+                                                      fontWeight: FontWeight.bold),
+                                                ),
+                                                Text(
+                                                  "$_nbvente2",
+                                                  style: TextStyle(fontSize: 20),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 14),
+                                            Row(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                              children: [
+                                                Center(
+                                                  child: RaisedButton(
+                                                    textColor: Colors.white,
+                                                    color: Colors.orange,
+                                                    onPressed: () async {
+                                                      List<
+                                                          String> list = new List<
+                                                          String>();
+                                                      await DatabaseService()
+                                                          .getmostselledproducts()
+                                                          .then((
+                                                          QuerySnapshot querySnapshot) =>
+                                                      {
+                                                        querySnapshot.docs
+                                                            .forEach((doc) {
+                                                          list.add(
+                                                              doc['reference'].toString());
+                                                          list.add(
+                                                              doc['nbvente'].toString());
+                                                        })
+                                                      });
+                                                      raffraichirprod1(list[0]);
+                                                      raffraichirnb1(list[1]);
+                                                      raffraichirprod2(list[2]);
+                                                      raffraichirnb2(list[3]);
+                                                    },
+                                                    child: const Text(
+                                                      'Raffraichir',
+                                                      style: TextStyle(fontSize: 22),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ))
+                                ],
+                              ),
+                            )),
                       ],
                     ),
                   ),

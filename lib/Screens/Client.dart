@@ -176,7 +176,7 @@ class _ClientState extends State<Client> {
                     children: [
                       Center(
                         child: CircleAvatar(
-                          backgroundImage: AssetImage('assets/images/baraka.jpg'),
+                          backgroundImage: AssetImage('assets/images/avatar.jpg'),
                           radius: 60,
                         ),
                       ),
@@ -228,15 +228,28 @@ class _ClientState extends State<Client> {
                         ),
                         new ListTile(
                           leading:
-                              const Icon(Icons.location_on, color: Colors.blue),
-                          title: new TextFormField(
-                            initialValue: widget.Secteur,
-                            onChanged: (value) {
-                              widget.Secteur = value;
+                          const Icon(Icons.location_on, color: Colors.blue),
+                          title: DropdownButtonFormField<String>(
+                            value: "Bab ezzouar",
+                            style: TextStyle(color: Colors.blue),
+                            onChanged: (String newValue) {
+                              setState(() {
+                                widget.Secteur = newValue;
+                              });
                             },
-                            decoration: new InputDecoration(
-                              hintText: "Secteur",
-                            ),
+                            items: <String>[
+                              'Alger Centre',
+                              'Bab el oued',
+                              'Bab ezzouar',
+                              'Ain naadja',
+                              'Dar El Beida',
+                              'El Herrach'
+                            ].map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
                           ),
                         ),
                         new ListTile(

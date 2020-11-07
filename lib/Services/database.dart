@@ -64,21 +64,43 @@ class DatabaseService{
   void savevente(String clientId,String client_name,String date,String productId,String marque,int unitprice
       ,int prixpromotionel,double _couttotale,int nbProducts,String proddocid,int restant) async {
     try {
+      var product = await ProductCollection.doc(proddocid).get();
+      int nbventeadd = product.get('nbvente');
       ProductCollection.doc(proddocid)
-          .update({'nbunitfourgon':restant ,});
+          .update({'nbunitfourgon':restant ,
+      'nbvente' : nbventeadd + nbProducts});
 
-      DocumentReference ref = await VenteCollection
-          .add({
-        'client_id': clientId,
-        'client_name':client_name,
-        'date': date,
-        'product_id': productId,
-        'nb_product' : nbProducts,
-        'marque' : marque,
-        'baseprice' : unitprice,
-        'prixpromo' : prixpromotionel,
-        'couttotale' : _couttotale,
-      });
+      var a = await FirebaseFirestore.instance
+          .collection('vente')
+          .where("client_id",isEqualTo: clientId)
+          .where("date",isEqualTo: date).where("product_id",isEqualTo: productId).get();
+
+      if(a.size!=0)
+        {
+          String docid = a.docs.first.id;
+          int nb_product = a.docs.first.get('nb_product');
+          try {
+            VenteCollection.doc(docid)
+                .update({'nb_product': nb_product + nbProducts,});
+          } catch (e) {
+            print(e.toString());
+          }
+        }
+      else
+        {
+          DocumentReference ref = await VenteCollection
+              .add({
+            'client_id': clientId,
+            'client_name':client_name,
+            'date': date,
+            'product_id': productId,
+            'nb_product' : nbProducts,
+            'marque' : marque,
+            'baseprice' : unitprice,
+            'prixpromo' : prixpromotionel,
+            'couttotale' : _couttotale,
+          });
+        }
     } catch (e) {
       print(e.toString());
     }
@@ -118,5 +140,12 @@ class DatabaseService{
     return FirebaseFirestore.instance
         .collection('vente')
         .where("client_id",isEqualTo: Clientid).get();
+  }
+  
+  getmostselledproducts()
+  {
+    return FirebaseFirestore.instance
+        .collection('produit')
+        .orderBy("nbvente",descending: true).limit(2).get();
   }
 }

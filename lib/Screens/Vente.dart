@@ -34,7 +34,7 @@ class _VenteScreenState extends State<VenteScreen> {
           Column(
             children: [
               Container(
-                height: screenHeight*0.7,
+                height: screenHeight*0.8,
                 child: StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance.collection("produit").snapshots(),
                   builder: (context, snapshot) {
@@ -61,7 +61,7 @@ class _VenteScreenState extends State<VenteScreen> {
                 ),
               ),
               Container(
-                height: 120,
+                height: 50,
                 width: 200,
                 child: Center(
                   child: RaisedButton(
@@ -70,7 +70,7 @@ class _VenteScreenState extends State<VenteScreen> {
                     onPressed: () {
                       DatabaseService().todaystransaction(client_id).then((QuerySnapshot querySnapshot) => {
                         querySnapshot.docs.forEach((doc) {
-                          print(doc['client_name']);
+                        //fonction pour la facture client.
                         })
                       });
                     },
