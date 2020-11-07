@@ -174,7 +174,6 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
         obscureText: _isPasswordVisible,
         decoration: InputDecoration(
           labelText: "Mot de passe",
-          hintText: "Entrer le mot de passe!",
           labelStyle: TextStyle(color: Colors.black),
           alignLabelWithHint: true,
           contentPadding: EdgeInsets.symmetric(vertical: 5),
@@ -239,7 +238,6 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
                   email: email, password: password);
               if ((validate) && (user != null)) {
                 Navigator.pushNamed(context, '/home');
-                print("auth reussi");
               } else {
                 setState(() {
                   _autoValidate = true;

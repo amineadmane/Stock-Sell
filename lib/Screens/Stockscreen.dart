@@ -1,13 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:chips_choice/chips_choice.dart';
 import 'package:stocknsell/Components/DownSelect.dart';
 import 'package:stocknsell/Components/DownSelect2.dart';
-import 'package:stocknsell/Screens/productdetailScreen.dart';
+import 'package:stocknsell/Components/productItem.dart';
+import 'package:stocknsell/Components/productItemfourg.dart';
+import 'package:stocknsell/Services/database.dart';
 
 final Color backgroundColor = Color(0xFF4A4A58);
 
 class StockPage extends StatefulWidget {
+  static String id = "/stock";
   @override
   _StockPageState createState() => _StockPageState();
 }
@@ -56,20 +61,29 @@ class _StockPageState extends State<StockPage>
     );
   }
 
+  Color green = Colors.green;
+  Color red = Colors.pink;
+  String ajouter = 'Ajouter';
+  String renetialiser = 'Réinitialiser';
+  String buttontext = 'Ajouter';
+  Color buttoncolor = Colors.green;
+  IconData add = Icons.add_business_rounded;
+  IconData minus = Icons.remove_shopping_cart_rounded;
+  IconData buttonicon = Icons.add_business_rounded;
+  String reference = 'reference';
+  String marque = 'marque';
+  String prix = 'promprice';
+  String article = 'nbunitstock';
+  String articlef = 'nbunitfourgon';
+  String order1 = 'reference';
+  String order2 = 'reference';
+  int index = 0;
   int tag = 0;
   List<String> options = [
-    'Date',
-    'Client',
-    'Montant',
-  ];
-  final elements1 = [
-    "Alger",
-    "Harach",
-    "Beo",
-    "Said Hamdine",
-    "Ain Naadja",
-    "Kouba",
-    "Garidi",
+    'Référence',
+    'Marque',
+    'Article restants',
+    'Prix',
   ];
 
   _openPopup(context) {
@@ -84,88 +98,63 @@ class _StockPageState extends State<StockPage>
                 fontSize: 34)),
         content: SizedBox(
           width: screenWidth,
-          height: screenHeight * 0.6,
+          height: screenHeight * 0.20,
           child: Padding(
             padding: const EdgeInsets.only(left: 8.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                Text("Trier par :",
-                    style: TextStyle(
-                        fontFamily: 'Mom cake',
-                        fontWeight: FontWeight.bold,
-                        fontSize: 34)),
-                Row(
-                  children: [
-                    Expanded(
-                      child: ChipsChoice<int>.single(
-                        value: tag,
-                        onChanged: (val) => setState(() => tag = val),
-                        choiceItems: C2Choice.listFrom<int, String>(
-                          source: options,
-                          value: (i, v) => i,
-                          label: (i, v) => v,
-                        ),
-                        choiceStyle: C2ChoiceStyle(
-                          color: Colors.black,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(10)),
-                        ),
-                      ),
-                    ),
-                  ],
+                SizedBox(
+                  height: screenHeight * 0.05,
                 ),
-                Text("Secteur :"),
-                MyStatefulWidget(),
-                Text("Client : "),
-                MyStatefulWidget2(),
-                Text("Montant de vente"),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 110.0,
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          labelText: 'MIN',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 8,
-                      child: Divider(
-                        thickness: 2.0,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 110.0,
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          labelText: 'MAX',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                    ),
-                  ],
+                Text(
+                  "Trier par :",
                 ),
-                Text("Date de vente"),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      width: 110.0,
+                Expanded(
+                  child: ChipsChoice<int>.single(
+                    value: tag,
+                    onChanged: (val) {
+                      switch (val) {
+                        case 0:
+                          {
+                            order1 = reference;
+                            order2 = reference;
+                          }
+                          break;
+                        case 1:
+                          {
+                            order1 = marque;
+                            order2 = marque;
+                          }
+                          break;
+                        case 2:
+                          {
+                            order1 = article;
+                            order2 = articlef;
+                          }
+                          break;
+                        case 3:
+                          {
+                            order1 = prix;
+                            order2 = prix;
+                          }
+                          break;
+                      }
+                      setState(() {
+                        tag = val;
+                      });
+                    },
+                    choiceItems: C2Choice.listFrom<int, String>(
+                      source: options,
+                      value: (i, v) => i,
+                      label: (i, v) => v,
                     ),
-                    SizedBox(
-                      width: 8,
-                      child: Divider(
-                        thickness: 2.0,
-                      ),
+                    choiceStyle: C2ChoiceStyle(
+                      color: Colors.black,
+                      borderRadius: const BorderRadius.all(Radius.circular(10)),
                     ),
-                    SizedBox(
-                      width: 110.0,
-                    ),
-                  ],
+                  ),
                 ),
               ],
             ),
@@ -173,16 +162,26 @@ class _StockPageState extends State<StockPage>
         ),
         buttons: [
           DialogButton(
-            onPressed: () => Navigator.pop(context),
+            color: Colors.pink,
+            onPressed: () {
+              order1 = reference;
+              order2 = reference;
+              setState(() {});
+              Navigator.pop(context);
+            },
             child: Text(
-              "Filtrer",
+              "Annuler",
               style: TextStyle(color: Colors.white, fontSize: 17),
             ),
           ),
           DialogButton(
-            onPressed: () => Navigator.pop(context),
+            color: green,
+            onPressed: () {
+              setState(() {});
+              Navigator.pop(context);
+            },
             child: Text(
-              "Réinitialiser",
+              "Filtrer",
               style: TextStyle(color: Colors.white, fontSize: 17),
             ),
           )
@@ -404,18 +403,79 @@ class _StockPageState extends State<StockPage>
                         length: 2,
                         child: new Scaffold(
                           floatingActionButton: FloatingActionButton.extended(
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/productadd');
+                            onPressed: () async {
+                              if (index == 0) {
+                                Navigator.pushNamed(context, '/productadd');
+                              } else {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text('Rénitialiser le stock ?'),
+                                      content: Text(
+                                          'Voulez vous vraiment rénitialiser le stock du fourgon ?\nTout les articles dans le fourgon seront transmis au dépot !!'),
+                                      actions: [
+                                        FlatButton(
+                                          textColor: Color(0xFF6200EE),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text('ANNULER'),
+                                        ),
+                                        FlatButton(
+                                          textColor: Color(0xFF6200EE),
+                                          onPressed: () async {
+                                            var snapshots =
+                                                await FirebaseFirestore.instance
+                                                    .collection('produit')
+                                                    .where('nbunitfourgon',
+                                                        isGreaterThanOrEqualTo:
+                                                            1)
+                                                    .get();
+                                            for (var ventes in snapshots.docs) {
+                                              DatabaseService().updateproduct(
+                                                  ventes.id,
+                                                  ventes['reference'],
+                                                  ventes['marque'],
+                                                  ventes['baseprice'],
+                                                  ventes['nbunitstock'] +
+                                                      ventes['nbunitfourgon'],
+                                                  ventes['promprice'],
+                                                  0);
+                                            }
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text('ACCEPTER'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                                setState(() {});
+                              }
                             },
-                            label: Text('Ajouter'),
-                            icon: Icon(Icons.add_business_rounded),
+                            label: Text(buttontext),
+                            icon: Icon(buttonicon),
                             backgroundColor: Colors.white,
-                            foregroundColor: Colors.green,
-                            splashColor: Colors.green,
-                            hoverColor: Colors.green,
+                            foregroundColor: buttoncolor,
+                            splashColor: buttoncolor,
+                            hoverColor: buttoncolor,
                           ),
                           backgroundColor: backgroundColor,
                           appBar: TabBar(
+                            onTap: (value) {
+                              index = value;
+                              if (value == 0) {
+                                buttontext = ajouter;
+                                buttoncolor = green;
+                                buttonicon = add;
+                              } else {
+                                buttontext = renetialiser;
+                                buttoncolor = red;
+                                buttonicon = minus;
+                              }
+                              setState(() {});
+                            },
                             labelColor: Colors.white,
                             indicatorColor: Colors.white,
                             tabs: [
@@ -431,260 +491,10 @@ class _StockPageState extends State<StockPage>
                             ],
                           ),
                           body: TabBarView(
+                            physics: NeverScrollableScrollPhysics(),
                             children: [
-                              ListView.separated(
-                                scrollDirection: Axis.vertical,
-                                shrinkWrap: true,
-                                padding: const EdgeInsets.all(16),
-                                itemCount: 10,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return Container(
-                                    child: TextButton(
-                                      onPressed: () {
-                                        Navigator.pushNamed(
-                                            context, '/productdetail');
-                                      },
-                                      child: Card(
-                                        color: Colors.blueGrey[400],
-                                        child: SizedBox(
-                                            // height: 150.0,
-                                            child: Padding(
-                                          padding: EdgeInsets.all(16.0),
-                                          child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceAround,
-                                              children: [
-                                                Expanded(
-                                                    flex: 1,
-                                                    child: Image(
-                                                        image: AssetImage(
-                                                            'assets/images/box.png'))),
-                                                Expanded(
-                                                    flex: 2,
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceAround,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        SizedBox(
-                                                          child: Column(
-                                                            children: [
-                                                              Text(
-                                                                "Couches Molf",
-                                                                style: TextStyle(
-                                                                    fontFamily:
-                                                                        'Mom cake',
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontSize:
-                                                                        28.0),
-                                                              ),
-                                                              SizedBox(
-                                                                width:
-                                                                    screenWidth *
-                                                                        0.4,
-                                                                child: Divider(
-                                                                  thickness:
-                                                                      2.0,
-                                                                  color: Colors
-                                                                      .white,
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                                  left: 0),
-                                                          child: Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Text(
-                                                                "X Articles restants",
-                                                                style: TextStyle(
-                                                                    fontFamily:
-                                                                        'Mom cake',
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontSize:
-                                                                        15.0),
-                                                              ),
-                                                              Text(
-                                                                "Prix unitaire : 1000 DA",
-                                                                style: TextStyle(
-                                                                    fontFamily:
-                                                                        'Mom cake',
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontSize:
-                                                                        15.0),
-                                                              ),
-                                                              Text(
-                                                                "Prix promotionnel : 10005 DA",
-                                                                style: TextStyle(
-                                                                    fontFamily:
-                                                                        'Mom cake',
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontSize:
-                                                                        15.0),
-                                                              )
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ))
-                                              ]),
-                                        )),
-                                      ),
-                                    ),
-                                  );
-                                },
-                                separatorBuilder:
-                                    (BuildContext context, int index) =>
-                                        const Divider(),
-                              ),
-                              ListView.separated(
-                                scrollDirection: Axis.vertical,
-                                shrinkWrap: true,
-                                padding: const EdgeInsets.all(16),
-                                itemCount: 10,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return Container(
-                                    child: Card(
-                                      color: Colors.blueGrey[400],
-                                      child: SizedBox(
-                                          // height: 150.0,
-                                          child: Padding(
-                                        padding: EdgeInsets.all(16.0),
-                                        child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceAround,
-                                            children: [
-                                              Expanded(
-                                                  flex: 1,
-                                                  child: Image(
-                                                      image: AssetImage(
-                                                          'assets/images/box.png'))),
-                                              Expanded(
-                                                  flex: 2,
-                                                  child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceAround,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      SizedBox(
-                                                        child: Column(
-                                                          children: [
-                                                            Text(
-                                                              "Couches Molf",
-                                                              style: TextStyle(
-                                                                  fontFamily:
-                                                                      'Mom cake',
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize:
-                                                                      28.0),
-                                                            ),
-                                                            SizedBox(
-                                                              width:
-                                                                  screenWidth *
-                                                                      0.4,
-                                                              child: Divider(
-                                                                thickness: 2.0,
-                                                                color: Colors
-                                                                    .white,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                left: 0),
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Text(
-                                                              "Articles restants : 152",
-                                                              style: TextStyle(
-                                                                  fontFamily:
-                                                                      'Mom cake',
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize:
-                                                                      15.0),
-                                                            ),
-                                                            Text(
-                                                              "Prix unitaire : 1000 DA",
-                                                              style: TextStyle(
-                                                                  fontFamily:
-                                                                      'Mom cake',
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize:
-                                                                      15.0),
-                                                            ),
-                                                            Text(
-                                                              "Prix promotionnel : 10005 DA",
-                                                              style: TextStyle(
-                                                                  fontFamily:
-                                                                      'Mom cake',
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize:
-                                                                      15.0),
-                                                            )
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ))
-                                            ]),
-                                      )),
-                                    ),
-                                  );
-                                },
-                                separatorBuilder:
-                                    (BuildContext context, int index) =>
-                                        const Divider(),
-                              ),
+                              _mystreambuilder(context, order1),
+                              _mystreambuilderfourgon(context, order2)
                             ],
                           ),
                         ),
@@ -699,4 +509,72 @@ class _StockPageState extends State<StockPage>
       ),
     );
   }
+}
+
+Widget _mystreambuilder(BuildContext context, String order) {
+  return Container(
+    child: StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection("produit")
+          .orderBy(order, descending: false)
+          .snapshots(),
+      builder: (context, snapshot) {
+        return !snapshot.hasData
+            ? Center(child: CircularProgressIndicator())
+            : ListView.builder(
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                itemCount: snapshot.data.docs.length,
+                itemBuilder: (context, index) {
+                  DocumentSnapshot data = snapshot.data.docs[index];
+                  return ProductItem(
+                    reference: data['reference'],
+                    marque: data['marque'],
+                    baseprice: data['baseprice'],
+                    nbunitfourgon: data['nbunitfourgon'],
+                    nbunitstock: data['nbunitstock'],
+                    promprice: data['promprice'],
+                    prodid: data.id,
+                    screenWidth: MediaQuery.of(context).size.width,
+                    documentSnapshot: data,
+                  );
+                },
+              );
+      },
+    ),
+  );
+}
+
+Widget _mystreambuilderfourgon(BuildContext context, String order) {
+  return Container(
+    child: StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection("produit")
+          .where('nbunitfourgon', isGreaterThanOrEqualTo: 1)
+          .snapshots(),
+      builder: (context, snapshot) {
+        return !snapshot.hasData
+            ? Center(child: CircularProgressIndicator())
+            : ListView.builder(
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                itemCount: snapshot.data.docs.length,
+                itemBuilder: (context, index) {
+                  DocumentSnapshot data = snapshot.data.docs[index];
+                  return ProductItemFourg(
+                    reference: data['reference'],
+                    marque: data['marque'],
+                    baseprice: data['baseprice'],
+                    nbunitfourgon: data['nbunitfourgon'],
+                    nbunitstock: data['nbunitstock'],
+                    promprice: data['promprice'],
+                    prodid: data.id,
+                    screenWidth: MediaQuery.of(context).size.width,
+                    documentSnapshot: data,
+                  );
+                },
+              );
+      },
+    ),
+  );
 }

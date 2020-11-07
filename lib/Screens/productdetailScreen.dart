@@ -1,17 +1,60 @@
 import 'package:chips_choice/chips_choice.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:stocknsell/Screens/Stockscreen.dart';
+import 'package:stocknsell/Services/database.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 final Color backgroundColor = Color(0xFF4A4A58);
 
 class ProductDetailPage extends StatefulWidget {
+  final String reference;
+  final String marque;
+  final dynamic baseprice;
+  final dynamic nbunitfourgon;
+  final dynamic nbunitstock;
+  final dynamic promprice;
+  final String prodid;
+  final DocumentSnapshot documentSnapshot;
+  ProductDetailPage(
+      {@required this.reference,
+      @required this.marque,
+      @required this.baseprice,
+      @required this.nbunitfourgon,
+      @required this.nbunitstock,
+      @required this.documentSnapshot,
+      @required this.prodid,
+      @required this.promprice});
   @override
   _ProductDetailPageState createState() => _ProductDetailPageState();
 }
 
 class _ProductDetailPageState extends State<ProductDetailPage>
     with SingleTickerProviderStateMixin {
+  var reference;
+  var marque;
+  var baseprice;
+  var nbunitfourgon;
+  var nbunitstock;
+  var promprice;
+  bool enable = false;
+  @override
+  void initState() {
+    super.initState();
+    if (widget.baseprice == widget.promprice) {
+      enable = false;
+    } else {
+      enable = true;
+    }
+    reference = widget.reference;
+    marque = widget.marque;
+    baseprice = widget.baseprice;
+    nbunitfourgon = widget.nbunitfourgon;
+    nbunitstock = widget.nbunitstock;
+    promprice = widget.promprice;
+  }
+
   bool isCollapsed = true;
   double screenWidth, screenHeight;
   final Duration duration = const Duration(milliseconds: 300);
@@ -21,6 +64,42 @@ class _ProductDetailPageState extends State<ProductDetailPage>
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  void alertPos() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Opération éffectuée !"),
+            content: Text("Produit ajouté au stock avec succées"),
+            actions: [
+              FlatButton(
+                  child: Text("Retour"),
+                  onPressed: () {
+                    Navigator.pushNamed(context, StockPage.id);
+                  }),
+            ],
+          );
+        });
+  }
+
+  void alertNgtv() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Erreur !!"),
+            content: Text("Veuillez vérifier les information fournies"),
+            actions: [
+              FlatButton(
+                  child: Text("OK"),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  }),
+            ],
+          );
+        });
   }
 
   @override
@@ -63,22 +142,34 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                       IconButton(
                         splashColor: Colors.white,
                         onPressed: () {
-                          new AlertDialog(
-                            title: Text('Supprimer l\'artice ?'),
-                            content:
-                                Text('Voulez vous vraiment suprrimer larticle'),
-                            actions: [
-                              FlatButton(
-                                textColor: Color(0xFF6200EE),
-                                onPressed: () {},
-                                child: Text('ANNULER'),
-                              ),
-                              FlatButton(
-                                textColor: Color(0xFF6200EE),
-                                onPressed: () {},
-                                child: Text('ACCEPTER'),
-                              ),
-                            ],
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('Supprimer l\'artice ?'),
+                                content: Text(
+                                    'Voulez vous vraiment suprrimer larticle'),
+                                actions: [
+                                  FlatButton(
+                                    textColor: Color(0xFF6200EE),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text('ANNULER'),
+                                  ),
+                                  FlatButton(
+                                    textColor: Color(0xFF6200EE),
+                                    onPressed: () {
+                                      DatabaseService()
+                                          .deleteproduct(widget.prodid);
+                                      Navigator.pushNamed(
+                                          context, StockPage.id);
+                                    },
+                                    child: Text('ACCEPTER'),
+                                  ),
+                                ],
+                              );
+                            },
                           );
                         },
                         icon: CircleAvatar(
@@ -112,10 +203,13 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           TextFormField(
-                            initialValue: "Dynamique",
+                            initialValue: reference,
                             style: TextStyle(color: Colors.white),
                             keyboardType: TextInputType.text,
                             cursorColor: Colors.white,
+                            onChanged: (value) {
+                              reference = value;
+                            },
                             decoration: InputDecoration(
                               fillColor: Colors.white,
                               hoverColor: Colors.white,
@@ -132,10 +226,13 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                             ),
                           ),
                           TextFormField(
-                            initialValue: "Dynamique",
+                            initialValue: marque,
                             style: TextStyle(color: Colors.white),
                             keyboardType: TextInputType.text,
                             cursorColor: Colors.white,
+                            onChanged: (value) {
+                              marque = value;
+                            },
                             decoration: InputDecoration(
                               fillColor: Colors.white,
                               hoverColor: Colors.white,
@@ -152,30 +249,13 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                             ),
                           ),
                           TextFormField(
-                            initialValue: "Dynamique",
+                            initialValue: baseprice,
                             style: TextStyle(color: Colors.white),
                             keyboardType: TextInputType.number,
                             cursorColor: Colors.white,
-                            decoration: InputDecoration(
-                              fillColor: Colors.white,
-                              hoverColor: Colors.white,
-                              focusColor: Colors.white,
-                              labelText: 'Prix d\'achat',
-                              labelStyle: TextStyle(
-                                color: Colors.white,
-                              ),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                          TextFormField(
-                            initialValue: "Dynamique",
-                            style: TextStyle(color: Colors.white),
-                            keyboardType: TextInputType.number,
-                            cursorColor: Colors.white,
+                            onChanged: (value) {
+                              baseprice = value;
+                            },
                             decoration: InputDecoration(
                               fillColor: Colors.white,
                               hoverColor: Colors.white,
@@ -200,6 +280,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                                     color: Colors.white, fontSize: 17),
                               ),
                               ToggleSwitch(
+                                initialLabelIndex: !enable ? 1 : 0,
                                 minWidth: 90.0,
                                 cornerRadius: 20.0,
                                 activeBgColor: Colors.cyan,
@@ -213,76 +294,75 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                                 ],
                                 activeBgColors: [Colors.green, Colors.pink],
                                 onToggle: (index) {
-                                  print('switched to: $index');
+                                  enable = !enable;
+                                  setState(() {});
                                 },
                               ),
                             ],
                           ),
-                          Row(
-                            children: [
-                              Expanded(
-                                flex: 2,
-                                child: TextFormField(
-                                  initialValue: "Dynamique",
-                                  style: TextStyle(color: Colors.white),
-                                  keyboardType: TextInputType.numberWithOptions(
-                                      decimal: false),
-                                  cursorColor: Colors.white,
-                                  decoration: InputDecoration(
-                                    fillColor: Colors.white,
-                                    hoverColor: Colors.white,
-                                    focusColor: Colors.white,
-                                    labelText: 'Prix Promotionnel',
-                                    labelStyle: TextStyle(
-                                      color: Colors.white,
-                                    ),
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 50,
-                              ),
-                              Expanded(
-                                flex: 1,
-                                child: TextFormField(
-                                  initialValue: "Dynamique",
-                                  style: TextStyle(color: Colors.white),
-                                  keyboardType: TextInputType.number,
-                                  cursorColor: Colors.white,
-                                  decoration: InputDecoration(
-                                    fillColor: Colors.white,
-                                    hoverColor: Colors.white,
-                                    focusColor: Colors.white,
-                                    labelText: 'Taux',
-                                    labelStyle: TextStyle(
-                                      color: Colors.white,
-                                    ),
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
                           TextFormField(
-                            initialValue: "Dynamique",
+                            initialValue: promprice,
+                            enabled: enable,
+                            onChanged: (value) {
+                              promprice = value;
+                            },
                             style: TextStyle(color: Colors.white),
                             keyboardType:
-                                TextInputType.numberWithOptions(decimal: true),
+                                TextInputType.numberWithOptions(decimal: false),
                             cursorColor: Colors.white,
                             decoration: InputDecoration(
                               fillColor: Colors.white,
                               hoverColor: Colors.white,
                               focusColor: Colors.white,
-                              labelText: 'Nombre',
+                              labelText: 'Prix Promotionnel',
+                              labelStyle: TextStyle(
+                                color: Colors.white,
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                          TextFormField(
+                            initialValue: nbunitstock,
+                            style: TextStyle(color: Colors.white),
+                            keyboardType:
+                                TextInputType.numberWithOptions(decimal: true),
+                            cursorColor: Colors.white,
+                            onChanged: (value) {
+                              nbunitstock = value;
+                            },
+                            decoration: InputDecoration(
+                              fillColor: Colors.white,
+                              hoverColor: Colors.white,
+                              focusColor: Colors.white,
+                              labelText: 'Nombre des articles dans le stock',
+                              labelStyle: TextStyle(
+                                color: Colors.white,
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                          TextFormField(
+                            initialValue: nbunitfourgon,
+                            style: TextStyle(color: Colors.white),
+                            keyboardType:
+                                TextInputType.numberWithOptions(decimal: true),
+                            cursorColor: Colors.white,
+                            onChanged: (value) {
+                              nbunitfourgon = value;
+                            },
+                            decoration: InputDecoration(
+                              fillColor: Colors.white,
+                              hoverColor: Colors.white,
+                              focusColor: Colors.white,
+                              labelText: 'Nombre des articles dans le fourgon',
                               labelStyle: TextStyle(
                                 color: Colors.white,
                               ),
@@ -301,7 +381,9 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       TextButton(
-                          onPressed: null,
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
                           child: Container(
                               padding: EdgeInsets.zero,
                               decoration: BoxDecoration(
@@ -321,7 +403,69 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                                     fontSize: 30),
                               ))),
                       TextButton(
-                          onPressed: null,
+                          onPressed: () {
+                            if ((reference != "") &&
+                                (marque != "") &&
+                                (baseprice != "") &&
+                                (nbunitstock != "") &&
+                                (!enable) &&
+                                (nbunitfourgon != "") &&
+                                (int.tryParse(nbunitstock) >=
+                                    (int.tryParse(nbunitfourgon) -
+                                        int.parse(widget.nbunitfourgon)))) {
+                              if (widget.nbunitfourgon != nbunitfourgon) {
+                                var diff = int.tryParse(nbunitfourgon) -
+                                    int.parse(widget.nbunitfourgon);
+                                nbunitstock = (int.tryParse(nbunitstock) - diff)
+                                    .toString();
+                              }
+                              print(nbunitfourgon);
+                              DatabaseService().updateproduct(
+                                widget.prodid,
+                                reference,
+                                marque,
+                                int.parse(baseprice),
+                                int.parse(nbunitstock),
+                                int.parse(baseprice),
+                                int.parse(nbunitfourgon),
+                              );
+                              alertPos();
+                            } else if ((reference != "") &&
+                                (marque != "") &&
+                                (baseprice != "") &&
+                                (nbunitstock != "") &&
+                                (promprice != "") &&
+                                (promprice != "") &&
+                                (nbunitfourgon != "") &&
+                                (enable) &&
+                                (nbunitfourgon != "") &&
+                                (int.tryParse(promprice) <=
+                                    int.tryParse(baseprice)) &&
+                                (int.tryParse(nbunitstock) >=
+                                    (int.tryParse(nbunitfourgon) -
+                                        int.parse(widget.nbunitfourgon)))) {
+                              if (widget.nbunitfourgon != nbunitfourgon) {
+                                var diff = int.tryParse(nbunitfourgon) -
+                                    int.parse(widget.nbunitfourgon);
+
+                                nbunitstock = (int.tryParse(nbunitstock) - diff)
+                                    .toString();
+                              }
+
+                              DatabaseService().updateproduct(
+                                widget.prodid,
+                                reference,
+                                marque,
+                                int.tryParse(baseprice),
+                                int.tryParse(nbunitstock),
+                                int.tryParse(promprice),
+                                int.tryParse(nbunitfourgon),
+                              );
+                              alertPos();
+                            } else {
+                              alertNgtv();
+                            }
+                          },
                           child: Container(
                               height: 45,
                               padding: EdgeInsets.zero,

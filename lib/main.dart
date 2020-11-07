@@ -9,7 +9,6 @@ import 'package:stocknsell/Screens/historyscreen.dart';
 import 'package:stocknsell/Screens/Client.dart';
 import 'package:stocknsell/Screens/productaddscreen.dart';
 import 'package:stocknsell/Screens/productdetailScreen.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
@@ -27,8 +26,9 @@ class StocknSell extends StatelessWidget {
       routes: {
         '/': (context) => LoginScreen(),
         '/home': (context) => MenuDashboardPage(),
-        '/history': (context) => HistoriquePage(),
+        HistoriquePage.id: (context) => HistoriquePage(),
         '/historydetail': (context) => HistoriquedetailPage(),
+        '/client': (context) => Client(),
         '/stock': (context) => StockPage(),
         '/productdetail': (context) => ProductDetailPage(),
         '/productadd': (context) => ProductaddPage(),

@@ -1,13 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:chips_choice/chips_choice.dart';
 import 'package:stocknsell/Components/DownSelect.dart';
 import 'package:stocknsell/Components/DownSelect2.dart';
 import 'package:date_range_picker/date_range_picker.dart' as DateRagePicker;
+import 'package:stocknsell/Components/historyitem.dart';
 
 final Color backgroundColor = Color(0xFF4A4A58);
 
 class HistoriquePage extends StatefulWidget {
+  static String id = "/history";
   @override
   _HistoriquePageState createState() => _HistoriquePageState();
 }
@@ -21,16 +24,85 @@ class _HistoriquePageState extends State<HistoriquePage>
   Animation<double> _scaleAnimation;
   Animation<double> _menuScaleAnimation;
   Animation<Offset> _slideAnimation;
+  Vente vente;
+  List<Vente> list = List();
+  List<Produit> produits = List();
+  Produit produit = Produit();
 
   @override
   void initState() {
-    super.initState();
+    getVente();
     _controller = AnimationController(vsync: this, duration: duration);
     _scaleAnimation = Tween<double>(begin: 1, end: 0.8).animate(_controller);
     _menuScaleAnimation =
         Tween<double>(begin: 0.5, end: 1).animate(_controller);
     _slideAnimation = Tween<Offset>(begin: Offset(-1, 0), end: Offset(0, 0))
         .animate(_controller);
+    super.initState();
+  }
+
+  void getVente() async {
+    bool trouve = false;
+    await for (var snapshots
+        in FirebaseFirestore.instance.collection('vente').snapshots()) {
+      for (var ventes in snapshots.docs) {
+        if ((ventes['client_id'] != null) && (ventes['date'] != null)) {
+          if (list.isNotEmpty) {
+            for (var sells in list) {
+              if ((sells.clientid == ventes['client_id']) &&
+                  (sells.date == ventes['date'])) {
+                trouve = true;
+                produit = Produit();
+                produit.baseprice = ventes['baseprice'];
+                produit.couttotale = ventes['couttotale'].round();
+                produit.nbarticle = ventes['nb_product'].round();
+                produit.prixpromo = ventes['prixpromo'].round();
+                produit.nom = ventes['marque'];
+                sells.produits.add(produit);
+                sells.montant += produit.couttotale.round();
+              }
+            }
+            if (!trouve) {
+              vente = Vente(
+                clientid: ventes['client_id'],
+                clientnom: ventes['client_name'],
+                date: ventes['date'],
+                data: ventes,
+                montant: ventes['couttotale'].round(),
+              );
+              produit = Produit();
+              produit.baseprice = ventes['baseprice'].round();
+              produit.couttotale = ventes['couttotale'].round();
+              produit.nbarticle = ventes['nb_product'].round();
+              produit.prixpromo = ventes['prixpromo'].round();
+              produit.nom = ventes['marque'];
+              vente.produits = List<Produit>();
+              vente.produits.add(produit);
+              list.add(vente);
+            }
+            trouve = false;
+          } else {
+            vente = Vente(
+              clientid: ventes['client_id'],
+              clientnom: ventes['client_name'],
+              date: ventes['date'],
+              data: ventes,
+              montant: ventes['couttotale'].round(),
+            );
+            vente.produits = List<Produit>();
+            produit = Produit();
+            produit.baseprice = ventes['baseprice'].round();
+            produit.couttotale = ventes['couttotale'].round();
+            produit.nbarticle = ventes['nb_product'].round();
+            produit.prixpromo = ventes['prixpromo'].round();
+            produit.nom = ventes['marque'];
+            vente.produits.add(produit);
+            list.add(vente);
+          }
+        }
+      }
+    }
+    setState(() {});
   }
 
   @override
@@ -44,8 +116,18 @@ class _HistoriquePageState extends State<HistoriquePage>
     Size size = MediaQuery.of(context).size;
     screenHeight = size.height;
     screenWidth = size.width;
-
     return Scaffold(
+      floatingActionButton: FloatingActionButton.extended(
+        label: Text('Filtrer'),
+        icon: Icon(Icons.filter_alt_rounded),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.teal[300],
+        splashColor: Colors.teal[300],
+        hoverColor: Colors.teal[300],
+        onPressed: () {
+          _openPopup(context);
+        },
+      ),
       backgroundColor: backgroundColor,
       body: Stack(
         children: <Widget>[
@@ -56,24 +138,34 @@ class _HistoriquePageState extends State<HistoriquePage>
     );
   }
 
+  Color green = Colors.green;
+  Color red = Colors.pink;
+  final String date = 'date';
+  final String client = 'client';
+  final String montant = 'montant';
+  String order = 'date';
+
   int tag = 0;
   List<String> options = [
     'Date',
     'Client',
     'Montant',
   ];
-  final elements1 = [
-    "Alger",
-    "Harach",
-    "Beo",
-    "Said Hamdine",
-    "Ain Naadja",
-    "Kouba",
-    "Garidi",
-  ];
+  String e9lab(String me9louba) {
+    String a = me9louba[6];
+    String b = me9louba[7];
+    String c = me9louba[8];
+    String d = me9louba[9];
+    String e = '-';
+    String f = me9louba[3];
+    String g = me9louba[4];
+    String h = '-';
+    String i = me9louba[0];
+    String j = me9louba[1];
+    return a + b + c + d + e + f + g + h + i + j;
+  }
 
   _openPopup(context) {
-    DateTime mindate, maxdate;
     Alert(
         context: context,
         title: "Filtres",
@@ -85,99 +177,54 @@ class _HistoriquePageState extends State<HistoriquePage>
                 fontSize: 34)),
         content: SizedBox(
           width: screenWidth,
-          height: screenHeight * 0.6,
+          height: screenHeight * 0.20,
           child: Padding(
             padding: const EdgeInsets.only(left: 8.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                Text("Trier par :",
-                    style: TextStyle(
-                        fontFamily: 'Mom cake',
-                        fontWeight: FontWeight.bold,
-                        fontSize: 34)),
-                Row(
-                  children: [
-                    Expanded(
-                      child: ChipsChoice<int>.single(
-                        value: tag,
-                        onChanged: (val) => setState(() => tag = val),
-                        choiceItems: C2Choice.listFrom<int, String>(
-                          source: options,
-                          value: (i, v) => i,
-                          label: (i, v) => v,
-                        ),
-                        choiceStyle: C2ChoiceStyle(
-                          color: Colors.black,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(10)),
-                        ),
-                      ),
-                    ),
-                  ],
+                SizedBox(
+                  height: screenHeight * 0.05,
                 ),
-                Text("Secteur :"),
-                MyStatefulWidget(),
-                Text("Client : "),
-                MyStatefulWidget2(),
-                Text("Montant de vente"),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 110.0,
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          labelText: 'MIN',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 8,
-                      child: Divider(
-                        thickness: 2.0,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 110.0,
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          labelText: 'MAX',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                    ),
-                  ],
+                Text(
+                  "Trier par :",
                 ),
-                Text("Date de vente"),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      width: 150.0,
-                      height: 70,
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.date_range_rounded,
-                        ),
-                        onPressed: () async {
-                          final List<DateTime> picked =
-                              await DateRagePicker.showDatePicker(
-                                  context: context,
-                                  initialFirstDate: new DateTime.now(),
-                                  initialLastDate: new DateTime.now()
-                                      .add(new Duration(days: 7)),
-                                  firstDate: new DateTime(2015),
-                                  lastDate: new DateTime(2030));
-                          if (picked != null && picked.length == 2) {
-                            mindate = picked[1];
-                            maxdate = picked[2];
+                Expanded(
+                  child: ChipsChoice<int>.single(
+                    value: tag,
+                    onChanged: (val) {
+                      switch (val) {
+                        case 0:
+                          {
+                            order = date;
                           }
-                        },
-                      ),
+                          break;
+                        case 1:
+                          {
+                            order = client;
+                          }
+                          break;
+                        case 2:
+                          {
+                            order = montant;
+                          }
+                          break;
+                      }
+                      setState(() {
+                        tag = val;
+                      });
+                    },
+                    choiceItems: C2Choice.listFrom<int, String>(
+                      source: options,
+                      value: (i, v) => i,
+                      label: (i, v) => v,
                     ),
-                  ],
+                    choiceStyle: C2ChoiceStyle(
+                      color: Colors.black,
+                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -185,16 +232,47 @@ class _HistoriquePageState extends State<HistoriquePage>
         ),
         buttons: [
           DialogButton(
-            onPressed: () => Navigator.pop(context),
+            color: Colors.pink,
+            onPressed: () {
+              order = client;
+              setState(() {
+                list.sort((a, b) => a.clientnom.compareTo(b.clientnom));
+              });
+              Navigator.pop(context);
+            },
             child: Text(
-              "Filtrer",
+              "Annuler",
               style: TextStyle(color: Colors.white, fontSize: 17),
             ),
           ),
           DialogButton(
-            onPressed: () => Navigator.pop(context),
+            color: green,
+            onPressed: () {
+              setState(() {
+                switch (order) {
+                  case 'date':
+                    {
+                      list.sort((a, b) => DateTime.parse(e9lab(b.date))
+                          .compareTo(DateTime.parse(e9lab(a.date))));
+                    }
+                    break;
+                  case 'montant':
+                    {
+                      list.sort((a, b) => b.montant.compareTo(a.montant));
+                    }
+                    break;
+                  case 'client':
+                    {
+                      list.sort((a, b) => a.clientnom.compareTo(b.clientnom));
+                    }
+                    break;
+                }
+              });
+              print(e9lab('07-08-2019'));
+              Navigator.pop(context);
+            },
             child: Text(
-              "Réinitialiser",
+              "Filtrer",
               style: TextStyle(color: Colors.white, fontSize: 17),
             ),
           )
@@ -355,22 +433,6 @@ class _HistoriquePageState extends State<HistoriquePage>
   }
 
   Widget dashboard(context) {
-    final List<String> entries = <String>[
-      'A',
-      'B',
-      'C',
-      'B',
-      'C',
-      'B',
-      'C',
-      'B',
-      'C',
-      'B',
-      'C',
-      'B',
-      'C'
-    ];
-
     return AnimatedPositioned(
       duration: duration,
       top: 0,
@@ -415,116 +477,37 @@ class _HistoriquePageState extends State<HistoriquePage>
                             style:
                                 TextStyle(fontSize: 24, color: Colors.white)),
                         IconButton(
+                            color: Colors.white,
                             icon: CircleAvatar(
-                              radius: 15.0,
-                              backgroundImage:
-                                  AssetImage('assets/images/search.png'),
+                              backgroundColor: Colors.white,
+                              child: Icon(
+                                Icons.refresh_rounded,
+                                color: Colors.teal[300],
+                              ),
                             ),
                             onPressed: () {
-                              _openPopup(context);
                               setState(() {});
                             })
                       ],
                     ),
-                    ListView.separated(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      padding: const EdgeInsets.all(8),
-                      itemCount: entries.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Card(
-                          color: Colors.blueGrey[400],
-                          child: TextButton(
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/historydetail');
-                            },
-                            child: SizedBox(
-                                // height: 150.0,
-                                child: Padding(
-                              padding: EdgeInsets.all(16.0),
-                              child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Expanded(
-                                        flex: 1,
-                                        child: Image(
-                                            image: AssetImage(
-                                                'assets/images/avatar.jpg'))),
-                                    Expanded(
-                                        flex: 2,
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.stretch,
-                                          children: [
-                                            SizedBox(
-                                              child: Column(
-                                                children: [
-                                                  Text(
-                                                    "Yessad Samy",
-                                                    style: TextStyle(
-                                                        fontFamily: 'Mom cake',
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.white,
-                                                        fontSize: 28.0),
-                                                  ),
-                                                  SizedBox(
-                                                    width: screenWidth * 0.4,
-                                                    child: Divider(
-                                                      thickness: 2.0,
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Align(
-                                              alignment: Alignment.center,
-                                              child: Text(
-                                                "X Articles vendues",
-                                                style: TextStyle(
-                                                    fontFamily: 'Mom cake',
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.white,
-                                                    fontSize: 15.0),
-                                              ),
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceAround,
-                                              children: [
-                                                Text(
-                                                  "10000 DA",
-                                                  style: TextStyle(
-                                                      fontFamily: 'Mom cake',
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.white,
-                                                      fontSize: 15.0),
-                                                ),
-                                                Text(
-                                                  "24/10/2019",
-                                                  style: TextStyle(
-                                                      fontFamily: 'Mom cake',
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.white,
-                                                      fontSize: 15.0),
-                                                )
-                                              ],
-                                            )
-                                          ],
-                                        ))
-                                  ]),
-                            )),
-                          ),
-                        );
-                      },
-                      separatorBuilder: (BuildContext context, int index) =>
-                          const Divider(),
+                    Container(
+                      height: screenHeight * 0.87,
+                      child: ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: list.length,
+                        itemBuilder: (context, index) {
+                          return HistoryItem(
+                            client_id: list[index].clientid,
+                            date: list[index].date,
+                            clientnom: list[index].clientnom,
+                            screenWidth: MediaQuery.of(context).size.width,
+                            documentSnapshot: list[index].data,
+                            montant: list[index].montant,
+                            produits: list[index].produits,
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),
@@ -535,4 +518,34 @@ class _HistoriquePageState extends State<HistoriquePage>
       ),
     );
   }
+}
+
+class Vente {
+  DocumentSnapshot data;
+  String clientid;
+  String clientnom;
+  String date;
+  int montant;
+  List<Produit> produits;
+  Vente(
+      {@required this.clientid,
+      this.date,
+      this.data,
+      this.clientnom,
+      this.produits,
+      this.montant});
+}
+
+class Produit {
+  String nom;
+  int baseprice;
+  int prixpromo;
+  int couttotale;
+  int nbarticle;
+  Produit(
+      {this.baseprice,
+      this.nbarticle,
+      this.nom,
+      this.couttotale,
+      this.prixpromo});
 }

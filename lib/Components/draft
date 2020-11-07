@@ -1,0 +1,196 @@
+await for (var _produits in FirebaseFirestore.instance
+                  .collection('vente')
+                  .where('client_id', isEqualTo: ventes['client_id'])
+                  .where('date', isEqualTo: ventes['date'])
+                  .snapshots()) {
+                for (var produitvente in _produits.docs) {
+                  produit.reference = produitvente['product_id'];
+                  _produit = await FirebaseFirestore.instance
+                      .collection('produit')
+                      .doc(produitvente['product_id'])
+                      .get();
+                  print(_produit['reference']);
+                  produit.baseprice = _produit['baseprice'];
+                  produit.nom = _produit['reference'];
+                  produit.nbarticle = produitvente['nb_product'];
+                  montant = montant + produit.baseprice * produit.nbarticle;
+                  produits.add(produit);
+                }
+              }
+            /*************************************************************/
+            await for (var _produits in FirebaseFirestore.instance
+                .collection('vente')
+                .where('client_id', isEqualTo: ventes['client_id'])
+                .where('date', isEqualTo: ventes['date'])
+                .snapshots()) {
+              for (var produitvente in _produits.docs) {
+                produit.reference = produitvente['product_id'];
+                _produit = await FirebaseFirestore.instance
+                    .collection('produit')
+                    .doc(produitvente['product_id'])
+                    .get();
+                produit.baseprice = _produit['baseprice'];
+                produit.nom = _produit['reference'];
+                produit.nbarticle = produitvente['nb_product'];
+                montant = montant + produit.baseprice * produit.nbarticle;
+                produits.add(produit);
+              }
+            }
+            /*********************************/
+            Center(
+                      child: StreamBuilder<List<Vente>>(
+                          stream: getVente(),
+                          builder: (context, future) {
+                            if (future.hasData) {
+                              return ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                itemCount: list.length,
+                                itemBuilder: (context, index) {
+                                  return HistoryItem(
+                                    client_id: list[index].clientid,
+                                    date: list[index].date,
+                                    clientnom: list[index].clientnom,
+                                    screenWidth:
+                                        MediaQuery.of(context).size.width,
+                                    documentSnapshot: list[index].data,
+                                    montant: list[index].montant,
+                                    produits: list[index].produits,
+                                  );
+                                },
+                              );
+                            } else {
+                              return CircularProgressIndicator();
+                            }
+                          }),
+                    ),
+
+/***********************************************************************************************/
+  _openPopup(context) {
+    DateTime mindate, maxdate;
+    Alert(
+        context: context,
+        title: "Filtres",
+        style: AlertStyle(
+            backgroundColor: Colors.grey[200],
+            titleStyle: TextStyle(
+                fontFamily: 'Mom cake',
+                fontWeight: FontWeight.bold,
+                fontSize: 34)),
+        content: SizedBox(
+          width: screenWidth,
+          height: screenHeight * 0.6,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text("Trier par :",
+                    style: TextStyle(
+                        fontFamily: 'Mom cake',
+                        fontWeight: FontWeight.bold,
+                        fontSize: 34)),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ChipsChoice<int>.single(
+                        value: tag,
+                        onChanged: (val) => setState(() => tag = val),
+                        choiceItems: C2Choice.listFrom<int, String>(
+                          source: options,
+                          value: (i, v) => i,
+                          label: (i, v) => v,
+                        ),
+                        choiceStyle: C2ChoiceStyle(
+                          color: Colors.black,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Text("Secteur :"),
+                MyStatefulWidget(),
+                Text("Client : "),
+                MyStatefulWidget2(),
+                Text("Montant de vente"),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 110.0,
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          labelText: 'MIN',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 8,
+                      child: Divider(
+                        thickness: 2.0,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 110.0,
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          labelText: 'MAX',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Text("Date de vente"),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                      width: 150.0,
+                      height: 70,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.date_range_rounded,
+                        ),
+                        onPressed: () async {
+                          final List<DateTime> picked =
+                              await DateRagePicker.showDatePicker(
+                                  context: context,
+                                  initialFirstDate: new DateTime.now(),
+                                  initialLastDate: new DateTime.now()
+                                      .add(new Duration(days: 7)),
+                                  firstDate: new DateTime(2015),
+                                  lastDate: new DateTime(2030));
+                          if (picked != null && picked.length == 2) {
+                            mindate = picked[1];
+                            maxdate = picked[2];
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+        buttons: [
+          DialogButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              "Filtrer",
+              style: TextStyle(color: Colors.white, fontSize: 17),
+            ),
+          ),
+          DialogButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              "Réinitialiser",
+              style: TextStyle(color: Colors.white, fontSize: 17),
+            ),
+          )
+        ]).show();
+  }

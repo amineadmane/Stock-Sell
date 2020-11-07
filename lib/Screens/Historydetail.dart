@@ -1,8 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:stocknsell/Components/historyitem.dart';
+import 'package:stocknsell/Screens/historyscreen.dart';
 
 final Color backgroundColor = Color(0xFF4A4A58);
 
 class HistoriquedetailPage extends StatefulWidget {
+  final double screenWidth;
+  final String date;
+  final String client_id;
+  final String clientnom;
+  final int montant;
+  final List<Produit> produits;
+
+  const HistoriquedetailPage(
+      {Key key,
+      this.screenWidth,
+      this.date,
+      this.client_id,
+      this.clientnom,
+      this.montant,
+      this.produits})
+      : super(key: key);
+
   @override
   _HistoriquedetailPageState createState() => _HistoriquedetailPageState();
 }
@@ -13,6 +32,22 @@ class _HistoriquedetailPageState extends State<HistoriquedetailPage>
   double screenWidth, screenHeight;
   final Duration duration = const Duration(milliseconds: 300);
   AnimationController _controller;
+  String nb_article(List<Produit> _produits) {
+    int nb = 0;
+
+    for (var _produit in _produits) {
+      nb += _produit.nbarticle;
+    }
+    return nb.toString();
+  }
+
+  String prom(Produit _produit) {
+    if (_produit.baseprice == _produit.prixpromo) {
+      return "Non";
+    } else {
+      return "Oui";
+    }
+  }
 
   @override
   void dispose() {
@@ -89,7 +124,7 @@ class _HistoriquedetailPageState extends State<HistoriquedetailPage>
                                   image: AssetImage('assets/images/avatar.jpg'),
                                 ),
                                 title: Text(
-                                  "yessad samy",
+                                  widget.clientnom,
                                   style: TextStyle(
                                       fontFamily: 'Mom cake',
                                       fontSize: 30,
@@ -100,21 +135,25 @@ class _HistoriquedetailPageState extends State<HistoriquedetailPage>
                             ),
                           ),
                           Text(
-                            "Date de vente : 20/10/2019 a 10:59",
+                            "Date de vente : " + widget.date,
                             style: TextStyle(
                                 fontSize: 15,
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600),
                           ),
                           Text(
-                            "Montant de vente : 10000 DA",
+                            "Montant de vente : " +
+                                widget.montant.toString() +
+                                " DA",
                             style: TextStyle(
                                 fontSize: 15,
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600),
                           ),
                           Text(
-                            "Nombre d'article vendues : 203 articles",
+                            "Nombre d'article vendues : " +
+                                nb_article(widget.produits) +
+                                " articles",
                             style: TextStyle(
                                 fontSize: 15,
                                 color: Colors.white,
@@ -136,7 +175,7 @@ class _HistoriquedetailPageState extends State<HistoriquedetailPage>
                     scrollDirection: Axis.vertical,
                     shrinkWrap: true,
                     padding: const EdgeInsets.all(16),
-                    itemCount: 10,
+                    itemCount: widget.produits.length,
                     itemBuilder: (BuildContext context, int index) {
                       return Container(
                         child: Card(
@@ -166,7 +205,7 @@ class _HistoriquedetailPageState extends State<HistoriquedetailPage>
                                             child: Column(
                                               children: [
                                                 Text(
-                                                  "Couches Molfixxxxxx",
+                                                  widget.produits[index].nom,
                                                   style: TextStyle(
                                                       fontFamily: 'Mom cake',
                                                       fontWeight:
@@ -191,7 +230,10 @@ class _HistoriquedetailPageState extends State<HistoriquedetailPage>
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  "X Articles vendues",
+                                                  "Articles vendues : " +
+                                                      widget.produits[index]
+                                                          .nbarticle
+                                                          .toString(),
                                                   style: TextStyle(
                                                       fontFamily: 'Mom cake',
                                                       fontWeight:
@@ -200,7 +242,11 @@ class _HistoriquedetailPageState extends State<HistoriquedetailPage>
                                                       fontSize: 15.0),
                                                 ),
                                                 Text(
-                                                  "Prix unitaire : 1000 DA",
+                                                  "Prix unitaire : " +
+                                                      widget.produits[index]
+                                                          .prixpromo
+                                                          .toString() +
+                                                      " DA",
                                                   style: TextStyle(
                                                       fontFamily: 'Mom cake',
                                                       fontWeight:
@@ -209,7 +255,11 @@ class _HistoriquedetailPageState extends State<HistoriquedetailPage>
                                                       fontSize: 15.0),
                                                 ),
                                                 Text(
-                                                  "Montant : 10000 DA",
+                                                  "Montant : " +
+                                                      widget.produits[index]
+                                                          .couttotale
+                                                          .toString() +
+                                                      " DA",
                                                   style: TextStyle(
                                                       fontFamily: 'Mom cake',
                                                       fontWeight:
@@ -218,7 +268,9 @@ class _HistoriquedetailPageState extends State<HistoriquedetailPage>
                                                       fontSize: 15.0),
                                                 ),
                                                 Text(
-                                                  "Promotion : Non",
+                                                  "Promotion : " +
+                                                      prom(widget
+                                                          .produits[index]),
                                                   style: TextStyle(
                                                       fontFamily: 'Mom cake',
                                                       fontWeight:
