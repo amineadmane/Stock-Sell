@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:stocknsell/Screens/ClientSearch.dart';
 import 'package:stocknsell/Services/database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:stocknsell/Screens/ClientItem.dart';
 
 class Clients extends StatefulWidget {
+  static String id = '/Clients';
   @override
   _ClientsState createState() => _ClientsState();
 }
@@ -18,16 +18,15 @@ class _ClientsState extends State<Clients> {
   String URL;
   String _filter = "nom";
   selectnom() {
-    setState(() => _filter="nom");
+    setState(() => _filter = "nom");
   }
-  selectsecteur()
-  {
-    setState(() => _filter="secteur");
+
+  selectsecteur() {
+    setState(() => _filter = "secteur");
   }
 
   @override
   Widget build(BuildContext context) {
-
     void showDialog() {
       showGeneralDialog(
         barrierLabel: "Barrier",
@@ -182,10 +181,8 @@ class _ClientsState extends State<Clients> {
         backgroundColor: Colors.blue,
       ),
     );
-
   }
 }
-
 
 Widget _myListView(BuildContext context) {
   String filter = "";
@@ -210,8 +207,9 @@ Widget _myListView(BuildContext context) {
                       Icons.search,
                       color: Colors.white,
                     ),
-                    onPressed: (){
-                      Navigator.pushNamed(context, '/search',arguments:filter);
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/search',
+                          arguments: filter);
                     },
                     tooltip: 'Rechercher',
                   ),
@@ -232,7 +230,7 @@ Widget _mystreambuilder(BuildContext context) {
   double screenhight = size.height;
 
   return Container(
-    height: screenhight*0.8,
+    height: screenhight * 0.8,
     child: StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance.collection("clients").snapshots(),
       builder: (context, snapshot) {

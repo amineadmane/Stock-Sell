@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:stocknsell/Screens/Stockscreen.dart';
@@ -8,6 +7,7 @@ import 'package:toggle_switch/toggle_switch.dart';
 final Color backgroundColor = Color(0xFF4A4A58);
 
 class ProductaddPage extends StatefulWidget {
+  static String id = "/productadd";
   @override
   _ProductaddPageState createState() => _ProductaddPageState();
 }
@@ -38,8 +38,8 @@ class _ProductaddPageState extends State<ProductaddPage>
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("Opération éffectuée !"),
-            content: Text("Produit ajouté au stock avec succées"),
+            title: Text("Opération fffectuée !"),
+            content: Text("Produit ajouté au stock avec succés"),
             actions: [
               FlatButton(
                   child: Text("Retour"),
@@ -57,7 +57,7 @@ class _ProductaddPageState extends State<ProductaddPage>
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text("Erreur !!"),
-            content: Text("Veuillez vérifier les information fournies"),
+            content: Text("Veuillez vérifier les informations fournies"),
             actions: [
               FlatButton(
                   child: Text("OK"),
@@ -82,12 +82,6 @@ class _ProductaddPageState extends State<ProductaddPage>
   }
 
   dashboard(context) {
-    final _formKey = GlobalKey<FormState>();
-    var _referenceFocusNode = FocusNode();
-    var _marqueFocusNode = FocusNode();
-    var _basepriceFocusNode = FocusNode();
-    var _usermarqueController = TextEditingController(text: "");
-    var _userreferenceController = TextEditingController(text: "");
     return SafeArea(
       child: Container(
         color: backgroundColor,

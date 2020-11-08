@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:stocknsell/Screens/Client.dart';
 import 'package:stocknsell/Screens/ClientItem.dart';
 import 'package:intl/intl.dart';
+import 'package:stocknsell/Screens/Planning.dart';
+import 'package:stocknsell/Screens/Stockscreen.dart';
+import 'package:stocknsell/Screens/historyscreen.dart';
 import 'package:stocknsell/Services/database.dart';
 
 import 'DayItem.dart';
@@ -9,6 +13,7 @@ import 'DayItem.dart';
 final Color backgroundColor = Color(0xFF4A4A58);
 
 class MenuDashboardPage extends StatefulWidget {
+  static String id = '/home';
   @override
   _MenuDashboardPageState createState() => _MenuDashboardPageState();
 }
@@ -23,7 +28,7 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
   Animation<double> _menuScaleAnimation;
   Animation<Offset> _slideAnimation;
   @override
-   initState() {
+  initState() {
     super.initState();
     _controller = AnimationController(vsync: this, duration: duration);
     _scaleAnimation = Tween<double>(begin: 1, end: 0.8).animate(_controller);
@@ -32,6 +37,7 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
     _slideAnimation = Tween<Offset>(begin: Offset(-1, 0), end: Offset(0, 0))
         .animate(_controller);
   }
+
   @override
   void dispose() {
     _controller.dispose();
@@ -48,26 +54,33 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
   String _nbvente2 = "Nombre de vente 2";
 
   raffraichirCA(double value) {
-    setState(() => _ChiffreAffaire=value);
+    setState(() => _ChiffreAffaire = value);
   }
+
   raffraichirAV(int value) {
-    setState(() => _articlevendu=value);
+    setState(() => _articlevendu = value);
   }
-  raffraichirfourgon(int value){
-    setState(() => _Prodrestfourgon=value);
+
+  raffraichirfourgon(int value) {
+    setState(() => _Prodrestfourgon = value);
   }
+
   raffraichirprod1(String value) {
-    setState(() => _productname1=value);
+    setState(() => _productname1 = value);
   }
-  raffraichirnb1(String value){
-    setState(() => _nbvente1=value);
+
+  raffraichirnb1(String value) {
+    setState(() => _nbvente1 = value);
   }
+
   raffraichirprod2(String value) {
-    setState(() => _productname2=value);
+    setState(() => _productname2 = value);
   }
-  raffraichirnb2(String value){
-    setState(() => _nbvente2=value);
+
+  raffraichirnb2(String value) {
+    setState(() => _nbvente2 = value);
   }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -110,7 +123,7 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                     Container(
                         child: SizedBox(
                       width: MediaQuery.of(context).size.width * 0.4,
-                      child: Text("Dynamique textttttt",
+                      child: Text("Bienvenu Zaki !",
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 20.0,
@@ -153,7 +166,7 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                     ),
                   ),
                   onPressed: () {
-                    Navigator.pushNamed(context, '/stock');
+                    Navigator.pushNamed(context, StockPage.id);
                   },
                 ),
                 SizedBox(
@@ -173,7 +186,7 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                     ),
                   ),
                   onPressed: () {
-                    Navigator.pushNamed(context, '/Clients');
+                    Navigator.pushNamed(context, Client.idd);
                   },
                 ),
                 SizedBox(
@@ -193,7 +206,7 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                     ),
                   ),
                   onPressed: () {
-                    Navigator.pushNamed(context, '/planning');
+                    Navigator.pushNamed(context, Planning.id);
                   },
                 ),
                 SizedBox(
@@ -213,27 +226,8 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                     ),
                   ),
                   onPressed: () {
-                    Navigator.pushNamed(context, '/history');
+                    Navigator.pushNamed(context, HistoriquePage.id);
                   },
-                ),
-                SizedBox(
-                  height: 10,
-                  width: MediaQuery.of(context).size.width * 0.55,
-                  child: Divider(
-                    color: Colors.white,
-                  ),
-                ),
-                ListTile(
-                  title: Text("Parametres",
-                      style: TextStyle(color: Colors.white, fontSize: 22)),
-                  leading: IconButton(
-                    icon: Icon(Icons.settings),
-                    color: Colors.white, onPressed: () {
-                      setState(() {
-
-                      });
-                  },
-                  ),
                 ),
                 SizedBox(
                   height: 10,
@@ -251,20 +245,19 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
   }
 
   Widget dashboard(context) {
-
-    String covertinttoday(int day)
-    {
+    String covertinttoday(int day) {
       String jour = "";
-      if(day == 1) jour = "Lundi";
-      if(day == 2) jour = "Mardi";
-      if(day == 3) jour = "Mercredi";
-      if(day == 4) jour = "Jeudi";
-      if(day == 5) jour = "Vendredi";
-      if(day == 6) jour = "Samedi";
-      if(day == 7) jour = "dimanche";
+      if (day == 1) jour = "Lundi";
+      if (day == 2) jour = "Mardi";
+      if (day == 3) jour = "Mercredi";
+      if (day == 4) jour = "Jeudi";
+      if (day == 5) jour = "Vendredi";
+      if (day == 6) jour = "Samedi";
+      if (day == 7) jour = "dimanche";
       return jour;
     }
-    double ChiffreAffaire ;
+
+    double ChiffreAffaire;
     final today = DateTime.now().weekday;
     List<dynamic> secteurs = new List<String>();
     return AnimatedPositioned(
@@ -321,21 +314,22 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                           ),
                         ),
                         StreamBuilder<QuerySnapshot>(
-                          stream: FirebaseFirestore.instance.collection("planification").snapshots(),
+                          stream: FirebaseFirestore.instance
+                              .collection("planification")
+                              .snapshots(),
                           builder: (context, snapshot) {
                             return !snapshot.hasData
                                 ? Center(child: CircularProgressIndicator())
                                 : ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: snapshot.data.docs.length,
-                              itemBuilder: (context, index) {
-                                DocumentSnapshot data = snapshot.data.docs[index];
-                                secteurs = data[covertinttoday(today)];
-                                return DayItem(
-                                    Secteurs: [secteurs]
-                                );
-                              },
-                            );
+                                    shrinkWrap: true,
+                                    itemCount: snapshot.data.docs.length,
+                                    itemBuilder: (context, index) {
+                                      DocumentSnapshot data =
+                                          snapshot.data.docs[index];
+                                      secteurs = data[covertinttoday(today)];
+                                      return DayItem(Secteurs: [secteurs]);
+                                    },
+                                  );
                           },
                         ),
                         const Divider(
@@ -366,26 +360,23 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                       itemBuilder: (context, index) {
                                         DocumentSnapshot data =
                                             snapshot.data.docs[index];
-                                        if(secteurs.contains(data['Secteur']))
-                                          {
-                                            _nbclientavisiter = _nbclientavisiter +1;
-                                            return ClientItem(
-                                              nom: data['nom'],
-                                              documentSnapshot: data,
-                                              id: data.id,
-                                              url: data['URL'],
-                                              phone: data['phone'],
-                                              email: data['email'],
-                                              secteur: data['Secteur'],
-                                            );
-                                          }
-                                        else
-                                          {
-                                            return Container(
-                                            );
-                                          }
-                                      }
-                                    );
+                                        if (secteurs
+                                            .contains(data['Secteur'])) {
+                                          _nbclientavisiter =
+                                              _nbclientavisiter + 1;
+                                          return ClientItem(
+                                            nom: data['nom'],
+                                            documentSnapshot: data,
+                                            id: data.id,
+                                            url: data['URL'],
+                                            phone: data['phone'],
+                                            email: data['email'],
+                                            secteur: data['Secteur'],
+                                          );
+                                        } else {
+                                          return Container();
+                                        }
+                                      });
                             },
                           ),
                         ),
@@ -402,12 +393,12 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                         ),
                         Center(
                             child: Card(
-                               margin: EdgeInsets.only(bottom: 30,top: 10),
-                              elevation: 5,
-                              color: Colors.white70,
-                              child: Row(
-                                children: [
-                                 Icon(
+                          margin: EdgeInsets.only(bottom: 30, top: 10),
+                          elevation: 5,
+                          color: Colors.white70,
+                          child: Row(
+                            children: [
+                              Icon(
                                 Icons.directions_bus_rounded,
                                 color: Colors.green,
                                 size: 100,
@@ -462,11 +453,16 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                             color: Colors.orange,
                                             onPressed: () async {
                                               int count = 0;
-                                              await DatabaseService().getnbproduitrestantfourgon().then((QuerySnapshot querySnapshot) => {
-                                                querySnapshot.docs.forEach((doc) {
-                                                 count = count+1;
-                                                })
-                                              });
+                                              await DatabaseService()
+                                                  .getnbproduitrestantfourgon()
+                                                  .then((QuerySnapshot
+                                                          querySnapshot) =>
+                                                      {
+                                                        querySnapshot.docs
+                                                            .forEach((doc) {
+                                                          count = count + 1;
+                                                        })
+                                                      });
                                               raffraichirfourgon(count);
                                             },
                                             child: const Text(
@@ -496,7 +492,7 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                         ),
                         Center(
                             child: Card(
-                          margin: EdgeInsets.only(bottom: 30,top:10),
+                          margin: EdgeInsets.only(bottom: 30, top: 10),
                           elevation: 5,
                           color: Colors.white70,
                           child: Row(
@@ -561,12 +557,20 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                           onPressed: () async {
                                             double som = 0;
                                             int articlevendu = 0;
-                                            await DatabaseService().getTotaltoday().then((QuerySnapshot querySnapshot) => {
-                                              querySnapshot.docs.forEach((doc) {
-                                                som = som + doc['couttotale'];
-                                                articlevendu = articlevendu + doc['nb_product'];
-                                              })
-                                            });
+                                            await DatabaseService()
+                                                .getTotaltoday()
+                                                .then((QuerySnapshot
+                                                        querySnapshot) =>
+                                                    {
+                                                      querySnapshot.docs
+                                                          .forEach((doc) {
+                                                        som = som +
+                                                            doc['couttotale'];
+                                                        articlevendu =
+                                                            articlevendu +
+                                                                doc['nb_product'];
+                                                      })
+                                                    });
                                             raffraichirCA(som);
                                             raffraichirAV(articlevendu);
                                           },
@@ -580,7 +584,6 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                   ],
                                 ),
                               )),
-
                             ],
                           ),
                         )),
@@ -597,101 +600,101 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                         ),
                         Center(
                             child: Card(
-                              margin: EdgeInsets.only(bottom: 30,top: 10),
-                              elevation: 5,
-                              color: Colors.white70,
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.article,
-                                    color: Colors.green,
-                                    size: 100,
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(right: 10.0),
-                                    color: Colors.black45,
-                                    height: 200,
-                                    width: 2,
-                                  ), //Divider
-                                  Container(
-                                      child: Padding(
-                                        padding: EdgeInsets.all(1.0),
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Text("$_productname1 :",
-                                                    style: TextStyle(
-                                                        fontSize: 20,
-                                                        fontWeight: FontWeight.bold)),
-                                                Text(
-                                                  "$_nbvente1 ",
-                                                  style: TextStyle(fontSize: 20),
-                                                ),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 8),
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  "$_productname2 :",
-                                                  style: TextStyle(
-                                                      fontSize: 20,
-                                                      fontWeight: FontWeight.bold),
-                                                ),
-                                                Text(
-                                                  "$_nbvente2",
-                                                  style: TextStyle(fontSize: 20),
-                                                ),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 14),
-                                            Row(
-                                              mainAxisAlignment:
-                                              MainAxisAlignment.end,
-                                              children: [
-                                                Center(
-                                                  child: RaisedButton(
-                                                    textColor: Colors.white,
-                                                    color: Colors.orange,
-                                                    onPressed: () async {
-                                                      List<
-                                                          String> list = new List<
-                                                          String>();
-                                                      await DatabaseService()
-                                                          .getmostselledproducts()
-                                                          .then((
-                                                          QuerySnapshot querySnapshot) =>
+                          margin: EdgeInsets.only(bottom: 30, top: 10),
+                          elevation: 5,
+                          color: Colors.white70,
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.article,
+                                color: Colors.green,
+                                size: 100,
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(right: 10.0),
+                                color: Colors.black45,
+                                height: 200,
+                                width: 2,
+                              ), //Divider
+                              Container(
+                                  child: Padding(
+                                padding: EdgeInsets.all(1.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text("$_productname1 :",
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold)),
+                                        Text(
+                                          "$_nbvente1 ",
+                                          style: TextStyle(fontSize: 20),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "$_productname2 :",
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          "$_nbvente2",
+                                          style: TextStyle(fontSize: 20),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 14),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Center(
+                                          child: RaisedButton(
+                                            textColor: Colors.white,
+                                            color: Colors.orange,
+                                            onPressed: () async {
+                                              List<String> list =
+                                                  new List<String>();
+                                              await DatabaseService()
+                                                  .getmostselledproducts()
+                                                  .then((QuerySnapshot
+                                                          querySnapshot) =>
                                                       {
                                                         querySnapshot.docs
                                                             .forEach((doc) {
                                                           list.add(
-                                                              doc['reference'].toString());
+                                                              doc['reference']
+                                                                  .toString());
                                                           list.add(
-                                                              doc['nbvente'].toString());
+                                                              doc['nbvente']
+                                                                  .toString());
                                                         })
                                                       });
-                                                      raffraichirprod1(list[0]);
-                                                      raffraichirnb1(list[1]);
-                                                      raffraichirprod2(list[2]);
-                                                      raffraichirnb2(list[3]);
-                                                    },
-                                                    child: const Text(
-                                                      'Raffraichir',
-                                                      style: TextStyle(fontSize: 22),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
+                                              raffraichirprod1(list[0]);
+                                              raffraichirnb1(list[1]);
+                                              raffraichirprod2(list[2]);
+                                              raffraichirnb2(list[3]);
+                                            },
+                                            child: const Text(
+                                              'Raffraichir',
+                                              style: TextStyle(fontSize: 22),
                                             ),
-                                          ],
+                                          ),
                                         ),
-                                      ))
-                                ],
-                              ),
-                            )),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ))
+                            ],
+                          ),
+                        )),
                       ],
                     ),
                   ),

@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class DatabaseService {
@@ -18,7 +17,7 @@ class DatabaseService {
 
   void ajouterclient(
       String nom, String email, int phone, String URL, String Secteur) async {
-    DocumentReference ref = await ClientCollection.add({
+    await ClientCollection.add({
       'nom': nom,
       'phone': phone,
       'email': email,
@@ -137,7 +136,7 @@ class DatabaseService {
         print(e.toString());
       }
     } else {
-      DocumentReference ref = await VenteCollection.add({
+      await VenteCollection.add({
         'client_id': clientId,
         'client_name': client_name,
         'date': date,

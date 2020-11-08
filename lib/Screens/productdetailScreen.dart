@@ -1,4 +1,3 @@
-import 'package:chips_choice/chips_choice.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -9,6 +8,7 @@ import 'package:toggle_switch/toggle_switch.dart';
 final Color backgroundColor = Color(0xFF4A4A58);
 
 class ProductDetailPage extends StatefulWidget {
+  static String id = '/productdetail';
   final String reference;
   final String marque;
   final dynamic baseprice;
@@ -18,14 +18,14 @@ class ProductDetailPage extends StatefulWidget {
   final String prodid;
   final DocumentSnapshot documentSnapshot;
   ProductDetailPage(
-      {@required this.reference,
-      @required this.marque,
-      @required this.baseprice,
-      @required this.nbunitfourgon,
-      @required this.nbunitstock,
-      @required this.documentSnapshot,
-      @required this.prodid,
-      @required this.promprice});
+      {this.reference,
+      this.marque,
+      this.baseprice,
+      this.nbunitfourgon,
+      this.nbunitstock,
+      this.documentSnapshot,
+      this.prodid,
+      this.promprice});
   @override
   _ProductDetailPageState createState() => _ProductDetailPageState();
 }
@@ -71,8 +71,8 @@ class _ProductDetailPageState extends State<ProductDetailPage>
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("Opération éffectuée !"),
-            content: Text("Produit ajouté au stock avec succées"),
+            title: Text("Opération effectuée !"),
+            content: Text("Produit ajouté au stock avec succés"),
             actions: [
               FlatButton(
                   child: Text("Retour"),
@@ -90,7 +90,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text("Erreur !!"),
-            content: Text("Veuillez vérifier les information fournies"),
+            content: Text("Veuillez vérifier les informations fournies"),
             actions: [
               FlatButton(
                   child: Text("OK"),
@@ -146,9 +146,9 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                title: Text('Supprimer l\'artice ?'),
+                                title: Text('Supprimer le produit ?'),
                                 content: Text(
-                                    'Voulez vous vraiment suprrimer larticle'),
+                                    'Voulez-vous vraiment supprimer le produit'),
                                 actions: [
                                   FlatButton(
                                     textColor: Color(0xFF6200EE),

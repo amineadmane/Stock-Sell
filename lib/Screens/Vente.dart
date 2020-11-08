@@ -7,6 +7,7 @@ import 'package:stocknsell/Screens/ProductItem.dart';
 import 'package:stocknsell/Services/database.dart';
 
 class VenteScreen extends StatefulWidget {
+  static String id = '/vente';
   @override
   _VenteScreenState createState() => _VenteScreenState();
 }
@@ -17,7 +18,7 @@ class _VenteScreenState extends State<VenteScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final clientdetails details= ModalRoute.of(context).settings.arguments;
+    final clientdetails details = ModalRoute.of(context).settings.arguments;
     final String client_id = details.id;
     final String client_name = details.name;
     Size size = MediaQuery.of(context).size;
@@ -27,63 +28,74 @@ class _VenteScreenState extends State<VenteScreen> {
       appBar: AppBar(
         title: Container(
             margin: EdgeInsets.only(left: 100),
-            child: Text("Vente",)),
+            child: Text(
+              "Vente",
+            )),
       ),
       backgroundColor: backgroundColor,
-      body:
-          Column(
-            children: [
-              Container(
-                height: screenHeight*0.8,
-                child: StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance.collection("produit").snapshots(),
-                  builder: (context, snapshot) {
-                    return !snapshot.hasData
-                        ? Center(child: CircularProgressIndicator())
-                        : ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          itemCount: snapshot.data.docs.length,
-                          itemBuilder: (context, index) {
-                         DocumentSnapshot data = snapshot.data.docs[index];
-                         return ProductItem(
-                          id : data.id,
-                          marque : data['marque'],
-                          unitprice: data['baseprice'],
-                          nbunitfourgon: data['nbunitfourgon'],
-                          prixpromotionnel: data['promprice'],
-                          client_id: client_id,
-                          client_name: client_name,
-                        );
-                      },
-                    );
-                  },
-                ),
-              ),
-              Container(
-                height: 50,
-                width: 200,
-                child: Center(
-                  child: RaisedButton(
-                    textColor: Colors.white,
-                    color: Colors.blueAccent,
-                    onPressed: () {
-                      DatabaseService().todaystransaction(client_id).then((QuerySnapshot querySnapshot) => {
-                        querySnapshot.docs.forEach((doc) {
-                        //fonction pour la facture client.
-                        })
-                      });
-                    },
-                    child:  Text('Extraire Facture',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,fontFamily: 'Mom cake'),),
-                  ),
-                ),
-              ),
-            ],
+      body: Column(
+        children: [
+          Container(
+            height: screenHeight * 0.8,
+            child: StreamBuilder<QuerySnapshot>(
+              stream:
+                  FirebaseFirestore.instance.collection("produit").snapshots(),
+              builder: (context, snapshot) {
+                return !snapshot.hasData
+                    ? Center(child: CircularProgressIndicator())
+                    : ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: snapshot.data.docs.length,
+                        itemBuilder: (context, index) {
+                          DocumentSnapshot data = snapshot.data.docs[index];
+                          return ProductItem(
+                            id: data.id,
+                            marque: data['marque'],
+                            unitprice: data['baseprice'],
+                            nbunitfourgon: data['nbunitfourgon'],
+                            prixpromotionnel: data['promprice'],
+                            client_id: client_id,
+                            client_name: client_name,
+                          );
+                        },
+                      );
+              },
+            ),
           ),
-      );
+          Container(
+            height: 50,
+            width: 200,
+            child: Center(
+              child: RaisedButton(
+                textColor: Colors.white,
+                color: Colors.blueAccent,
+                onPressed: () {
+                  DatabaseService()
+                      .todaystransaction(client_id)
+                      .then((QuerySnapshot querySnapshot) => {
+                            querySnapshot.docs.forEach((doc) {
+                              //fonction pour la facture client.
+                            })
+                          });
+                },
+                child: Text(
+                  'Extraire Facture',
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Mom cake'),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
-class productdetails{
+
+class productdetails {
   String product_id;
   String product_name;
   int nb_product;

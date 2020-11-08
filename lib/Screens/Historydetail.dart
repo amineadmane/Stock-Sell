@@ -5,6 +5,7 @@ import 'package:stocknsell/Screens/historyscreen.dart';
 final Color backgroundColor = Color(0xFF4A4A58);
 
 class HistoriquedetailPage extends StatefulWidget {
+  static String id = '/historydetail';
   final double screenWidth;
   final String date;
   final String client_id;
@@ -151,7 +152,7 @@ class _HistoriquedetailPageState extends State<HistoriquedetailPage>
                                 fontWeight: FontWeight.w600),
                           ),
                           Text(
-                            "Nombre d'article vendues : " +
+                            "Nombre d'article vendus : " +
                                 nb_article(widget.produits) +
                                 " articles",
                             style: TextStyle(
@@ -164,7 +165,7 @@ class _HistoriquedetailPageState extends State<HistoriquedetailPage>
                     ),
                   ),
                   Text(
-                    "produits vendues",
+                    "Produits vendus",
                     style: TextStyle(
                         fontFamily: 'Mom cake',
                         fontSize: 35,

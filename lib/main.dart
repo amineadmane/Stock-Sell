@@ -20,24 +20,23 @@ void main() async {
 }
 
 class StocknSell extends StatelessWidget {
-  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       initialRoute: '/',
       routes: {
-        '/': (context) => MenuDashboardPage(),
-        '/home': (context) => MenuDashboardPage(),
+        '/': (context) => LoginScreen(),
+        MenuDashboardPage.id: (context) => MenuDashboardPage(),
         HistoriquePage.id: (context) => HistoriquePage(),
-        '/historydetail': (context) => HistoriquedetailPage(),
-        '/client': (context) => Client(),
-        '/stock': (context) => StockPage(),
-        '/productdetail': (context) => ProductDetailPage(),
-        '/productadd': (context) => ProductaddPage(),
-        '/planning': (context) => Planning(),
-        '/Clients': (context) => Clients(),
-        '/vente' : (context) => VenteScreen(),
-        '/search' : (context) => ClientSearch(),
+        HistoriquedetailPage.id: (context) => HistoriquedetailPage(),
+        Client.idd: (context) => Client(),
+        StockPage.id: (context) => StockPage(),
+        ProductDetailPage.id: (context) => ProductDetailPage(),
+        ProductaddPage.id: (context) => ProductaddPage(),
+        Planning.id: (context) => Planning(),
+        Clients.id: (context) => Clients(),
+        VenteScreen.id: (context) => VenteScreen(),
+        ClientSearch.id: (context) => ClientSearch(),
       },
     );
   }

@@ -2,10 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:chips_choice/chips_choice.dart';
-import 'package:stocknsell/Components/DownSelect.dart';
-import 'package:stocknsell/Components/DownSelect2.dart';
-import 'package:date_range_picker/date_range_picker.dart' as DateRagePicker;
 import 'package:stocknsell/Components/historyitem.dart';
+import 'package:stocknsell/Screens/GestClients.dart';
+import 'package:stocknsell/Screens/Stockscreen.dart';
+
+import 'Planning.dart';
+import 'homescreen.dart';
 
 final Color backgroundColor = Color(0xFF4A4A58);
 
@@ -305,7 +307,7 @@ class _HistoriquePageState extends State<HistoriquePage>
                     Container(
                         child: SizedBox(
                       width: MediaQuery.of(context).size.width * 0.4,
-                      child: Text("Dynamique textttttt",
+                      child: Text("Bienvenu Zaki !",
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 20.0,
@@ -317,16 +319,35 @@ class _HistoriquePageState extends State<HistoriquePage>
                   height: 30.0,
                 ),
                 TextButton(
+                    child: ListTile(
+                      title: Text("Acceuil",
+                          style: TextStyle(color: Colors.white, fontSize: 22)),
+                      leading: Icon(
+                        Icons.home_rounded,
+                        color: Colors.white,
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.pushNamed(context, MenuDashboardPage.id);
+                    }),
+                SizedBox(
+                  height: 10,
+                  width: MediaQuery.of(context).size.width * 0.55,
+                  child: Divider(
+                    color: Colors.white,
+                  ),
+                ),
+                TextButton(
                   child: ListTile(
-                    title: Text("Acceuil",
-                        style: TextStyle(color: Colors.white, fontSize: 20)),
+                    title: Text("Stock",
+                        style: TextStyle(color: Colors.white, fontSize: 22)),
                     leading: Icon(
-                      Icons.home_rounded,
+                      Icons.store_mall_directory_rounded,
                       color: Colors.white,
                     ),
                   ),
                   onPressed: () {
-                    Navigator.pushNamed(context, '/home');
+                    Navigator.pushNamed(context, StockPage.id);
                   },
                 ),
                 SizedBox(
@@ -338,15 +359,15 @@ class _HistoriquePageState extends State<HistoriquePage>
                 ),
                 TextButton(
                   child: ListTile(
-                    title: Text("Stock",
-                        style: TextStyle(color: Colors.white, fontSize: 20)),
+                    title: Text("Clients",
+                        style: TextStyle(color: Colors.white, fontSize: 22)),
                     leading: Icon(
-                      Icons.store_mall_directory_rounded,
+                      Icons.perm_contact_cal_rounded,
                       color: Colors.white,
                     ),
                   ),
                   onPressed: () {
-                    Navigator.pushNamed(context, '/stock');
+                    Navigator.pushNamed(context, Clients.id);
                   },
                 ),
                 SizedBox(
@@ -356,28 +377,18 @@ class _HistoriquePageState extends State<HistoriquePage>
                     color: Colors.white,
                   ),
                 ),
-                ListTile(
-                  title: Text("Clients",
-                      style: TextStyle(color: Colors.white, fontSize: 20)),
-                  leading: Icon(
-                    Icons.perm_contact_cal_rounded,
-                    color: Colors.white,
+                TextButton(
+                  child: ListTile(
+                    title: Text("Planification",
+                        style: TextStyle(color: Colors.white, fontSize: 22)),
+                    leading: Icon(
+                      Icons.calendar_today_rounded,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-                SizedBox(
-                  height: 10,
-                  width: MediaQuery.of(context).size.width * 0.55,
-                  child: Divider(
-                    color: Colors.white,
-                  ),
-                ),
-                ListTile(
-                  title: Text("Planification",
-                      style: TextStyle(color: Colors.white, fontSize: 20)),
-                  leading: Icon(
-                    Icons.calendar_today_rounded,
-                    color: Colors.white,
-                  ),
+                  onPressed: () {
+                    Navigator.pushNamed(context, Planning.id);
+                  },
                 ),
                 SizedBox(
                   height: 10,
@@ -389,7 +400,7 @@ class _HistoriquePageState extends State<HistoriquePage>
                 TextButton(
                   child: ListTile(
                     title: Text("Historique",
-                        style: TextStyle(color: Colors.white, fontSize: 20)),
+                        style: TextStyle(color: Colors.white, fontSize: 22)),
                     leading: Icon(
                       Icons.history_rounded,
                       color: Colors.white,
@@ -401,21 +412,6 @@ class _HistoriquePageState extends State<HistoriquePage>
                       isCollapsed = !isCollapsed;
                     });
                   },
-                ),
-                SizedBox(
-                  height: 10,
-                  width: MediaQuery.of(context).size.width * 0.55,
-                  child: Divider(
-                    color: Colors.white,
-                  ),
-                ),
-                ListTile(
-                  title: Text("Parametres",
-                      style: TextStyle(color: Colors.white, fontSize: 20)),
-                  leading: Icon(
-                    Icons.settings_applications_rounded,
-                    color: Colors.white,
-                  ),
                 ),
                 SizedBox(
                   height: 10,

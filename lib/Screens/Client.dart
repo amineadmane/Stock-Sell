@@ -6,23 +6,24 @@ import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 import 'package:url_launcher/url_launcher.dart';
 
 class Client extends StatefulWidget {
+  static String idd = '/client';
   String nom;
   String email;
   String Secteur;
   String URL;
   int phone;
   String id;
-  int somnb_product ;
-  double Chiffredaffaire ;
+  int somnb_product;
+  double Chiffredaffaire;
   Client({
-    @required this.nom,
-    @required this.URL,
-    @required this.phone,
-    @required this.id,
-    @required this.email,
-    @required this.Secteur,
-    @required this.somnb_product,
-    @required this.Chiffredaffaire,
+    this.nom,
+    this.URL,
+    this.phone,
+    this.id,
+    this.email,
+    this.Secteur,
+    this.somnb_product,
+    this.Chiffredaffaire,
   });
   @override
   _ClientState createState() => _ClientState();
@@ -66,6 +67,7 @@ class _ClientState extends State<Client> {
                   ]));
         });
   }
+
   createalertedialogmodif(BuildContext context) {
     return showDialog(
         context: context,
@@ -113,24 +115,22 @@ class _ClientState extends State<Client> {
     final int _domnbproduct = widget.somnb_product;
     final double _chiffreaffaire = widget.Chiffredaffaire;
 
-    String covertinttoday(int day)
-    {
+    String covertinttoday(int day) {
       String jour = "";
-      if(day == 1) jour = "Lundi";
-      if(day == 2) jour = "Mardi";
-      if(day == 3) jour = "Mercredi";
-      if(day == 4) jour = "Jeudi";
-      if(day == 5) jour = "Vendredi";
-      if(day == 6) jour = "Samedi";
-      if(day == 7) jour = "dimanche";
+      if (day == 1) jour = "Lundi";
+      if (day == 2) jour = "Mardi";
+      if (day == 3) jour = "Mercredi";
+      if (day == 4) jour = "Jeudi";
+      if (day == 5) jour = "Vendredi";
+      if (day == 6) jour = "Samedi";
+      if (day == 7) jour = "dimanche";
       return jour;
     }
 
     final today = DateTime.now().weekday;
     List<dynamic> secteurs = new List<String>();
 
-
-      return Scaffold(
+    return Scaffold(
       appBar: AppBar(
         title: Text("Details Client"),
       ),
@@ -142,28 +142,31 @@ class _ClientState extends State<Client> {
             child: Stack(
               children: <Widget>[
                 StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance.collection("planification").snapshots(),
+                  stream: FirebaseFirestore.instance
+                      .collection("planification")
+                      .snapshots(),
                   builder: (context, snapshot) {
                     return !snapshot.hasData
                         ? Center(child: CircularProgressIndicator())
                         : ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: snapshot.data.docs.length,
-                      itemBuilder: (context, index) {
-                        DocumentSnapshot data = snapshot.data.docs[index];
-                        secteurs = data[covertinttoday(today)];
-                        return Container(
-                          height: 0,
-                          width: 0,
-                        );
-                      },
-                    );
+                            shrinkWrap: true,
+                            itemCount: snapshot.data.docs.length,
+                            itemBuilder: (context, index) {
+                              DocumentSnapshot data = snapshot.data.docs[index];
+                              secteurs = data[covertinttoday(today)];
+                              return Container(
+                                height: 0,
+                                width: 0,
+                              );
+                            },
+                          );
                   },
                 ),
                 Container(
                   height: MediaQuery.of(context).size.height * 0.30,
                   width: double.infinity,
-                  decoration: BoxDecoration(gradient: ColorUtils.appBarGradient),
+                  decoration:
+                      BoxDecoration(gradient: ColorUtils.appBarGradient),
                 ),
                 Align(
                   alignment: Alignment.topCenter,
@@ -176,7 +179,8 @@ class _ClientState extends State<Client> {
                     children: [
                       Center(
                         child: CircleAvatar(
-                          backgroundImage: AssetImage('assets/images/avatar.jpg'),
+                          backgroundImage:
+                              AssetImage('assets/images/avatar.jpg'),
                           radius: 60,
                         ),
                       ),
@@ -228,7 +232,7 @@ class _ClientState extends State<Client> {
                         ),
                         new ListTile(
                           leading:
-                          const Icon(Icons.location_on, color: Colors.blue),
+                              const Icon(Icons.location_on, color: Colors.blue),
                           title: DropdownButtonFormField<String>(
                             value: "Bab ezzouar",
                             style: TextStyle(color: Colors.blue),
@@ -253,20 +257,23 @@ class _ClientState extends State<Client> {
                           ),
                         ),
                         new ListTile(
-                          leading:
-                              const Icon(Icons.shopping_cart, color: Colors.blue),
+                          leading: const Icon(Icons.shopping_cart,
+                              color: Colors.blue),
                           title: new TextField(
                             decoration: new InputDecoration(
-                              hintText: "Nombre articles achetes : $_domnbproduct",
+                              hintText:
+                                  "Nombre articles achetes : $_domnbproduct",
                             ),
                             readOnly: true,
                           ),
                         ),
                         new ListTile(
-                          leading: const Icon(Icons.article, color: Colors.blue),
+                          leading:
+                              const Icon(Icons.article, color: Colors.blue),
                           title: new TextField(
                             decoration: new InputDecoration(
-                              hintText: "Argent depense par client : $_chiffreaffaire",
+                              hintText:
+                                  "Argent depense par client : $_chiffreaffaire",
                             ),
                             readOnly: true,
                           ),
@@ -296,7 +303,8 @@ class _ClientState extends State<Client> {
                                   color: Colors.green,
                                   elevation: 4,
                                   onPressed: () {
-                                    UrlLauncher.launch('tel:+213${widget.phone.toString()}');
+                                    UrlLauncher.launch(
+                                        'tel:+213${widget.phone.toString()}');
                                   },
                                   child: Text("Appeler")),
                               RaisedButton(
@@ -315,7 +323,11 @@ class _ClientState extends State<Client> {
                             color: Colors.deepPurple,
                             elevation: 4,
                             onPressed: () {
-                              Navigator.pushNamed(context, '/vente',arguments:clientdetails(widget.id , widget.nom,));
+                              Navigator.pushNamed(context, '/vente',
+                                  arguments: clientdetails(
+                                    widget.id,
+                                    widget.nom,
+                                  ));
                             },
                             child: Text("Facturer une vente")),
                       ],
@@ -345,4 +357,3 @@ void _launchUrl(String Url) async {
     throw 'Could not open Url';
   }
 }
-

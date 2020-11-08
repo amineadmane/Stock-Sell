@@ -39,9 +39,13 @@ class _ClientItemState extends State<ClientItem> {
               leading: CircleAvatar(
                 backgroundImage: AssetImage('assets/images/avatar.jpg'),
               ),
-              title: Text(widget.nom,style: TextStyle(fontSize: 22,fontFamily: 'Mom cake'),),
-              subtitle: Text(widget.secteur,style: TextStyle(fontSize: 18,fontFamily: 'Mom cake')),
+              title: Text(
+                widget.nom,
+                style: TextStyle(fontSize: 22, fontFamily: 'Mom cake'),
               ),
+              subtitle: Text(widget.secteur,
+                  style: TextStyle(fontSize: 18, fontFamily: 'Mom cake')),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
@@ -63,28 +67,33 @@ class _ClientItemState extends State<ClientItem> {
                       onPressed: () async {
                         int somnb_product = 0;
                         double Chiffredaffaire = 0;
-                        await DatabaseService().getnbarticlesachetesclient(widget.id).then((QuerySnapshot querySnapshot) => {
-                          querySnapshot.docs.forEach((doc) {
-                            somnb_product = somnb_product+ doc['nb_product'];
-                            Chiffredaffaire = Chiffredaffaire + doc['couttotale'];
-                          })
-                        });;
-                          print(somnb_product);
-                          print(Chiffredaffaire);
+                        await DatabaseService()
+                            .getnbarticlesachetesclient(widget.id)
+                            .then((QuerySnapshot querySnapshot) => {
+                                  querySnapshot.docs.forEach((doc) {
+                                    somnb_product =
+                                        somnb_product + doc['nb_product'];
+                                    Chiffredaffaire =
+                                        Chiffredaffaire + doc['couttotale'];
+                                  })
+                                });
+                        print(somnb_product);
+                        print(Chiffredaffaire);
                         //Navigator.pushNamed(context, '/client',arguments:
                         //Client(nom: widget.nom, URL: widget.url, phone: widget.phone, id: widget.id , email: widget.email, Secteur: widget.secteur));
                         Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => Client(
-                                  nom: widget.nom,
-                                  URL: widget.url,
-                                  phone: widget.phone,
-                                  id: widget.id,
-                                  email: widget.email,
-                                  Secteur: widget.secteur,
-                              somnb_product: somnb_product,
-                              Chiffredaffaire: Chiffredaffaire,),
+                                nom: widget.nom,
+                                URL: widget.url,
+                                phone: widget.phone,
+                                id: widget.id,
+                                email: widget.email,
+                                Secteur: widget.secteur,
+                                somnb_product: somnb_product,
+                                Chiffredaffaire: Chiffredaffaire,
+                              ),
                             ));
                       },
                       child: const Text('Details'),
