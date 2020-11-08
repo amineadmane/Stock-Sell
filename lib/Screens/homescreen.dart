@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:stocknsell/Screens/Client.dart';
 import 'package:stocknsell/Screens/ClientItem.dart';
 import 'package:intl/intl.dart';
+import 'package:stocknsell/Screens/GestClients.dart';
 import 'package:stocknsell/Screens/Planning.dart';
 import 'package:stocknsell/Screens/Stockscreen.dart';
 import 'package:stocknsell/Screens/historyscreen.dart';
@@ -49,9 +50,11 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
   int _nbclientavisiter = 0;
   int _Prodrestfourgon = 0;
   String _productname1 = "Produit1";
-  String _nbvente1 = "Nombre de vente 1";
+  String _nbvente1 = "Nb vente 1";
   String _productname2 = "Produit2";
-  String _nbvente2 = "Nombre de vente 2";
+  String _nbvente2 = "Nb vente 2";
+  String _productname3 = "Produit3";
+  String _nbvente3 = "Nb vente 3";
 
   raffraichirCA(double value) {
     setState(() => _ChiffreAffaire = value);
@@ -79,6 +82,14 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
 
   raffraichirnb2(String value) {
     setState(() => _nbvente2 = value);
+  }
+
+  raffraichirprod3(String value) {
+    setState(() => _productname3 = value);
+  }
+
+  raffraichirnb3(String value) {
+    setState(() => _nbvente3 = value);
   }
 
   @override
@@ -186,7 +197,7 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                     ),
                   ),
                   onPressed: () {
-                    Navigator.pushNamed(context, Client.idd);
+                    Navigator.pushNamed(context, Clients.id);
                   },
                 ),
                 SizedBox(
@@ -650,6 +661,21 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                         ),
                                       ],
                                     ),
+                                    const SizedBox(height: 8),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "$_productname3 :",
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          "$_nbvente3",
+                                          style: TextStyle(fontSize: 20),
+                                        ),
+                                      ],
+                                    ),
                                     const SizedBox(height: 14),
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
@@ -680,6 +706,8 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                               raffraichirnb1(list[1]);
                                               raffraichirprod2(list[2]);
                                               raffraichirnb2(list[3]);
+                                              raffraichirprod3(list[4]);
+                                              raffraichirnb3(list[5]);
                                             },
                                             child: const Text(
                                               'Raffraichir',

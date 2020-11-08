@@ -194,7 +194,7 @@ class DatabaseService {
     return FirebaseFirestore.instance
         .collection('produit')
         .orderBy("nbvente", descending: true)
-        .limit(2)
+        .limit(3)
         .get();
   }
 }

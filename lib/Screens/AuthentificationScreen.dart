@@ -113,7 +113,7 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
     return Padding(
       padding: const EdgeInsets.only(top: 40),
       child: Image.asset(
-        "assets/images/facebook.png",
+        "assets/images/Logo.jpg",
         height: 100,
         width: 100,
       ),

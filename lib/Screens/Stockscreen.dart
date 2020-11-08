@@ -7,6 +7,7 @@ import 'package:chips_choice/chips_choice.dart';
 import 'package:stocknsell/Components/productItem.dart';
 import 'package:stocknsell/Components/productItemfourg.dart';
 import 'package:stocknsell/Screens/Client.dart';
+import 'package:stocknsell/Screens/GestClients.dart';
 import 'package:stocknsell/Screens/Planning.dart';
 import 'package:stocknsell/Screens/historyscreen.dart';
 import 'package:stocknsell/Screens/homescreen.dart';
@@ -280,7 +281,7 @@ class _StockPageState extends State<StockPage>
                     ),
                   ),
                   onPressed: () {
-                    Navigator.pushNamed(context, Client.idd);
+                    Navigator.pushNamed(context, Clients.id);
                   },
                 ),
                 SizedBox(
