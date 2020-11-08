@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:stocknsell/Services/database.dart';
 
 class FilteringChips extends StatefulWidget {
+  final String jour;
+  FilteringChips({
+    @required this.jour,
+  });
   @override
   _FilteringChipsState createState() => _FilteringChipsState();
 }
@@ -11,12 +16,13 @@ class _FilteringChipsState extends State<FilteringChips> {
     return Scaffold(
       body: new Column(
         children: [
-          wrapWidget(),
+          _buildChips(),
           Center(
             child : RaisedButton(
               textColor: Colors.white,
               color: Colors.green,
               onPressed: () {
+                DatabaseService().creerplanning(_options, _selected,widget.jour);
                 Navigator.of(context).pop();
               },
               child: const Text('Appliquer',style: TextStyle(fontSize: 18),),
@@ -26,6 +32,46 @@ class _FilteringChipsState extends State<FilteringChips> {
       ),
     );
   }
+
+
+  List<String> _options = ['Ain Naadja', 'Bab el Oued', 'Belcourt','Dar el beida','Rouiba','Reghaia','Benaknoun','El Biar'
+  ,'Kouba','Hussein Dey','Ruissea','Bir Mourad Rais','Birkhadem','Oued Semmar','Bab Ezzaour','Birkhadem','Said Hamdin','Hydra','Sidi Yahia'];
+
+  List<bool> _selected = [false, false, false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false];
+
+
+  Widget _buildChips() {
+    List<Widget> chips = new List();
+    for (int i = 0; i < _options.length; i++) {
+
+      FilterChip filterChip = FilterChip(
+        selected: _selected[i],
+        label: Text(_options[i], style: TextStyle(color: Colors.white)),
+        avatar: CircleAvatar(
+          child: Text(_options[i][0].toUpperCase()),
+        ),
+        elevation: 10,
+        pressElevation: 5,
+        shadowColor: Colors.teal,
+        backgroundColor: Color(0xFF9575cd),
+        selectedColor: Colors.green,
+        onSelected: (bool selected) {
+          setState(() {
+            _selected[i] = selected;
+          });
+        },
+      );
+      chips.add(Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          child: filterChip
+      ));
+    }
+    return Wrap(
+      children: chips,
+    );
+
+  }
+
 
   wrapWidget() {
     return Wrap(
@@ -76,3 +122,5 @@ class _FilteringChipsState extends State<FilteringChips> {
     );
   }
 }
+
+

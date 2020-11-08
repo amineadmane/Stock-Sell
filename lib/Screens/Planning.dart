@@ -1,7 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:stocknsell/Screens/DayItem.dart';
 import 'package:stocknsell/Screens/FIlteringChips.dart';
-import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Planning extends StatefulWidget {
   @override
@@ -20,22 +21,22 @@ class _PlanningState extends State<Planning> {
 }
 
 Widget _dayspage(BuildContext context) {
-  void showDialogup(context) {
+
+  void showDialogup(context,String jour) {
     showGeneralDialog(
       barrierLabel: "Barrier",
       barrierDismissible: true,
       barrierColor: Colors.black.withOpacity(0.5),
       transitionDuration: Duration(milliseconds: 800),
       context: context,
-      pageBuilder: (_, __, ___) {
+      pageBuilder: (_, __, ___,) {
         return Scaffold(
           appBar: AppBar(
             title: Text("Secteur a Visiter"),
           ),
           body :
-               FilteringChips(),
+               FilteringChips(jour: jour),
           );
-
       },
       transitionBuilder: (_, anim, __, child) {
         return SlideTransition(
@@ -50,10 +51,9 @@ Widget _dayspage(BuildContext context) {
 
   return ListView(
       children: <Widget>[
-      Container(
-        margin: EdgeInsets.only(left: 10),
-
-            child : Card(
+        Container(
+          margin: EdgeInsets.only(left: 10),
+          child : Card(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -65,46 +65,48 @@ Widget _dayspage(BuildContext context) {
                       child: Text("DI"),
                     ),
                     title: Text('Dimanche',
-                    style: TextStyle(fontSize: 25,fontWeight: FontWeight.w600),),
+                      style: TextStyle(fontSize: 25,fontWeight: FontWeight.w600),),
                   ),
                 ),
-              Wrap(
-                spacing: 6.0,
-                children: <Widget>[
-                  Chip(
-                    label: Text('Ain naadja',style: TextStyle(color: Colors.white),),
-                    backgroundColor: Colors.lightGreen,
-                  ),
-                  const SizedBox(width: 14,),
-                  Chip(
-                      backgroundColor: Colors.lightGreen,
-                      label: Text('el herrach',style: TextStyle(color: Colors.white),)
-
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(right : 15),
-                    child : RaisedButton(
-                      textColor: Colors.white,
-                      color: Colors.orangeAccent,
-                      onPressed: (){
-                        showDialogup(context);
+                StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance.collection("planification").snapshots(),
+                  builder: (context, snapshot) {
+                    return !snapshot.hasData
+                        ? Center(child: CircularProgressIndicator())
+                        : ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: snapshot.data.docs.length,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot data = snapshot.data.docs[index];
+                         return DayItem(
+                           Secteurs: [data['dimanche']],
+                          );
                       },
-                      child: const Text('Programme',style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600),),
-                    ),
-                  )
+                    );
+                  },
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(right : 15),
+                      child : RaisedButton(
+                        textColor: Colors.white,
+                        color: Colors.orangeAccent,
+                        onPressed: (){
+                          showDialogup(context,"dimanche");
+                        },
+                        child: const Text('Programme',style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600),),
+                      ),
+                    )
+                  ],
+                ),
               ],
-          ),
-        ],
             ),
-          elevation: 3,
-          color: Colors.white70,
+            elevation: 3,
+            color: Colors.white70,
+          ),
         ),
-      ),
         Container(
           margin: EdgeInsets.only(left: 10),
 
@@ -123,33 +125,22 @@ Widget _dayspage(BuildContext context) {
                       style: TextStyle(fontSize: 25,fontWeight: FontWeight.w600),),
                   ),
                 ),
-                Wrap(
-                  spacing: 6.0,
-                  children: <Widget>[
-                    Chip(
-                      label: Text('Benaknoun',style: TextStyle(color: Colors.white),),
-                      backgroundColor: Colors.lightGreen,
-                    ),
-                    Chip(
-                        backgroundColor: Colors.lightGreen,
-                        label: Text('EL Biar',style: TextStyle(color: Colors.white),)
-
-                    ),
-                    Chip(
-                      label: Text('Benaknoun',style: TextStyle(color: Colors.white),),
-                      backgroundColor: Colors.lightGreen,
-                    ),
-                    Chip(
-                        backgroundColor: Colors.lightGreen,
-                        label: Text('EL Biar',style: TextStyle(color: Colors.white),)
-
-                    ),
-                    Chip(
-                        backgroundColor: Colors.lightGreen,
-                        label: Text('Dely Brahim',style: TextStyle(color: Colors.white),)
-
-                    ),
-                  ],
+                StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance.collection("planification").snapshots(),
+                  builder: (context, snapshot) {
+                    return !snapshot.hasData
+                        ? Center(child: CircularProgressIndicator())
+                        : ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: snapshot.data.docs.length,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot data = snapshot.data.docs[index];
+                        return DayItem(
+                          Secteurs: [data['Lundi']]
+                       );
+                      },
+                    );
+                  },
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -160,7 +151,7 @@ Widget _dayspage(BuildContext context) {
                         textColor: Colors.white,
                         color: Colors.orangeAccent,
                         onPressed: () {
-                          showDialogup(context);
+                          showDialogup(context,"Lundi");
                         },
                         child: const Text('Programme',style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600),),
                       ),
@@ -191,20 +182,22 @@ Widget _dayspage(BuildContext context) {
                       style: TextStyle(fontSize: 25,fontWeight: FontWeight.w600),),
                   ),
                 ),
-                Wrap(
-                  spacing: 6.0,
-                  children: <Widget>[
-                    Chip(
-                      label: Text('Rouiba',style: TextStyle(color: Colors.white),),
-                      backgroundColor: Colors.lightGreen,
-                    ),
-                    const SizedBox(width: 14,),
-                    Chip(
-                        backgroundColor: Colors.lightGreen,
-                        label: Text('Reghaya',style: TextStyle(color: Colors.white),)
-
-                    ),
-                  ],
+                StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance.collection("planification").snapshots(),
+                  builder: (context, snapshot) {
+                    return !snapshot.hasData
+                        ? Center(child: CircularProgressIndicator())
+                        : ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: snapshot.data.docs.length,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot data = snapshot.data.docs[index];
+                        return DayItem(
+                          Secteurs: [data['Mardi']]
+                        );
+                      },
+                    );
+                  },
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -215,7 +208,7 @@ Widget _dayspage(BuildContext context) {
                         textColor: Colors.white,
                         color: Colors.orangeAccent,
                         onPressed: () {
-                          showDialogup(context);
+                          showDialogup(context,"Mardi");
                         },
                         child: const Text('Programme',style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600),),
                       ),
@@ -246,20 +239,22 @@ Widget _dayspage(BuildContext context) {
                       style: TextStyle(fontSize: 25,fontWeight: FontWeight.w600),),
                   ),
                 ),
-                Wrap(
-                  spacing: 6.0,
-                  children: <Widget>[
-                    Chip(
-                      label: Text('Bab EL oued',style: TextStyle(color: Colors.white),),
-                      backgroundColor: Colors.lightGreen,
-                    ),
-                    const SizedBox(width: 14,),
-                    Chip(
-                        backgroundColor: Colors.lightGreen,
-                        label: Text('Ain Benian',style: TextStyle(color: Colors.white),)
-
-                    ),
-                  ],
+                StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance.collection("planification").snapshots(),
+                  builder: (context, snapshot) {
+                    return !snapshot.hasData
+                        ? Center(child: CircularProgressIndicator())
+                        : ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: snapshot.data.docs.length,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot data = snapshot.data.docs[index];
+                        return DayItem(
+                            Secteurs: [data['Mercredi']]
+                        );
+                      },
+                    );
+                  },
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -270,7 +265,7 @@ Widget _dayspage(BuildContext context) {
                         textColor: Colors.white,
                         color: Colors.orangeAccent,
                         onPressed: () {
-                          showDialogup(context);
+                          showDialogup(context,"Mercredi");
                         },
                         child: const Text('Programme',style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600),),
                       ),
@@ -301,15 +296,22 @@ Widget _dayspage(BuildContext context) {
                       style: TextStyle(fontSize: 25,fontWeight: FontWeight.w600),),
                   ),
                 ),
-                Wrap(
-                  spacing: 6.0,
-                  children: <Widget>[
-                    Chip(
-                      label: Text('Alger Centre',style: TextStyle(color: Colors.white),),
-                      backgroundColor: Colors.lightGreen,
-                    ),
-                    const SizedBox(width: 14,),
-                  ],
+                StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance.collection("planification").snapshots(),
+                  builder: (context, snapshot) {
+                    return !snapshot.hasData
+                        ? Center(child: CircularProgressIndicator())
+                        : ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: snapshot.data.docs.length,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot data = snapshot.data.docs[index];
+                        return DayItem(
+                            Secteurs: [data['Jeudi']]
+                        );
+                      },
+                    );
+                  },
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -320,7 +322,7 @@ Widget _dayspage(BuildContext context) {
                         textColor: Colors.white,
                         color: Colors.orangeAccent,
                         onPressed: () {
-                          showDialogup(context);
+                          showDialogup(context,"Jeudi");
                         },
                         child: const Text('Programme',style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600),),
                       ),
@@ -351,20 +353,22 @@ Widget _dayspage(BuildContext context) {
                       style: TextStyle(fontSize: 25,fontWeight: FontWeight.w600),),
                   ),
                 ),
-                Wrap(
-                  spacing: 6.0,
-                  children: <Widget>[
-                    Chip(
-                      label: Text('Alger Plage',style: TextStyle(color: Colors.white),),
-                      backgroundColor: Colors.lightGreen,
-                    ),
-                    const SizedBox(width: 14,),
-                    Chip(
-                        backgroundColor: Colors.lightGreen,
-                        label: Text('Cafe Chergui',style: TextStyle(color: Colors.white),)
-
-                    ),
-                  ],
+                StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance.collection("planification").snapshots(),
+                  builder: (context, snapshot) {
+                    return !snapshot.hasData
+                        ? Center(child: CircularProgressIndicator())
+                        : ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: snapshot.data.docs.length,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot data = snapshot.data.docs[index];
+                        return DayItem(
+                            Secteurs: [data['Vendredi']]
+                        );
+                      },
+                    );
+                  },
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -375,7 +379,7 @@ Widget _dayspage(BuildContext context) {
                         textColor: Colors.white,
                         color: Colors.orangeAccent,
                         onPressed: () {
-                          showDialogup(context);
+                          showDialogup(context,"Vendredi");
                         },
                         child: const Text('Programme',style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600),),
                       ),
@@ -406,15 +410,22 @@ Widget _dayspage(BuildContext context) {
                       style: TextStyle(fontSize: 25,fontWeight: FontWeight.w600),),
                   ),
                 ),
-                Wrap(
-                  spacing: 6.0,
-                  children: <Widget>[
-                    Chip(
-                      label: Text('Staouali',style: TextStyle(color: Colors.white),),
-                      backgroundColor: Colors.lightGreen,
-                    ),
-                    const SizedBox(width: 14,),
-                  ],
+                StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance.collection("planification").snapshots(),
+                  builder: (context, snapshot) {
+                    return !snapshot.hasData
+                        ? Center(child: CircularProgressIndicator())
+                        : ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: snapshot.data.docs.length,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot data = snapshot.data.docs[index];
+                        return DayItem(
+                            Secteurs: [data['Samedi']]
+                        );
+                      },
+                    );
+                  },
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -425,7 +436,7 @@ Widget _dayspage(BuildContext context) {
                         textColor: Colors.white,
                         color: Colors.orangeAccent,
                         onPressed: () {
-                          showDialogup(context);
+                          showDialogup(context,"Samedi");
                         },
                         child: const Text('Programme',style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600),),
                       ),
@@ -438,8 +449,8 @@ Widget _dayspage(BuildContext context) {
             color: Colors.white70,
           ),
         ),
-    ],
-  );
+      ],
+    );
 }
 
 

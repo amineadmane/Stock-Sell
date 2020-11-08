@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:stocknsell/Screens/ClientSearch.dart';
 import 'package:stocknsell/Services/database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:stocknsell/Screens/ClientItem.dart';
@@ -16,9 +16,18 @@ class _ClientsState extends State<Clients> {
   String email;
   String Secteur;
   String URL;
+  String _filter = "nom";
+  selectnom() {
+    setState(() => _filter="nom");
+  }
+  selectsecteur()
+  {
+    setState(() => _filter="secteur");
+  }
 
   @override
   Widget build(BuildContext context) {
+
     void showDialog() {
       showGeneralDialog(
         barrierLabel: "Barrier",
@@ -154,7 +163,7 @@ class _ClientsState extends State<Clients> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text('Drawer Demo')),
+      appBar: AppBar(title: Text('Clients')),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
@@ -173,10 +182,13 @@ class _ClientsState extends State<Clients> {
         backgroundColor: Colors.blue,
       ),
     );
+
   }
 }
 
+
 Widget _myListView(BuildContext context) {
+  String filter = "";
   return Column(
     children: [
       Container(
@@ -185,7 +197,11 @@ Widget _myListView(BuildContext context) {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             ListTile(
-              title: TextField(
+              title: TextFormField(
+                initialValue: filter,
+                onChanged: (value) {
+                  filter = value;
+                },
                 decoration: InputDecoration(
                   fillColor: Colors.blueGrey,
                   filled: true,
@@ -194,6 +210,9 @@ Widget _myListView(BuildContext context) {
                       Icons.search,
                       color: Colors.white,
                     ),
+                    onPressed: (){
+                      Navigator.pushNamed(context, '/search',arguments:filter);
+                    },
                     tooltip: 'Rechercher',
                   ),
                   hintText: 'Rechercher',
@@ -204,37 +223,16 @@ Widget _myListView(BuildContext context) {
           ],
         ),
       ),
-      Container(
-        margin: EdgeInsets.only(left: 10),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            FilterChip(
-              avatar: CircleAvatar(
-                child: Icon(Icons.person),
-              ),
-              label: Text('Nom'),
-              backgroundColor: Colors.green,
-            ),
-            const SizedBox(
-              width: 14,
-            ),
-            FilterChip(
-                avatar: CircleAvatar(
-                  child: Icon(Icons.phone),
-                ),
-                backgroundColor: Colors.green,
-                label: Text('Phone')),
-          ],
-        ),
-      ),
     ],
   );
 }
 
 Widget _mystreambuilder(BuildContext context) {
+  Size size = MediaQuery.of(context).size;
+  double screenhight = size.height;
+
   return Container(
+    height: screenhight*0.8,
     child: StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance.collection("clients").snapshots(),
       builder: (context, snapshot) {

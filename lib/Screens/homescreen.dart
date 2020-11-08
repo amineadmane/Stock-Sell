@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:stocknsell/Screens/ClientItem.dart';
+import 'package:intl/intl.dart';
+import 'package:stocknsell/Services/database.dart';
+
+import 'DayItem.dart';
 
 final Color backgroundColor = Color(0xFF4A4A58);
 
@@ -18,9 +22,8 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
   Animation<double> _scaleAnimation;
   Animation<double> _menuScaleAnimation;
   Animation<Offset> _slideAnimation;
-
   @override
-  void initState() {
+   initState() {
     super.initState();
     _controller = AnimationController(vsync: this, duration: duration);
     _scaleAnimation = Tween<double>(begin: 1, end: 0.8).animate(_controller);
@@ -29,19 +32,47 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
     _slideAnimation = Tween<Offset>(begin: Offset(-1, 0), end: Offset(0, 0))
         .animate(_controller);
   }
-
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
 
+  double _ChiffreAffaire = 0;
+  int _articlevendu = 0;
+  int _nbclientavisiter = 0;
+  int _Prodrestfourgon = 0;
+  String _productname1 = "Produit1";
+  String _nbvente1 = "Nombre de vente 1";
+  String _productname2 = "Produit2";
+  String _nbvente2 = "Nombre de vente 2";
+
+  raffraichirCA(double value) {
+    setState(() => _ChiffreAffaire=value);
+  }
+  raffraichirAV(int value) {
+    setState(() => _articlevendu=value);
+  }
+  raffraichirfourgon(int value){
+    setState(() => _Prodrestfourgon=value);
+  }
+  raffraichirprod1(String value) {
+    setState(() => _productname1=value);
+  }
+  raffraichirnb1(String value){
+    setState(() => _nbvente1=value);
+  }
+  raffraichirprod2(String value) {
+    setState(() => _productname2=value);
+  }
+  raffraichirnb2(String value){
+    setState(() => _nbvente2=value);
+  }
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     screenHeight = size.height;
     screenWidth = size.width;
-
     return Scaffold(
       backgroundColor: backgroundColor,
       body: Stack(
@@ -195,9 +226,13 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                 ListTile(
                   title: Text("Parametres",
                       style: TextStyle(color: Colors.white, fontSize: 22)),
-                  leading: Icon(
-                    Icons.settings_applications_rounded,
-                    color: Colors.white,
+                  leading: IconButton(
+                    icon: Icon(Icons.settings),
+                    color: Colors.white, onPressed: () {
+                      setState(() {
+
+                      });
+                  },
                   ),
                 ),
                 SizedBox(
@@ -216,6 +251,22 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
   }
 
   Widget dashboard(context) {
+
+    String covertinttoday(int day)
+    {
+      String jour = "";
+      if(day == 1) jour = "Lundi";
+      if(day == 2) jour = "Mardi";
+      if(day == 3) jour = "Mercredi";
+      if(day == 4) jour = "Jeudi";
+      if(day == 5) jour = "Vendredi";
+      if(day == 6) jour = "Samedi";
+      if(day == 7) jour = "dimanche";
+      return jour;
+    }
+    double ChiffreAffaire ;
+    final today = DateTime.now().weekday;
+    List<dynamic> secteurs = new List<String>();
     return AnimatedPositioned(
       duration: duration,
       top: 0,
@@ -269,49 +320,23 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                             style: TextStyle(fontSize: 26, color: Colors.white),
                           ),
                         ),
-                        Wrap(
-                          spacing: 6.0,
-                          children: <Widget>[
-                            Chip(
-                              label: Text(
-                                'Ain naadja',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              backgroundColor: Colors.lightGreen,
-                            ),
-                            Chip(
-                                backgroundColor: Colors.lightGreen,
-                                label: Text(
-                                  'el herrach',
-                                  style: TextStyle(color: Colors.white),
-                                )),
-                            Chip(
-                              label: Text(
-                                'Ain naadja',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              backgroundColor: Colors.lightGreen,
-                            ),
-                            Chip(
-                                backgroundColor: Colors.lightGreen,
-                                label: Text(
-                                  'el herrach',
-                                  style: TextStyle(color: Colors.white),
-                                )),
-                            Chip(
-                              label: Text(
-                                'Ain naadja',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              backgroundColor: Colors.lightGreen,
-                            ),
-                            Chip(
-                                backgroundColor: Colors.lightGreen,
-                                label: Text(
-                                  'el herrach',
-                                  style: TextStyle(color: Colors.white),
-                                )),
-                          ],
+                        StreamBuilder<QuerySnapshot>(
+                          stream: FirebaseFirestore.instance.collection("planification").snapshots(),
+                          builder: (context, snapshot) {
+                            return !snapshot.hasData
+                                ? Center(child: CircularProgressIndicator())
+                                : ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: snapshot.data.docs.length,
+                              itemBuilder: (context, index) {
+                                DocumentSnapshot data = snapshot.data.docs[index];
+                                secteurs = data[covertinttoday(today)];
+                                return DayItem(
+                                    Secteurs: [secteurs]
+                                );
+                              },
+                            );
+                          },
                         ),
                         const Divider(
                           color: Colors.white70,
@@ -320,16 +345,18 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                         ),
                         Center(
                           child: Text(
-                            "Client restant a visiter",
+                            "Client a visiter aujourd'hui ",
                             style: TextStyle(fontSize: 26, color: Colors.white),
                           ),
                         ),
                         Container(
+                          height: screenHeight * 0.4,
                           child: StreamBuilder<QuerySnapshot>(
                             stream: FirebaseFirestore.instance
                                 .collection("clients")
                                 .snapshots(),
                             builder: (context, snapshot) {
+                              _nbclientavisiter = 0;
                               return !snapshot.hasData
                                   ? Center(child: CircularProgressIndicator())
                                   : ListView.builder(
@@ -339,36 +366,51 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                       itemBuilder: (context, index) {
                                         DocumentSnapshot data =
                                             snapshot.data.docs[index];
-                                        return ClientItem(
-                                          nom: data['nom'],
-                                          documentSnapshot: data,
-                                          id: data.id,
-                                          url: data['URL'],
-                                          phone: data['phone'],
-                                          email: data['email'],
-                                          secteur: data['Secteur'],
-                                        );
-                                      },
+                                        if(secteurs.contains(data['Secteur']))
+                                          {
+                                            _nbclientavisiter = _nbclientavisiter +1;
+                                            return ClientItem(
+                                              nom: data['nom'],
+                                              documentSnapshot: data,
+                                              id: data.id,
+                                              url: data['URL'],
+                                              phone: data['phone'],
+                                              email: data['email'],
+                                              secteur: data['Secteur'],
+                                            );
+                                          }
+                                        else
+                                          {
+                                            return Container(
+                                            );
+                                          }
+                                      }
                                     );
                             },
                           ),
                         ),
                         const Divider(
-                          color: Colors.black45,
+                          color: Colors.white70,
                           height: 20,
                           thickness: 2,
                         ),
                         Center(
+                          child: Text(
+                            "Tournée d'aujourd'hui ",
+                            style: TextStyle(fontSize: 26, color: Colors.white),
+                          ),
+                        ),
+                        Center(
                             child: Card(
-                          margin: EdgeInsets.only(bottom: 30),
-                          elevation: 5,
-                          color: Colors.white70,
-                          child: Row(
-                            children: [
-                              Icon(
+                               margin: EdgeInsets.only(bottom: 30,top: 10),
+                              elevation: 5,
+                              color: Colors.white70,
+                              child: Row(
+                                children: [
+                                 Icon(
                                 Icons.directions_bus_rounded,
                                 color: Colors.green,
-                                size: 200,
+                                size: 100,
                               ),
                               Container(
                                 margin: EdgeInsets.only(right: 10.0),
@@ -384,25 +426,12 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                   children: [
                                     Row(
                                       children: [
-                                        Text("Clients Visites : ",
+                                        Text("Nombre de Clients a Visiter : ",
                                             style: TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold)),
                                         Text(
-                                          " 31",
-                                          style: TextStyle(fontSize: 16),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Row(
-                                      children: [
-                                        Text("Clients Restants : ",
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold)),
-                                        Text(
-                                          " 12",
+                                          "$_nbclientavisiter",
                                           style: TextStyle(fontSize: 16),
                                         ),
                                       ],
@@ -411,13 +440,13 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                     Row(
                                       children: [
                                         Text(
-                                          "Produits restants : ",
+                                          "Produits restants au fourgon : ",
                                           style: TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold),
                                         ),
                                         Text(
-                                          " 5",
+                                          "$_Prodrestfourgon",
                                           style: TextStyle(fontSize: 16),
                                         ),
                                       ],
@@ -427,13 +456,23 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
-                                        RaisedButton(
-                                          textColor: Colors.white,
-                                          color: Colors.orange,
-                                          onPressed: () {},
-                                          child: const Text(
-                                            'Details',
-                                            style: TextStyle(fontSize: 22),
+                                        Center(
+                                          child: RaisedButton(
+                                            textColor: Colors.white,
+                                            color: Colors.orange,
+                                            onPressed: () async {
+                                              int count = 0;
+                                              await DatabaseService().getnbproduitrestantfourgon().then((QuerySnapshot querySnapshot) => {
+                                                querySnapshot.docs.forEach((doc) {
+                                                 count = count+1;
+                                                })
+                                              });
+                                              raffraichirfourgon(count);
+                                            },
+                                            child: const Text(
+                                              'Raffraichir',
+                                              style: TextStyle(fontSize: 22),
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -445,13 +484,19 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                           ),
                         )),
                         const Divider(
-                          color: Colors.black45,
+                          color: Colors.white70,
                           height: 20,
                           thickness: 2,
                         ),
                         Center(
+                          child: Text(
+                            "Finance",
+                            style: TextStyle(fontSize: 26, color: Colors.white),
+                          ),
+                        ),
+                        Center(
                             child: Card(
-                          margin: EdgeInsets.only(bottom: 30),
+                          margin: EdgeInsets.only(bottom: 30,top:10),
                           elevation: 5,
                           color: Colors.white70,
                           child: Row(
@@ -459,7 +504,7 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                               Icon(
                                 Icons.monetization_on,
                                 color: Colors.green,
-                                size: 200,
+                                size: 100,
                               ),
                               Container(
                                 margin: EdgeInsets.only(right: 10.0),
@@ -482,24 +527,12 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold)),
                                         Text(
-                                          " 521",
+                                          "$_articlevendu",
                                           style: TextStyle(fontSize: 16),
                                         ),
                                       ],
                                     ),
                                     const SizedBox(height: 8),
-                                    Row(
-                                      children: [
-                                        Text("Benefices : ",
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold)),
-                                        Text(
-                                          " 12000 DA",
-                                          style: TextStyle(fontSize: 16),
-                                        ),
-                                      ],
-                                    ),
                                     const SizedBox(height: 8),
                                     Row(
                                       children: [
@@ -510,8 +543,10 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                               fontWeight: FontWeight.bold),
                                         ),
                                         Text(
-                                          " 120000",
-                                          style: TextStyle(fontSize: 16),
+                                          "$_ChiffreAffaire",
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold),
                                         ),
                                       ],
                                     ),
@@ -523,9 +558,20 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                         RaisedButton(
                                           textColor: Colors.white,
                                           color: Colors.orange,
-                                          onPressed: () {},
+                                          onPressed: () async {
+                                            double som = 0;
+                                            int articlevendu = 0;
+                                            await DatabaseService().getTotaltoday().then((QuerySnapshot querySnapshot) => {
+                                              querySnapshot.docs.forEach((doc) {
+                                                som = som + doc['couttotale'];
+                                                articlevendu = articlevendu + doc['nb_product'];
+                                              })
+                                            });
+                                            raffraichirCA(som);
+                                            raffraichirAV(articlevendu);
+                                          },
                                           child: const Text(
-                                            'Details',
+                                            'Raffraichir',
                                             style: TextStyle(fontSize: 22),
                                           ),
                                         ),
@@ -533,10 +579,119 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                     ),
                                   ],
                                 ),
-                              ))
+                              )),
+
                             ],
                           ),
                         )),
+                        const Divider(
+                          color: Colors.white70,
+                          height: 20,
+                          thickness: 2,
+                        ),
+                        Center(
+                          child: Text(
+                            "Produits les plus achetes",
+                            style: TextStyle(fontSize: 26, color: Colors.white),
+                          ),
+                        ),
+                        Center(
+                            child: Card(
+                              margin: EdgeInsets.only(bottom: 30,top: 10),
+                              elevation: 5,
+                              color: Colors.white70,
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.article,
+                                    color: Colors.green,
+                                    size: 100,
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(right: 10.0),
+                                    color: Colors.black45,
+                                    height: 200,
+                                    width: 2,
+                                  ), //Divider
+                                  Container(
+                                      child: Padding(
+                                        padding: EdgeInsets.all(1.0),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Text("$_productname1 :",
+                                                    style: TextStyle(
+                                                        fontSize: 20,
+                                                        fontWeight: FontWeight.bold)),
+                                                Text(
+                                                  "$_nbvente1 ",
+                                                  style: TextStyle(fontSize: 20),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  "$_productname2 :",
+                                                  style: TextStyle(
+                                                      fontSize: 20,
+                                                      fontWeight: FontWeight.bold),
+                                                ),
+                                                Text(
+                                                  "$_nbvente2",
+                                                  style: TextStyle(fontSize: 20),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 14),
+                                            Row(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                              children: [
+                                                Center(
+                                                  child: RaisedButton(
+                                                    textColor: Colors.white,
+                                                    color: Colors.orange,
+                                                    onPressed: () async {
+                                                      List<
+                                                          String> list = new List<
+                                                          String>();
+                                                      await DatabaseService()
+                                                          .getmostselledproducts()
+                                                          .then((
+                                                          QuerySnapshot querySnapshot) =>
+                                                      {
+                                                        querySnapshot.docs
+                                                            .forEach((doc) {
+                                                          list.add(
+                                                              doc['reference'].toString());
+                                                          list.add(
+                                                              doc['nbvente'].toString());
+                                                        })
+                                                      });
+                                                      raffraichirprod1(list[0]);
+                                                      raffraichirnb1(list[1]);
+                                                      raffraichirprod2(list[2]);
+                                                      raffraichirnb2(list[3]);
+                                                    },
+                                                    child: const Text(
+                                                      'Raffraichir',
+                                                      style: TextStyle(fontSize: 22),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ))
+                                ],
+                              ),
+                            )),
                       ],
                     ),
                   ),
