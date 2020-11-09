@@ -101,6 +101,35 @@ class DatabaseService {
     }
   }
 
+  Future<void> deletevente(String clientId,String productId,String date) async {
+
+
+    var product = await ProductCollection.doc(productId).get();
+    int nbproduitfourgon = product.get('nbunitfourgon');
+    int nbvente = product.get('nbvente');
+
+    var a = await FirebaseFirestore.instance
+        .collection('vente')
+        .where("client_id", isEqualTo: clientId)
+        .where("date", isEqualTo: date)
+        .where("product_id", isEqualTo: productId)
+        .get();
+    if (a.size != 0) {
+      String docid = a.docs.first.id;
+      int nb_product = a.docs.first.get('nb_product');
+      try {
+        ProductCollection.doc(productId)
+            .update({'nbunitfourgon':nbproduitfourgon + nb_product , 'nbvente': nbvente - nb_product});
+        VenteCollection.doc(docid).delete();
+        
+        print("Annulation successful");
+      } catch (e) {
+        print(e.toString());
+      }
+    }else{
+      print("Nothing to delete");
+    }
+  }
   void savevente(
       String clientId,
       String client_name,
@@ -197,4 +226,5 @@ class DatabaseService {
         .limit(3)
         .get();
   }
+
 }

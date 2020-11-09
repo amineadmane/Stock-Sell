@@ -43,6 +43,45 @@ class _ProductItemState extends State<ProductItem> {
     });
   }
 
+  createalertedialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+              title: Text("Annulation"),
+              content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text("Voulez-vous vraiment Annuler les ventes de ce produit d'aujourd'hui a ce client?"),
+                    ButtonBar(
+                      children: <Widget>[
+                        RaisedButton(
+                            textColor: Colors.white,
+                            color: Colors.red,
+                            elevation: 4,
+                            onPressed: () {
+                              String currentdate = DateFormat('dd-MM-yyy')
+                                  .format(DateTime.now())
+                                  .toString();
+                                DatabaseService().deletevente(widget.client_id, widget.id,currentdate);
+                              Navigator.of(context).pop();
+                            },
+                            child: Text("Annuler")),
+                        RaisedButton(
+                            textColor: Colors.white,
+                            color: Colors.green,
+                            elevation: 4,
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text("Retour")),
+                      ],
+                    ),
+                  ]));
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     _prixunitaire = widget.unitprice;
@@ -208,10 +247,11 @@ class _ProductItemState extends State<ProductItem> {
                             ],
                           ),
                         ),
-                        Center(
-                          child: RaisedButton(
+                        ButtonBar(
+                          children: <Widget>[
+                           RaisedButton(
                             textColor: Colors.white,
-                            color: Colors.orange,
+                            color: Colors.green,
                             onPressed: () {
                               String currentdate = DateFormat('dd-MM-yyy')
                                   .format(DateTime.now())
@@ -248,6 +288,21 @@ class _ProductItemState extends State<ProductItem> {
                                   fontSize: 22),
                             ),
                           ),
+                            RaisedButton(
+                              textColor: Colors.white,
+                              color: Colors.red,
+                              onPressed: () {
+                                  createalertedialog(context);
+                              },
+                              child: const Text(
+                                'Annuler',
+                                style: TextStyle(
+                                    fontFamily: 'Mom cake',
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 22),
+                              ),
+                            ),
+                         ],
                         ),
                       ],
                     ),
