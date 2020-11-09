@@ -23,8 +23,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cloud_firestore: ^0.14.1+3
-  firebase_auth: ^0.18.1+2
+  cloud_firestore: ^0.14.3
+  firebase_auth: ^0.18.3
   rflutter_alert: ^1.1.0
   chips_choice: ^2.0.1
   direct_select: "^1.0.3"

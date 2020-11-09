@@ -93,12 +93,19 @@ class _ClientsState extends State<Clients> {
                             });
                           },
                           items: <String>[
-                            'Alger Centre',
-                            'Bab el oued',
-                            'Bab ezzouar',
-                            'Ain naadja',
-                            'Dar El Beida',
-                            'El Herrach'
+                            'Bab El Oued',
+                            'Baraki',
+                            'Bir Mourad Raïs',
+                            'Birtouta',
+                            'Bouzareah',
+                            'Chéraga',
+                            'Dar El Beïda',
+                            'Draria',
+                            'El Harrach',
+                            'Hussein Dey',
+                            'Rouïba',
+                            'Sidi M\'Hamed',
+                            'Zéralda',
                           ].map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(
                               value: value,

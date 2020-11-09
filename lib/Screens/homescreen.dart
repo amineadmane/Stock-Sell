@@ -425,16 +425,19 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                 padding: EdgeInsets.all(1.0),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Row(
                                       children: [
                                         Text("Nombre de Clients a Visiter : ",
                                             style: TextStyle(
-                                                fontSize: 16,
+                                                fontSize: 13,
                                                 fontWeight: FontWeight.bold)),
                                         Text(
-                                          "$_nbclientavisiter",
-                                          style: TextStyle(fontSize: 16),
+                                          _nbclientavisiter.round().toString(),
+                                          style: TextStyle(
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.bold),
                                         ),
                                       ],
                                     ),
@@ -444,12 +447,14 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                         Text(
                                           "Produits restants au fourgon : ",
                                           style: TextStyle(
-                                              fontSize: 16,
+                                              fontSize: 13,
                                               fontWeight: FontWeight.bold),
                                         ),
                                         Text(
-                                          "$_Prodrestfourgon",
-                                          style: TextStyle(fontSize: 16),
+                                          _Prodrestfourgon.round().toString(),
+                                          style: TextStyle(
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.bold),
                                         ),
                                       ],
                                     ),
@@ -534,7 +539,7 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold)),
                                         Text(
-                                          "$_articlevendu",
+                                          _articlevendu.round().toString(),
                                           style: TextStyle(fontSize: 16),
                                         ),
                                       ],
@@ -550,7 +555,7 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                               fontWeight: FontWeight.bold),
                                         ),
                                         Text(
-                                          "$_ChiffreAffaire",
+                                          _ChiffreAffaire.round().toString(),
                                           style: TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold),

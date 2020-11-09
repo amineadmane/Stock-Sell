@@ -234,7 +234,7 @@ class _ClientState extends State<Client> {
                           leading:
                               const Icon(Icons.location_on, color: Colors.blue),
                           title: DropdownButtonFormField<String>(
-                            value: "Bab ezzouar",
+                            value: widget.Secteur,
                             style: TextStyle(color: Colors.blue),
                             onChanged: (String newValue) {
                               setState(() {
@@ -242,12 +242,19 @@ class _ClientState extends State<Client> {
                               });
                             },
                             items: <String>[
-                              'Alger Centre',
-                              'Bab el oued',
-                              'Bab ezzouar',
-                              'Ain naadja',
-                              'Dar El Beida',
-                              'El Herrach'
+                              'Bab El Oued',
+                              'Baraki',
+                              'Bir Mourad Raïs',
+                              'Birtouta',
+                              'Bouzareah',
+                              'Chéraga',
+                              'Dar El Beïda',
+                              'Draria',
+                              'El Harrach',
+                              'Hussein Dey',
+                              'Rouïba',
+                              'Sidi M\'Hamed',
+                              'Zéralda',
                             ].map<DropdownMenuItem<String>>((String value) {
                               return DropdownMenuItem<String>(
                                 value: value,
@@ -272,14 +279,13 @@ class _ClientState extends State<Client> {
                               const Icon(Icons.article, color: Colors.blue),
                           title: new TextField(
                             decoration: new InputDecoration(
-                              hintText:
-                                  "Argent depense par client : $_chiffreaffaire",
+                              hintText: "Argent depense par client : " +
+                                  _chiffreaffaire.round().toString(),
                             ),
                             readOnly: true,
                           ),
                         ),
                         Container(
-                          margin: EdgeInsets.only(right: 30),
                           child: ButtonBar(
                             children: <Widget>[
                               RaisedButton(
