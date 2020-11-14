@@ -49,8 +49,8 @@ class DatabaseService {
     }
   }
 
-  void addproductstock(String reference, String marque, int baseprice,
-      int nbunitstock, int promprice) async {
+  void addproductstock(String reference, String marque, double baseprice,
+      int nbunitstock, double promprice, double buyprice) async {
     await productCollection.add({
       'reference': reference,
       'marque': marque,
@@ -59,11 +59,19 @@ class DatabaseService {
       'promprice': promprice,
       'nbunitfourgon': 0,
       'nbvente': 0,
+      'buyprice': buyprice
     });
   }
 
-  void updateproduct(String prodid, String reference, String marque,
-      int baseprice, int nbunitstock, int promprice, int nbunitfourgon) {
+  void updateproduct(
+      String prodid,
+      String reference,
+      String marque,
+      double baseprice,
+      int nbunitstock,
+      double promprice,
+      int nbunitfourgon,
+      double buyprice) {
     try {
       productCollection.doc(prodid).update({
         'reference': reference,
@@ -72,6 +80,7 @@ class DatabaseService {
         'nbunitstock': nbunitstock,
         'promprice': promprice,
         'nbunitfourgon': nbunitfourgon,
+        'buyprice': buyprice
       });
     } catch (e) {
       print(e.toString());
@@ -101,9 +110,8 @@ class DatabaseService {
     }
   }
 
-  Future<void> deletevente(String clientId,String productId,String date) async {
-
-
+  Future<void> deletevente(
+      String clientId, String productId, String date) async {
     var product = await ProductCollection.doc(productId).get();
     int nbproduitfourgon = product.get('nbunitfourgon');
     int nbvente = product.get('nbvente');
@@ -118,26 +126,29 @@ class DatabaseService {
       String docid = a.docs.first.id;
       int nb_product = a.docs.first.get('nb_product');
       try {
-        ProductCollection.doc(productId)
-            .update({'nbunitfourgon':nbproduitfourgon + nb_product , 'nbvente': nbvente - nb_product});
+        ProductCollection.doc(productId).update({
+          'nbunitfourgon': nbproduitfourgon + nb_product,
+          'nbvente': nbvente - nb_product
+        });
         VenteCollection.doc(docid).delete();
-        
+
         print("Annulation successful");
       } catch (e) {
         print(e.toString());
       }
-    }else{
+    } else {
       print("Nothing to delete");
     }
   }
+
   void savevente(
       String clientId,
       String client_name,
       String date,
       String productId,
       String marque,
-      int unitprice,
-      int prixpromotionel,
+      double unitprice,
+      double prixpromotionel,
       double _couttotale,
       int nbProducts,
       String proddocid,
@@ -226,5 +237,4 @@ class DatabaseService {
         .limit(3)
         .get();
   }
-
 }

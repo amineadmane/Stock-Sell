@@ -10,6 +10,7 @@ class ProductItemFourg extends StatefulWidget {
   final dynamic nbunitstock;
   final dynamic promprice;
   final String prodid;
+  final dynamic buyprice;
   final DocumentSnapshot documentSnapshot;
   final double screenWidth;
   ProductItemFourg(
@@ -21,7 +22,8 @@ class ProductItemFourg extends StatefulWidget {
       @required this.prodid,
       @required this.documentSnapshot,
       @required this.screenWidth,
-      this.promprice});
+      this.promprice,
+      this.buyprice});
   @override
   _ProductItemFourgState createState() => _ProductItemFourgState();
 }
@@ -42,6 +44,7 @@ class _ProductItemFourgState extends State<ProductItemFourg> {
                   nbunitfourgon: widget.nbunitfourgon.toString(),
                   nbunitstock: widget.nbunitstock.toString(),
                   prodid: widget.prodid,
+                  buyprice: widget.buyprice,
                   promprice: widget.promprice.toString(),
                   documentSnapshot: widget.documentSnapshot,
                 ),

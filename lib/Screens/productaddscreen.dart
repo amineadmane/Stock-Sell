@@ -24,8 +24,8 @@ class _ProductaddPageState extends State<ProductaddPage>
   dynamic baseprice;
   dynamic nbunitfourgon;
   dynamic nbunitstock;
-  dynamic promotionratio = 0;
   dynamic promprix;
+  dynamic buyprice;
 
   @override
   void dispose() {
@@ -165,6 +165,28 @@ class _ProductaddPageState extends State<ProductaddPage>
                           hoverColor: Colors.white,
                           focusColor: Colors.white,
                           labelText: 'Marque',
+                          labelStyle: TextStyle(
+                            color: Colors.white,
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                      TextFormField(
+                        style: TextStyle(color: Colors.white),
+                        keyboardType: TextInputType.number,
+                        cursorColor: Colors.white,
+                        onChanged: (value) {
+                          buyprice = value;
+                        },
+                        decoration: InputDecoration(
+                          fillColor: Colors.white,
+                          hoverColor: Colors.white,
+                          focusColor: Colors.white,
+                          labelText: 'Prix d\'achat',
                           labelStyle: TextStyle(
                             color: Colors.white,
                           ),
@@ -324,33 +346,40 @@ class _ProductaddPageState extends State<ProductaddPage>
                         if ((reference != null &&
                                 marque != null &&
                                 baseprice != null &&
-                                nbunitstock != null) &&
+                                nbunitstock != null &&
+                                buyprice != null) &&
+                            (double.tryParse(buyprice) <=
+                                double.tryParse(baseprice)) &&
                             (!enable)) {
                           DatabaseService().addproductstock(
                               reference,
                               marque,
-                              int.parse(baseprice),
+                              double.parse(baseprice),
                               int.parse(nbunitstock),
-                              int.parse(baseprice));
+                              double.parse(baseprice),
+                              double.parse(buyprice));
                           alertPos();
                         } else if ((reference != null &&
                                 marque != null &&
                                 baseprice != null &&
-                                nbunitstock != null) &&
+                                nbunitstock != null &&
+                                buyprice != null) &&
                             (promprix != null) &&
+                            (double.tryParse(buyprice) <=
+                                double.tryParse(baseprice)) &&
                             (enable)) {
                           if ((promprix != 0) &&
-                              (promotionratio != "") &&
+                              (promprix != "") &&
                               (int.parse(promprix) < int.parse(baseprice))) {
-                            promprix = int.tryParse(promprix);
-                            baseprice = int.tryParse(baseprice);
+                            promprix = double.tryParse(promprix);
+                            baseprice = double.tryParse(baseprice);
                             DatabaseService().addproductstock(
-                              reference,
-                              marque,
-                              baseprice,
-                              int.tryParse(nbunitstock),
-                              promprix,
-                            );
+                                reference,
+                                marque,
+                                baseprice,
+                                int.tryParse(nbunitstock),
+                                promprix,
+                                double.tryParse(buyprice));
                             alertPos();
                           } else {
                             alertNgtv();

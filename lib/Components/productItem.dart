@@ -10,6 +10,7 @@ class ProductItem extends StatefulWidget {
   final dynamic nbunitstock;
   final dynamic promprice;
   final String prodid;
+  final dynamic buyprice;
   final DocumentSnapshot documentSnapshot;
   final double screenWidth;
   ProductItem(
@@ -21,7 +22,8 @@ class ProductItem extends StatefulWidget {
       @required this.prodid,
       @required this.documentSnapshot,
       @required this.screenWidth,
-      @required this.promprice});
+      @required this.promprice,
+      this.buyprice});
   @override
   _ProductItemState createState() => _ProductItemState();
 }
@@ -43,6 +45,7 @@ class _ProductItemState extends State<ProductItem> {
                   nbunitstock: widget.nbunitstock.toString(),
                   prodid: widget.prodid,
                   promprice: widget.promprice.toString(),
+                  buyprice: widget.buyprice.toString(),
                   documentSnapshot: widget.documentSnapshot,
                 ),
               ));

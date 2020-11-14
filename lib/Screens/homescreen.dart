@@ -540,7 +540,9 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                                 fontWeight: FontWeight.bold)),
                                         Text(
                                           _articlevendu.round().toString(),
-                                          style: TextStyle(fontSize: 16),
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold),
                                         ),
                                       ],
                                     ),
@@ -549,7 +551,7 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                     Row(
                                       children: [
                                         Text(
-                                          "CA :",
+                                          "CA : ",
                                           style: TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold),
@@ -641,13 +643,13 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                   children: [
                                     Row(
                                       children: [
-                                        Text("$_productname1 :",
+                                        Text("$_productname1 : ",
                                             style: TextStyle(
-                                                fontSize: 20,
+                                                fontSize: 16,
                                                 fontWeight: FontWeight.bold)),
                                         Text(
                                           "$_nbvente1 ",
-                                          style: TextStyle(fontSize: 20),
+                                          style: TextStyle(fontSize: 16),
                                         ),
                                       ],
                                     ),
@@ -655,14 +657,14 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                     Row(
                                       children: [
                                         Text(
-                                          "$_productname2 :",
+                                          "$_productname2 : ",
                                           style: TextStyle(
-                                              fontSize: 20,
+                                              fontSize: 16,
                                               fontWeight: FontWeight.bold),
                                         ),
                                         Text(
                                           "$_nbvente2",
-                                          style: TextStyle(fontSize: 20),
+                                          style: TextStyle(fontSize: 16),
                                         ),
                                       ],
                                     ),
@@ -670,14 +672,14 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                     Row(
                                       children: [
                                         Text(
-                                          "$_productname3 :",
+                                          "$_productname3 : ",
                                           style: TextStyle(
-                                              fontSize: 20,
+                                              fontSize: 16,
                                               fontWeight: FontWeight.bold),
                                         ),
                                         Text(
                                           "$_nbvente3",
-                                          style: TextStyle(fontSize: 20),
+                                          style: TextStyle(fontSize: 16),
                                         ),
                                       ],
                                     ),

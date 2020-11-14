@@ -9,6 +9,7 @@ import 'package:stocknsell/Screens/homescreen.dart';
 import 'package:stocknsell/Screens/AuthentificationScreen.dart';
 import 'package:stocknsell/Screens/historyscreen.dart';
 import 'package:stocknsell/Screens/Client.dart';
+import 'package:stocknsell/Screens/printerscreen.dart';
 import 'package:stocknsell/Screens/productaddscreen.dart';
 import 'package:stocknsell/Screens/productdetailScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -37,6 +38,7 @@ class StocknSell extends StatelessWidget {
         Clients.id: (context) => Clients(),
         VenteScreen.id: (context) => VenteScreen(),
         ClientSearch.id: (context) => ClientSearch(),
+        PrinterPage.id: (context) => PrinterPage()
       },
     );
   }

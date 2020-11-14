@@ -439,7 +439,8 @@ class _StockPageState extends State<StockPage>
                                                   ventes['nbunitstock'] +
                                                       ventes['nbunitfourgon'],
                                                   ventes['promprice'],
-                                                  0);
+                                                  0,
+                                                  ventes['buyprice']);
                                             }
                                             Navigator.pop(context);
                                           },
@@ -533,6 +534,7 @@ Widget _mystreambuilder(BuildContext context, String order) {
                     nbunitstock: data['nbunitstock'],
                     promprice: data['promprice'],
                     prodid: data.id,
+                    buyprice: data['buyprice'],
                     screenWidth: MediaQuery.of(context).size.width,
                     documentSnapshot: data,
                   );
@@ -567,6 +569,7 @@ Widget _mystreambuilderfourgon(BuildContext context, String order) {
                     nbunitstock: data['nbunitstock'],
                     promprice: data['promprice'],
                     prodid: data.id,
+                    buyprice: data['buyprice'],
                     screenWidth: MediaQuery.of(context).size.width,
                     documentSnapshot: data,
                   );

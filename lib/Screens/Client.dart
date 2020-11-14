@@ -114,7 +114,9 @@ class _ClientState extends State<Client> {
   Widget build(BuildContext context) {
     final int _domnbproduct = widget.somnb_product;
     final double _chiffreaffaire = widget.Chiffredaffaire;
-
+    Size size = MediaQuery.of(context).size;
+    var screenHeight = size.height;
+    var screenWidth = size.width;
     String covertinttoday(int day) {
       String jour = "";
       if (day == 1) jour = "Lundi";
@@ -199,7 +201,7 @@ class _ClientState extends State<Client> {
                   ),
                 ),
                 Positioned(
-                  top: 220,
+                  top: screenHeight * 0.31,
                   left: 10,
                   right: 10,
                   child: Form(

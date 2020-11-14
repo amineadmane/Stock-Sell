@@ -8,7 +8,7 @@ class HistoryItem extends StatefulWidget {
   final String date;
   final String client_id;
   final String clientnom;
-  final int montant;
+  final double montant;
   final List<Produit> produits;
 
   final DocumentSnapshot documentSnapshot;
@@ -55,7 +55,7 @@ class _HistoryItemState extends State<HistoryItem> {
                         date: widget.date,
                         client_id: widget.client_id,
                         clientnom: widget.clientnom,
-                        montant: widget.montant,
+                        montant: widget.montant.toDouble(),
                         produits: widget.produits,
                       )));
         },

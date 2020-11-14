@@ -55,13 +55,13 @@ class _HistoriquePageState extends State<HistoriquePage>
                   (sells.date == ventes['date'])) {
                 trouve = true;
                 produit = Produit();
-                produit.baseprice = ventes['baseprice'];
-                produit.couttotale = ventes['couttotale'].round();
+                produit.baseprice = ventes['baseprice'].toDouble();
+                produit.couttotale = ventes['couttotale'].toDouble();
                 produit.nbarticle = ventes['nb_product'].round();
-                produit.prixpromo = ventes['prixpromo'].round();
+                produit.prixpromo = ventes['prixpromo'].toDouble();
                 produit.nom = ventes['marque'];
                 sells.produits.add(produit);
-                sells.montant += produit.couttotale.round();
+                sells.montant += produit.couttotale;
               }
             }
             if (!trouve) {
@@ -70,13 +70,13 @@ class _HistoriquePageState extends State<HistoriquePage>
                 clientnom: ventes['client_name'],
                 date: ventes['date'],
                 data: ventes,
-                montant: ventes['couttotale'].round(),
+                montant: ventes['couttotale'],
               );
               produit = Produit();
-              produit.baseprice = ventes['baseprice'].round();
-              produit.couttotale = ventes['couttotale'].round();
+              produit.baseprice = ventes['baseprice'].toDouble();
+              produit.couttotale = ventes['couttotale'].toDouble();
               produit.nbarticle = ventes['nb_product'].round();
-              produit.prixpromo = ventes['prixpromo'].round();
+              produit.prixpromo = ventes['prixpromo'].toDouble();
               produit.nom = ventes['marque'];
               vente.produits = List<Produit>();
               vente.produits.add(produit);
@@ -89,14 +89,14 @@ class _HistoriquePageState extends State<HistoriquePage>
               clientnom: ventes['client_name'],
               date: ventes['date'],
               data: ventes,
-              montant: ventes['couttotale'].round(),
+              montant: ventes['couttotale'],
             );
             vente.produits = List<Produit>();
             produit = Produit();
-            produit.baseprice = ventes['baseprice'].round();
-            produit.couttotale = ventes['couttotale'].round();
+            produit.baseprice = ventes['baseprice'].toDouble();
+            produit.couttotale = ventes['couttotale'].toDouble();
             produit.nbarticle = ventes['nb_product'].round();
-            produit.prixpromo = ventes['prixpromo'].round();
+            produit.prixpromo = ventes['prixpromo'].toDouble();
             produit.nom = ventes['marque'];
             vente.produits.add(produit);
             list.add(vente);
@@ -499,7 +499,7 @@ class _HistoriquePageState extends State<HistoriquePage>
                             clientnom: list[index].clientnom,
                             screenWidth: MediaQuery.of(context).size.width,
                             documentSnapshot: list[index].data,
-                            montant: list[index].montant,
+                            montant: list[index].montant.toDouble(),
                             produits: list[index].produits,
                           );
                         },
@@ -521,7 +521,7 @@ class Vente {
   String clientid;
   String clientnom;
   String date;
-  int montant;
+  double montant;
   List<Produit> produits;
   Vente(
       {@required this.clientid,
@@ -534,9 +534,9 @@ class Vente {
 
 class Produit {
   String nom;
-  int baseprice;
-  int prixpromo;
-  int couttotale;
+  double baseprice;
+  double prixpromo;
+  double couttotale;
   int nbarticle;
   Produit(
       {this.baseprice,

@@ -16,6 +16,7 @@ class ProductDetailPage extends StatefulWidget {
   final dynamic nbunitstock;
   final dynamic promprice;
   final String prodid;
+  final dynamic buyprice;
   final DocumentSnapshot documentSnapshot;
   ProductDetailPage(
       {this.reference,
@@ -25,7 +26,8 @@ class ProductDetailPage extends StatefulWidget {
       this.nbunitstock,
       this.documentSnapshot,
       this.prodid,
-      this.promprice});
+      this.promprice,
+      this.buyprice});
   @override
   _ProductDetailPageState createState() => _ProductDetailPageState();
 }
@@ -38,6 +40,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
   var nbunitfourgon;
   var nbunitstock;
   var promprice;
+  var buyprice;
   bool enable = false;
   @override
   void initState() {
@@ -53,6 +56,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
     nbunitfourgon = widget.nbunitfourgon;
     nbunitstock = widget.nbunitstock;
     promprice = widget.promprice;
+    buyprice = widget.buyprice;
   }
 
   bool isCollapsed = true;
@@ -72,7 +76,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text("Opération effectuée !"),
-            content: Text("Produit ajouté au stock avec succés"),
+            content: Text("Produit modifié avec succés"),
             actions: [
               FlatButton(
                   child: Text("Retour"),
@@ -249,6 +253,29 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                             ),
                           ),
                           TextFormField(
+                            initialValue: buyprice,
+                            style: TextStyle(color: Colors.white),
+                            keyboardType: TextInputType.number,
+                            cursorColor: Colors.white,
+                            onChanged: (value) {
+                              buyprice = value;
+                            },
+                            decoration: InputDecoration(
+                              fillColor: Colors.white,
+                              hoverColor: Colors.white,
+                              focusColor: Colors.white,
+                              labelText: 'Prix d\'achat',
+                              labelStyle: TextStyle(
+                                color: Colors.white,
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                          TextFormField(
                             initialValue: baseprice,
                             style: TextStyle(color: Colors.white),
                             keyboardType: TextInputType.number,
@@ -410,6 +437,9 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                                 (nbunitstock != "") &&
                                 (!enable) &&
                                 (nbunitfourgon != "") &&
+                                (buyprice != "") &&
+                                (double.tryParse(buyprice) <=
+                                    double.tryParse(baseprice)) &&
                                 (int.tryParse(nbunitstock) >=
                                     (int.tryParse(nbunitfourgon) -
                                         int.parse(widget.nbunitfourgon)))) {
@@ -421,14 +451,14 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                               }
                               print(nbunitfourgon);
                               DatabaseService().updateproduct(
-                                widget.prodid,
-                                reference,
-                                marque,
-                                int.parse(baseprice),
-                                int.parse(nbunitstock),
-                                int.parse(baseprice),
-                                int.parse(nbunitfourgon),
-                              );
+                                  widget.prodid,
+                                  reference,
+                                  marque,
+                                  double.parse(baseprice),
+                                  int.parse(nbunitstock),
+                                  double.parse(baseprice),
+                                  int.parse(nbunitfourgon),
+                                  double.parse(buyprice));
                               alertPos();
                             } else if ((reference != "") &&
                                 (marque != "") &&
@@ -439,6 +469,9 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                                 (nbunitfourgon != "") &&
                                 (enable) &&
                                 (nbunitfourgon != "") &&
+                                (buyprice != "") &&
+                                (double.tryParse(buyprice) <=
+                                    double.tryParse(baseprice)) &&
                                 (int.tryParse(promprice) <=
                                     int.tryParse(baseprice)) &&
                                 (int.tryParse(nbunitstock) >=
@@ -453,14 +486,14 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                               }
 
                               DatabaseService().updateproduct(
-                                widget.prodid,
-                                reference,
-                                marque,
-                                int.tryParse(baseprice),
-                                int.tryParse(nbunitstock),
-                                int.tryParse(promprice),
-                                int.tryParse(nbunitfourgon),
-                              );
+                                  widget.prodid,
+                                  reference,
+                                  marque,
+                                  double.tryParse(baseprice),
+                                  int.tryParse(nbunitstock),
+                                  double.tryParse(promprice),
+                                  int.tryParse(nbunitfourgon),
+                                  double.tryParse(buyprice));
                               alertPos();
                             } else {
                               alertNgtv();

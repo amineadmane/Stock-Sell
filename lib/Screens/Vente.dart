@@ -5,6 +5,10 @@ import 'package:flutter/widgets.dart';
 import 'package:stocknsell/Screens/Client.dart';
 import 'package:stocknsell/Screens/ProductItem.dart';
 import 'package:stocknsell/Services/database.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
+import 'package:intl/intl.dart';
 
 class VenteScreen extends StatefulWidget {
   static String id = '/vente';
@@ -15,6 +19,95 @@ class VenteScreen extends StatefulWidget {
 class _VenteScreenState extends State<VenteScreen> {
   final Color backgroundColor = Color(0xFF4A4A58);
   double screenWidth, screenHeight;
+  final doc = pw.Document();
+
+  Future<void> printticket(String client_id, String client_name) async {
+    Vente vente = Vente();
+    vente.produits = List();
+    var date = DateFormat.yMd().add_jm().format(DateTime.now()).toString();
+    vente.montant = 0;
+    await DatabaseService()
+        .todaystransaction(client_id)
+        .then((QuerySnapshot querySnapshot) => {
+              querySnapshot.docs.forEach((doc) {
+                Produit produit = Produit();
+                produit.reference = doc['marque'];
+                produit.prixpromo = doc['prixpromo'];
+                produit.couttotale = doc['couttotale'];
+                produit.nbarticle = doc['nb_product'];
+                vente.produits.add(produit);
+                vente.montant += produit.couttotale;
+              })
+            });
+    doc.addPage(pw.Page(
+        pageFormat: PdfPageFormat.roll57,
+        build: (pw.Context context) {
+          return pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Row(
+                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                    children: [
+                      pw.Text('Zaki Delivery',
+                          style: pw.TextStyle(fontSize: 8)),
+                      pw.Text('Tel : 0552962244',
+                          style: pw.TextStyle(fontSize: 8))
+                    ]),
+                pw.Align(
+                    child: pw.Text('Bon de vente',
+                        style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold, fontSize: 13.5))),
+                pw.Text('Pour : $client_name',
+                    style: pw.TextStyle(fontSize: 10)),
+                pw.Text('Le ' + date + '\n', style: pw.TextStyle(fontSize: 9)),
+                pw.Text('Designation article X Qte       P.U          P.T',
+                    style: pw.TextStyle(fontSize: 7)),
+                pw.Text('---------------------------------'),
+                pw.ListView.builder(
+                    itemBuilder: (context, index) {
+                      return pw.Row(
+                          mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                          children: [
+                            pw.Expanded(
+                              flex: 3,
+                              child: pw.Text(
+                                  vente.produits[index].reference.toString() +
+                                      ' X ' +
+                                      vente.produits[index].nbarticle
+                                          .toString(),
+                                  style: pw.TextStyle(fontSize: 7)),
+                            ),
+                            pw.Expanded(
+                                child: pw.Row(
+                                    mainAxisAlignment:
+                                        pw.MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      pw.Text(
+                                          vente.produits[index].prixpromo
+                                              .toStringAsFixed(2),
+                                          style: pw.TextStyle(fontSize: 7)),
+                                      pw.Text(
+                                          vente.produits[index].couttotale
+                                              .toStringAsFixed(2),
+                                          style: pw.TextStyle(fontSize: 7))
+                                    ]),
+                                flex: 2),
+                          ]);
+                    },
+                    itemCount: vente.produits.length),
+                pw.Text('---------------------------------'),
+                pw.Align(
+                    alignment: pw.Alignment.centerRight,
+                    child: pw.Text(
+                        'Total : ' + vente.montant.toStringAsFixed(2),
+                        style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold, fontSize: 11)))
+              ]);
+          // Center
+        }));
+    await Printing.layoutPdf(
+        onLayout: (PdfPageFormat format) async => doc.save());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,10 +144,10 @@ class _VenteScreenState extends State<VenteScreen> {
                           DocumentSnapshot data = snapshot.data.docs[index];
                           return ProductItem(
                             id: data.id,
-                            marque: data['marque'],
-                            unitprice: data['baseprice'],
+                            marque: data['reference'],
+                            unitprice: data['baseprice'].toDouble(),
                             nbunitfourgon: data['nbunitfourgon'],
-                            prixpromotionnel: data['promprice'],
+                            prixpromotionnel: data['promprice'].toDouble(),
                             client_id: client_id,
                             client_name: client_name,
                           );
@@ -70,14 +163,9 @@ class _VenteScreenState extends State<VenteScreen> {
               child: RaisedButton(
                 textColor: Colors.white,
                 color: Colors.blueAccent,
-                onPressed: () {
-                  DatabaseService()
-                      .todaystransaction(client_id)
-                      .then((QuerySnapshot querySnapshot) => {
-                            querySnapshot.docs.forEach((doc) {
-                              //fonction pour la facture client.
-                            })
-                          });
+                onPressed: () async {
+                  printticket(client_id, client_name);
+                  // Navigator.pushNamed(context, PrinterPage.id);
                 },
                 child: Text(
                   'Extraire Facture',
@@ -108,4 +196,18 @@ class productdetails {
     @required this.nb_product,
     @required this.prixpromotionnel,
   });
+}
+
+class Vente {
+  double montant;
+  List<Produit> produits;
+  Vente({this.produits, this.montant});
+}
+
+class Produit {
+  String reference;
+  double prixpromo;
+  double couttotale;
+  int nbarticle;
+  Produit({this.nbarticle, this.reference, this.couttotale, this.prixpromo});
 }

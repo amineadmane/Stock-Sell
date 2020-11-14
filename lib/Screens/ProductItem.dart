@@ -8,10 +8,10 @@ class ProductItem extends StatefulWidget {
   final String client_name;
   final String id;
   final String marque;
-  final int unitprice;
+  final double unitprice;
   int nbunitfourgon;
   final int nbunitstock;
-  final int prixpromotionnel;
+  final double prixpromotionnel;
   ProductItem({
     this.id,
     this.marque,
@@ -32,7 +32,7 @@ class _ProductItemState extends State<ProductItem> {
   double _value = 0;
   int _restant;
   double _couttotale = 0;
-  int _prixunitaire;
+  double _prixunitaire;
   minusrestant() {
     setState(() => _restant = _restant - 1);
   }
@@ -53,7 +53,8 @@ class _ProductItemState extends State<ProductItem> {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Text("Voulez-vous vraiment Annuler les ventes de ce produit d'aujourd'hui a ce client?"),
+                    Text(
+                        "Voulez-vous vraiment Annuler les ventes de ce produit d'aujourd'hui a ce client?"),
                     ButtonBar(
                       children: <Widget>[
                         RaisedButton(
@@ -64,7 +65,8 @@ class _ProductItemState extends State<ProductItem> {
                               String currentdate = DateFormat('dd-MM-yyy')
                                   .format(DateTime.now())
                                   .toString();
-                                DatabaseService().deletevente(widget.client_id, widget.id,currentdate);
+                              DatabaseService().deletevente(
+                                  widget.client_id, widget.id, currentdate);
                               Navigator.of(context).pop();
                             },
                             child: Text("Annuler")),
@@ -86,7 +88,7 @@ class _ProductItemState extends State<ProductItem> {
   Widget build(BuildContext context) {
     _prixunitaire = widget.unitprice;
     _restant = widget.nbunitfourgon;
-    int _prixprom = widget.prixpromotionnel;
+    double _prixprom = widget.prixpromotionnel;
     Size size = MediaQuery.of(context).size;
     screenHeight = size.height;
     screenWidth = size.width;
@@ -201,7 +203,7 @@ class _ProductItemState extends State<ProductItem> {
                               },
                             ),
                             Text(
-                              "$_value",
+                              _value.toStringAsFixed(0),
                               style: TextStyle(
                                   fontFamily: 'Mom cake',
                                   fontWeight: FontWeight.bold,
@@ -229,7 +231,7 @@ class _ProductItemState extends State<ProductItem> {
                           child: Row(
                             children: [
                               Text(
-                                "Cout Totale :",
+                                "Cout Total :",
                                 style: TextStyle(
                                     fontFamily: 'Mom cake',
                                     fontWeight: FontWeight.bold,
@@ -237,62 +239,64 @@ class _ProductItemState extends State<ProductItem> {
                                     fontSize: 18),
                               ),
                               Text(
-                                "$_couttotale",
+                                _couttotale.toStringAsFixed(2),
                                 style: TextStyle(
                                     fontFamily: 'Mom cake',
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
-                                    fontSize: 22.0),
+                                    fontSize: 18),
                               ),
                             ],
                           ),
                         ),
                         ButtonBar(
                           children: <Widget>[
-                           RaisedButton(
-                            textColor: Colors.white,
-                            color: Colors.green,
-                            onPressed: () {
-                              String currentdate = DateFormat('dd-MM-yyy')
-                                  .format(DateTime.now())
-                                  .toString();
-                              DatabaseService().savevente(
-                                  widget.client_id,
-                                  widget.client_name,
-                                  currentdate,
-                                  widget.id,
-                                  widget.marque,
-                                  widget.unitprice,
-                                  widget.prixpromotionnel,
-                                  _couttotale,
-                                  _value.toInt(),
-                                  widget.id,
-                                  _restant);
-                              final snackBar = SnackBar(
-                                content: Text(
-                                    'Operation de vente effectue avec succes'),
-                              );
-                              // Find the Scaffold in the widget tree and use
-                              // it to show a SnackBar.
-                              Scaffold.of(context).showSnackBar(snackBar);
-                              setState(() {
-                                _value = 0;
-                                _couttotale = 0;
-                              });
-                            },
-                            child: const Text(
-                              'Valider',
-                              style: TextStyle(
-                                  fontFamily: 'Mom cake',
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 22),
+                            RaisedButton(
+                              textColor: Colors.white,
+                              color: Colors.green,
+                              onPressed: () {
+                                if (_value != 0) {
+                                  String currentdate = DateFormat('dd-MM-yyy')
+                                      .format(DateTime.now())
+                                      .toString();
+                                  DatabaseService().savevente(
+                                      widget.client_id,
+                                      widget.client_name,
+                                      currentdate,
+                                      widget.id,
+                                      widget.marque,
+                                      widget.unitprice,
+                                      widget.prixpromotionnel,
+                                      _couttotale,
+                                      _value.toInt(),
+                                      widget.id,
+                                      _restant);
+                                  final snackBar = SnackBar(
+                                    content: Text(
+                                        'Operation de vente effectue avec succes'),
+                                  );
+                                  // Find the Scaffold in the widget tree and use
+                                  // it to show a SnackBar.
+                                  Scaffold.of(context).showSnackBar(snackBar);
+                                  setState(() {
+                                    _value = 0;
+                                    _couttotale = 0;
+                                  });
+                                }
+                              },
+                              child: const Text(
+                                'Valider',
+                                style: TextStyle(
+                                    fontFamily: 'Mom cake',
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 22),
+                              ),
                             ),
-                          ),
                             RaisedButton(
                               textColor: Colors.white,
                               color: Colors.red,
                               onPressed: () {
-                                  createalertedialog(context);
+                                createalertedialog(context);
                               },
                               child: const Text(
                                 'Annuler',
@@ -302,7 +306,7 @@ class _ProductItemState extends State<ProductItem> {
                                     fontSize: 22),
                               ),
                             ),
-                         ],
+                          ],
                         ),
                       ],
                     ),

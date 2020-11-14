@@ -10,7 +10,7 @@ class HistoriquedetailPage extends StatefulWidget {
   final String date;
   final String client_id;
   final String clientnom;
-  final int montant;
+  final double montant;
   final List<Produit> produits;
 
   const HistoriquedetailPage(
@@ -144,7 +144,7 @@ class _HistoriquedetailPageState extends State<HistoriquedetailPage>
                           ),
                           Text(
                             "Montant de vente : " +
-                                widget.montant.toString() +
+                                widget.montant.toStringAsFixed(2) +
                                 " DA",
                             style: TextStyle(
                                 fontSize: 15,
@@ -259,7 +259,7 @@ class _HistoriquedetailPageState extends State<HistoriquedetailPage>
                                                   "Montant : " +
                                                       widget.produits[index]
                                                           .couttotale
-                                                          .toString() +
+                                                          .toStringAsFixed(2) +
                                                       " DA",
                                                   style: TextStyle(
                                                       fontFamily: 'Mom cake',

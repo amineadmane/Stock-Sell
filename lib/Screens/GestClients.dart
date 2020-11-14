@@ -142,6 +142,10 @@ class _ClientsState extends State<Clients> {
                         color: Colors.green,
                         onPressed: () {
                           if (_formKey.currentState.validate()) {
+                            const start = "https";
+                            final startIndex = URL.indexOf(start);
+                            final endIndex = URL.length;
+                            URL = URL.substring(startIndex, endIndex);
                             DatabaseService()
                                 .ajouterclient(nom, email, phone, URL, Secteur);
                             Navigator.of(context).pop();
