@@ -207,6 +207,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           TextFormField(
+                            textCapitalization: TextCapitalization.sentences,
                             initialValue: reference,
                             style: TextStyle(color: Colors.white),
                             keyboardType: TextInputType.text,
@@ -230,6 +231,7 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                             ),
                           ),
                           TextFormField(
+                            textCapitalization: TextCapitalization.sentences,
                             initialValue: marque,
                             style: TextStyle(color: Colors.white),
                             keyboardType: TextInputType.text,
@@ -472,8 +474,8 @@ class _ProductDetailPageState extends State<ProductDetailPage>
                                 (buyprice != "") &&
                                 (double.tryParse(buyprice) <=
                                     double.tryParse(baseprice)) &&
-                                (int.tryParse(promprice) <=
-                                    int.tryParse(baseprice)) &&
+                                (double.tryParse(promprice) <=
+                                    double.tryParse(baseprice)) &&
                                 (int.tryParse(nbunitstock) >=
                                     (int.tryParse(nbunitfourgon) -
                                         int.parse(widget.nbunitfourgon)))) {

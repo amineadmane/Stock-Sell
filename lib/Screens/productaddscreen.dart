@@ -132,6 +132,7 @@ class _ProductaddPageState extends State<ProductaddPage>
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       TextFormField(
+                        textCapitalization: TextCapitalization.sentences,
                         style: TextStyle(color: Colors.white),
                         keyboardType: TextInputType.text,
                         cursorColor: Colors.white,
@@ -154,6 +155,7 @@ class _ProductaddPageState extends State<ProductaddPage>
                         ),
                       ),
                       TextFormField(
+                        textCapitalization: TextCapitalization.sentences,
                         style: TextStyle(color: Colors.white),
                         keyboardType: TextInputType.text,
                         cursorColor: Colors.white,

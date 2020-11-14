@@ -435,12 +435,15 @@ class _StockPageState extends State<StockPage>
                                                   ventes.id,
                                                   ventes['reference'],
                                                   ventes['marque'],
-                                                  ventes['baseprice'],
+                                                  ventes['baseprice']
+                                                      .toDouble(),
                                                   ventes['nbunitstock'] +
                                                       ventes['nbunitfourgon'],
-                                                  ventes['promprice'],
+                                                  ventes['promprice']
+                                                      .toDouble(),
                                                   0,
-                                                  ventes['buyprice']);
+                                                  ventes['buyprice']
+                                                      .toDouble());
                                             }
                                             Navigator.pop(context);
                                           },

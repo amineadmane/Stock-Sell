@@ -50,6 +50,7 @@ class _ClientsState extends State<Clients> {
                       new ListTile(
                         leading: const Icon(Icons.person, color: Colors.blue),
                         title: new TextFormField(
+                          textCapitalization: TextCapitalization.words,
                           onChanged: (value) {
                             nom = value;
                           },
@@ -143,12 +144,14 @@ class _ClientsState extends State<Clients> {
                         onPressed: () {
                           if (_formKey.currentState.validate()) {
                             const start = "https";
-                            final startIndex = URL.indexOf(start);
-                            final endIndex = URL.length;
-                            URL = URL.substring(startIndex, endIndex);
-                            DatabaseService()
-                                .ajouterclient(nom, email, phone, URL, Secteur);
-                            Navigator.of(context).pop();
+                            if (URL.indexOf(start) != -1) {
+                              final startIndex = URL.indexOf(start);
+                              final endIndex = URL.length;
+                              URL = URL.substring(startIndex, endIndex);
+                              DatabaseService().ajouterclient(
+                                  nom, email, phone, URL, Secteur);
+                              Navigator.of(context).pop();
+                            }
                           }
                         },
                         child: const Text('Creer Client'),
