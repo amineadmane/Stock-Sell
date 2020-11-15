@@ -86,22 +86,23 @@ class _ClientState extends State<Client> {
                             color: Colors.red,
                             elevation: 4,
                             onPressed: () {
-                              DatabaseService().updateclient(
-                                  widget.id,
-                                  widget.nom,
-                                  widget.email,
-                                  widget.phone,
-                                  widget.URL,
-                                  widget.Secteur);
                               Navigator.of(context).pop();
+
                             },
                             child: Text("Retour")),
                         RaisedButton(
                             textColor: Colors.white,
                             color: Colors.green,
                             elevation: 4,
-                            onPressed: () {
-                              Navigator.of(context).pop();
+                            onPressed: () {DatabaseService().updateclient(
+                                widget.id,
+                                widget.nom,
+                                widget.email,
+                                widget.phone,
+                                widget.URL,
+                                widget.Secteur);
+                            Navigator.of(context).pop();
+
                             },
                             child: Text("Comfirmer")),
                       ],
