@@ -168,9 +168,11 @@ class DatabaseService {
     if (a.size != 0) {
       String docid = a.docs.first.id;
       int nb_product = a.docs.first.get('nb_product');
+      double couttotale = a.docs.first.get('couttotale');
       try {
         VenteCollection.doc(docid).update({
           'nb_product': nb_product + nbProducts,
+          'couttotale': couttotale + _couttotale,
         });
       } catch (e) {
         print(e.toString());

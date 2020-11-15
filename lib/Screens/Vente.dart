@@ -19,9 +19,10 @@ class VenteScreen extends StatefulWidget {
 class _VenteScreenState extends State<VenteScreen> {
   final Color backgroundColor = Color(0xFF4A4A58);
   double screenWidth, screenHeight;
-  final doc = pw.Document();
+  pw.Document doc;
 
   Future<void> printticket(String client_id, String client_name) async {
+    doc = pw.Document();
     Vente vente = Vente();
     vente.produits = List();
     var date = DateFormat.yMd().add_jm().format(DateTime.now()).toString();
@@ -29,12 +30,12 @@ class _VenteScreenState extends State<VenteScreen> {
     await DatabaseService()
         .todaystransaction(client_id)
         .then((QuerySnapshot querySnapshot) => {
-              querySnapshot.docs.forEach((doc) {
+              querySnapshot.docs.forEach((prod) {
                 Produit produit = Produit();
-                produit.reference = doc['marque'];
-                produit.prixpromo = doc['prixpromo'];
-                produit.couttotale = doc['couttotale'];
-                produit.nbarticle = doc['nb_product'];
+                produit.reference = prod['marque'];
+                produit.prixpromo = prod['prixpromo'];
+                produit.couttotale = prod['couttotale'];
+                produit.nbarticle = prod['nb_product'];
                 vente.produits.add(produit);
                 vente.montant += produit.couttotale;
               })
@@ -131,8 +132,10 @@ class _VenteScreenState extends State<VenteScreen> {
           Container(
             height: screenHeight * 0.8,
             child: StreamBuilder<QuerySnapshot>(
-              stream:
-                  FirebaseFirestore.instance.collection("produit").snapshots(),
+              stream: FirebaseFirestore.instance
+                  .collection("produit")
+                  .where('nbunitfourgon', isGreaterThan: 0)
+                  .snapshots(),
               builder: (context, snapshot) {
                 return !snapshot.hasData
                     ? Center(child: CircularProgressIndicator())
