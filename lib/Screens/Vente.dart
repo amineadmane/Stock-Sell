@@ -149,6 +149,7 @@ class _VenteScreenState extends State<VenteScreen> {
                             id: data.id,
                             marque: data['reference'],
                             unitprice: data['baseprice'].toDouble(),
+                            prix_achat: data['buyprice'].toDouble(),
                             nbunitfourgon: data['nbunitfourgon'],
                             prixpromotionnel: data['promprice'].toDouble(),
                             client_id: client_id,

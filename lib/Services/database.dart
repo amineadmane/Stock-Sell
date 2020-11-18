@@ -128,16 +128,14 @@ class DatabaseService {
       try {
         ProductCollection.doc(productId).update({
           'nbunitfourgon': nbproduitfourgon + nb_product,
-          'nbvente': nbvente - nb_product
+          'nbvente': nbvente - nb_product,
         });
         VenteCollection.doc(docid).delete();
-
-        print("Annulation successful");
       } catch (e) {
         print(e.toString());
       }
     } else {
-      print("Nothing to delete");
+
     }
   }
 
@@ -152,6 +150,7 @@ class DatabaseService {
       double _couttotale,
       int nbProducts,
       String proddocid,
+      double prix_achat,
       int restant) async {
     var product = await ProductCollection.doc(proddocid).get();
     int nbventeadd = product.get('nbvente');
@@ -188,6 +187,7 @@ class DatabaseService {
         'baseprice': unitprice,
         'prixpromo': prixpromotionel,
         'couttotale': _couttotale,
+        'prix_achat':prix_achat,
       });
     }
   }

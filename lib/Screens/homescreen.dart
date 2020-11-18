@@ -46,6 +46,7 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
   }
 
   double _ChiffreAffaire = 0;
+  double _Benefices = 0;
   int _articlevendu = 0;
   int _nbclientavisiter = 0;
   int _Prodrestfourgon = 0;
@@ -58,6 +59,10 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
 
   raffraichirCA(double value) {
     setState(() => _ChiffreAffaire = value);
+  }
+
+  raffraichirBF(double value) {
+    setState(() => _Benefices = value);
   }
 
   raffraichirAV(int value) {
@@ -547,7 +552,6 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                       ],
                                     ),
                                     const SizedBox(height: 8),
-                                    const SizedBox(height: 8),
                                     Row(
                                       children: [
                                         Text(
@@ -564,6 +568,23 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                         ),
                                       ],
                                     ),
+                                    const SizedBox(height: 8),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "Benefices : ",
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                            _Benefices.toString(),
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
                                     const SizedBox(height: 14),
                                     Row(
                                       mainAxisAlignment:
@@ -574,6 +595,8 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                           color: Colors.orange,
                                           onPressed: () async {
                                             double som = 0;
+                                            double loss = 0;
+                                            double benifice = 0;
                                             int articlevendu = 0;
                                             await DatabaseService()
                                                 .getTotaltoday()
@@ -587,10 +610,13 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                                         articlevendu =
                                                             articlevendu +
                                                                 doc['nb_product'];
+                                                        loss = loss + doc['prix_achat']*doc['nb_product'];
                                                       })
                                                     });
+                                            benifice = som - loss;
                                             raffraichirCA(som);
                                             raffraichirAV(articlevendu);
+                                            raffraichirBF(benifice);
                                           },
                                           child: const Text(
                                             'Raffraichir',

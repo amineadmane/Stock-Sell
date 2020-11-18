@@ -44,7 +44,7 @@ class _ProductItemFourgState extends State<ProductItemFourg> {
                   nbunitfourgon: widget.nbunitfourgon.toString(),
                   nbunitstock: widget.nbunitstock.toString(),
                   prodid: widget.prodid,
-                  buyprice: widget.buyprice,
+                  buyprice: widget.buyprice.toString(),
                   promprice: widget.promprice.toString(),
                   documentSnapshot: widget.documentSnapshot,
                 ),

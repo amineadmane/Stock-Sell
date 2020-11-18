@@ -9,6 +9,7 @@ class ProductItem extends StatefulWidget {
   final String id;
   final String marque;
   final double unitprice;
+  final double prix_achat;
   int nbunitfourgon;
   final int nbunitstock;
   final double prixpromotionnel;
@@ -21,6 +22,7 @@ class ProductItem extends StatefulWidget {
     this.prixpromotionnel,
     this.client_id,
     this.client_name,
+    this.prix_achat,
   });
   @override
   _ProductItemState createState() => _ProductItemState();
@@ -270,6 +272,7 @@ class _ProductItemState extends State<ProductItem> {
                                       _couttotale,
                                       _value.toInt(),
                                       widget.id,
+                                      widget.prix_achat,
                                       _restant);
                                   final snackBar = SnackBar(
                                     content: Text(
