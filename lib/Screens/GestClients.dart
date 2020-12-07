@@ -209,6 +209,7 @@ Widget _myListView(BuildContext context) {
           children: <Widget>[
             ListTile(
               title: TextFormField(
+                textCapitalization: TextCapitalization.words,
                 initialValue: filter,
                 onChanged: (value) {
                   filter = value;

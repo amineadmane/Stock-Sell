@@ -222,7 +222,8 @@ class _ProductItemState extends State<ProductItem> {
                                     plusrestat();
                                     widget.nbunitfourgon = _restant;
                                     _couttotale =
-                                        (_value * widget.unitprice).toDouble();
+                                        (_value * widget.prixpromotionnel)
+                                            .toDouble();
                                   }
                                 });
                               },
