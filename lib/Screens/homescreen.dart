@@ -316,7 +316,10 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                       ),
                       Text("Acceuil",
                           style: TextStyle(fontSize: 24, color: Colors.white)),
-                      Icon(Icons.settings, color: Colors.white),
+                      Icon(
+                        Icons.settings,
+                        color: Colors.white,
+                      ),
                     ],
                   ),
                   Container(
@@ -578,7 +581,7 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                               fontWeight: FontWeight.bold),
                                         ),
                                         Text(
-                                            _Benefices.toString(),
+                                          _Benefices.toString(),
                                           style: TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold),
@@ -610,7 +613,9 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                                         articlevendu =
                                                             articlevendu +
                                                                 doc['nb_product'];
-                                                        loss = loss + doc['prix_achat']*doc['nb_product'];
+                                                        loss = loss +
+                                                            doc['prix_achat'] *
+                                                                doc['nb_product'];
                                                       })
                                                     });
                                             benifice = som - loss;

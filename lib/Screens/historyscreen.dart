@@ -70,7 +70,7 @@ class _HistoriquePageState extends State<HistoriquePage>
                 clientnom: ventes['client_name'],
                 date: ventes['date'],
                 data: ventes,
-                montant: ventes['couttotale'],
+                montant: ventes['couttotale'].toDouble(),
               );
               produit = Produit();
               produit.baseprice = ventes['baseprice'].toDouble();
